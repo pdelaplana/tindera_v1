@@ -1,0 +1,8 @@
+{
+  "name": "tindera",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "dc07faa9"
+}
