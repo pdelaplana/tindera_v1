@@ -1,0 +1,48 @@
+ion-button{
+  --border-color: rgba(119, 134, 158, 0.39) !important;
+  --border-radius: 10px !important;
+  --border-style: solid;
+  --border-width: 1px;
+  width: 100% !important;
+  height: 45px !important;
+}
+
+.logo-wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 550px;
+  height: auto;
+}
+
+.img-wrapper {
+  padding:0px;
+  text-align: center;
+
+ 
+  img {
+    display:block;
+    margin-top:10%;
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    object-fit: cover;
+  }
+ }
+
+ .vertical-bottom {
+  
+  position: absolute;
+  bottom:0px;
+  width:100%;
+  margin-bottom:10px;
+ }
+
+ .vertical-bottom > div{
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 550px;
+  height: auto;
+ }

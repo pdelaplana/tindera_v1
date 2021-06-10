@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title></ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-no-padding">
+  <ion-grid class="ion-no-padding ">
+    <ion-row>
+      <ion-col class="ion-padding-horizontal">
+        <ion-text class="ion-no-padding">
+          <h1>Imperial Mix</h1>
+          <p>
+            <ion-text color="medium">
+              5 pcs Shrimp Tempura, 5pcs Kani Tempura, 2pcs Chili Cheese Tempura
+            </ion-text>
+          </p>
+        </ion-text>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div class="img-wrapper" >
+          <ion-img [src]="'../../assets/images/bucket.jpg'" ></ion-img>
+        </div>  
+      </ion-col>
+     
+    </ion-row>
+  </ion-grid>
+  
+</ion-content>
+
+<ion-footer >
+  <ion-toolbar >
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
+      </ion-button>
+      <ion-item>
+        <ion-input inputmode="decimal" size="1" type="text" value="1" class="ion-text-center"></ion-input>
+      
+      </ion-item>
+      <ion-button>
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="secondary" fill="solid" size="large" expand="block">Add to Order - PhP 4.89</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

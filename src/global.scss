@@ -24,3 +24,54 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+ion-header.gray-background,
+ion-toolbar.gray-background,
+ion-header.gray-background  ion-toolbar,
+ion-content.gray-background,
+ion-content.gray-background ion-toolbar {
+  --background: #f8f9f9 !important; 
+}
+
+ion-header::after{
+  --height:0px;
+}
+
+.modal-wrapper{
+  background: transparent !important;
+  position: absolute;
+  width: 90vw;
+  height: 50vh;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+border: 0;
+}
+
+.searchbar-input-container{
+      padding-left: 10px !important;
+}
+
+.img-wrapper {
+  min-height: 200px;
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+ }
+
+// and than defined the scss/css in global.scss
+.small-modal{
+  .modal-wrapper {
+      position: absolute;
+      //bottom: 0;
+      //min-height: initial;
+      //top: initial;
+      height: 90%;
+      width:50%;
+  }
+}
+
+
+

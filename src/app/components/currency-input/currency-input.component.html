@@ -1,0 +1,14 @@
+<div (click)="openInput()" >
+  <div>
+    <ion-input 
+      formcontrol="dummyFacade" 
+      id="dummyFacade" 
+      #dummyFacade 
+      type="number" 
+      inputmode="numeric" 
+      (ionBlur)="transformAmount($event)"
+      [(value)]="formattedAmount"
+      >
+    </ion-input>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+ion-header::after{
+  height:0px;
+}
+
+.vertical-center{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 75%;
+}
+
+
+/*
+ion-footer{
+  ion-toolbar{
+    height:85px;
+  }
+}
+*/
+
+ion-item{
+    border: solid 1px;
+  //height:25px!important;  
+}
+
+.img-wrapper {
+  padding:55px;
+  padding-top:0px;
+  text-align: center;
+  width: 100%;  
+  ion-img {
+    display:block;
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    object-fit: cover;
+  }
+ }
+
+.text-input {
+  text-align: center;
+  border:1px;
+}

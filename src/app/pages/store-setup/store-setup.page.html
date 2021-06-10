@@ -1,0 +1,66 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="centered-content">
+    <div class="ion-text-center">
+      <img src="../../../assets/images/start-logo.png" />
+      <h3>Set up your store</h3>
+      <ion-note>We just need a few bits of information to setup your store.</ion-note>
+    </div>
+    <form [formGroup]="storeSetupForm" >
+      <div class="details">
+        
+        <div class="detail-item">
+          <ion-item>
+            <span class="icn" slot="end" *ngIf="!name.invalid">
+              <ion-icon name="ios-checkmark-circle"></ion-icon>
+            </span>
+            <ion-input formControlName="name" placeholder="Enter name of store" type="text" required="true"> </ion-input>
+          </ion-item>
+
+          <div class="error-messages">
+            <ng-container *ngFor="let error of errorMessages.storeSetup.name">
+              <div class="error-message"
+                *ngIf="name.hasError(error.type) && (name.dirty || name.touched)">
+                {{error.message}}
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="detail-item">
+          <ion-item>
+            <span class="icn" slot="end" *ngIf="!description.invalid">
+              <ion-icon name="ios-checkmark-circle"></ion-icon>
+            </span>
+            <ion-input class="password" placeholder="Include a short description" formControlName="description" type="text"> </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="detail-item">
+          <ion-item>
+            <span class="icn" slot="end" *ngIf="!location.invalid">
+              <ion-icon name="ios-checkmark-circle"></ion-icon>
+            </span>
+            <ion-input class="password" placeholder="Add the location" formControlName="location" type="text" > </ion-input>
+          </ion-item>
+        </div>
+        
+      </div>
+
+    </form>
+  </div>
+  <div class="vertical-bottom">
+    <div class="ion-text-center ion-padding ion-margin-bottom" >
+      <ion-button size="block" type="submit" routerDirection="root" [disabled]="storeSetupForm.invalid" (click)="save()">
+        Go to Store
+      </ion-button>
+    </div>  
+  </div>
+</ion-content>

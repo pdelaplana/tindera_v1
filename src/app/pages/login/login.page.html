@@ -1,0 +1,80 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="the-content">
+    <div class="ion-text-center">
+      <img src="../../../assets/images/start-logo.png" />
+      <h3>Log in to your account</h3>
+    </div>
+    <form [formGroup]="loginForm" >
+      <div class="details">
+
+        <div class="detail-item">
+
+          <ion-item>
+            <span class="icn" slot="end" *ngIf="!username.invalid">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+            </span>
+            <ion-input formControlName="username" class="username" placeholder="Email" type="email"> </ion-input>
+          </ion-item>
+
+          <div class="error-messages">
+            <ng-container *ngFor="let error of errorMessages.username">
+              <div class="error-message"
+                *ngIf="username.hasError(error.type) && (username.dirty || username.touched)">
+                {{error.message}}
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="detail-item">
+
+          <ion-item>
+            <span class="icn" slot="end" *ngIf="!password.invalid">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+            </span>
+            <ion-input class="password" placeholder="Password" formControlName="password" type="password"></ion-input>
+          </ion-item>
+        </div>
+
+        <div class="error-messages">
+          <ng-container *ngFor="let error of errorMessages.password">
+            <div class="error-message"
+              *ngIf="password.hasError(error.type) && (password.dirty || password.touched)">
+              {{error.message}}
+            </div>
+          </ng-container>
+        </div>
+        
+        <div class="second-item ion-hide">
+          <ion-row>
+            <ion-col>
+              <ion-item lines="none" id="rem" class="ion-no-padding">
+                <ion-label>Remember me</ion-label>
+                <ion-checkbox mode="ios" slot="start"></ion-checkbox>
+              </ion-item>
+            </ion-col>
+            <ion-col class="col-forgot ion-text-right">
+              <p>Forgot Password?</p>
+            </ion-col>
+          </ion-row>
+        </div>
+
+      </div>
+      
+    </form>
+  </div>
+  <div class="vertical-bottom">
+    <div class="ion-text-center ion-padding ion-margin-bottom" >
+      <ion-button size="block" type="submit" routerDirection="root" [disabled]="loginForm.invalid" (click)="login()">
+        Sign in
+      </ion-button>
+    </div>  
+  </div>
+</ion-content>

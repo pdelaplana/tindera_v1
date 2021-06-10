@@ -1,0 +1,72 @@
+<ion-header class="ion-no-border ">
+  <ion-toolbar>
+    
+    <ion-title>Add Item</ion-title>
+    <!--
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+    -->
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <form [formGroup]="addInventoryItemForm" >
+    <ion-list lines="full" >
+      <ion-item>
+        <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text" formControlName="name" ></ion-input>   
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="stacked">Description</ion-label>
+        <ion-input formControlName="description"></ion-input>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Category <ion-text color="danger">*</ion-text></ion-label>
+        <ion-select multiple="false" placeholder="" formControlName="category">
+          <ion-select-option *ngFor="let category of categories" value="{{category.value}}">{{category.label}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Unit Of Measure <ion-text color="danger">*</ion-text></ion-label>
+        <ion-select multiple="false" placeholder="" formControlName="uom">
+          <ion-select-option *ngFor="let uom of uoms" value="{{uom.value}}">{{ uom.label }}</ion-select-option>    
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Unit Cost <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input inputmode="decimal" formControlName="unitCostFormatted" (ionBlur)="formatUnitCost()" (ionFocus)="resetUnitCost()" ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Reorder Level <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input inputmode="decimal" formControlName="reorderLevel" ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Opening Balance <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input inputmode="decimal" formControlName="balance" ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Notes </ion-label>
+        <ion-textarea autoGrow="true" rows="3"></ion-textarea>
+      </ion-item>
+      
+    </ion-list>
+  </form>
+  
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block" (click)="save()">
+      Save
+    </ion-button>
+    <ion-button expand="block" fill="clear" (click)="close()">Close</ion-button>
+  </ion-toolbar>
+</ion-footer>

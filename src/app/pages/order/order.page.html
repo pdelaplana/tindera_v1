@@ -1,0 +1,63 @@
+<ion-header translucent="true" class="ion-no-border gray-background">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button  menu="mainMenu" autoHide="true"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Order</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true" class="gray-background">
+  <ion-toolbar class="ion-no-padding"> 
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-chip>
+      <ion-label>All</ion-label>
+    </ion-chip>
+    <ion-chip>
+      <ion-label>Popular Items</ion-label>
+    </ion-chip>
+    <ion-chip>
+      <ion-label>Beverages</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+  <ion-grid>
+    <ion-row >
+      <ion-col sizeLg="4" sizeMd="4" sizeXs="6" *ngFor="let menuItem of menuItems">
+        <ion-card button="true" (click)="orderProduct()">
+          
+          <ion-card-header class="ion-no-padding ion-padding-bottom">
+            <div class="img-wrapper" [style.background-image]="'url(../../assets/images/bucket.jpg)'"></div>
+          </ion-card-header>
+
+          <ion-card-content class="">
+            <ion-card-title>{{ menuItem.name}}</ion-card-title>
+            <ion-card-subtitle>PHP {{ menuItem.price }}</ion-card-subtitle>
+            <p>
+              Our best seller
+            </p>
+          </ion-card-content>
+        
+        </ion-card>
+      </ion-col>
+      
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+   
+    <ion-buttons slot="end">
+      <ion-button fill="solid" expand="block" color="primary" (click)="navigateToCart()">
+        <ion-icon name="cart-outline" slot="start"></ion-icon>
+        <ion-text class="ion-margin-left" slot="end">
+          Php120.00
+        </ion-text>
+        
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-footer>

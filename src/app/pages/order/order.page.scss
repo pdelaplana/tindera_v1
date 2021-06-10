@@ -1,0 +1,35 @@
+
+ion-card{
+  height:320px;
+}
+
+ion-card-title {
+  font-size: 16px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.img-wrapper {
+  min-height: 200px;
+  width: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+ }
+
+ 
+.button-with-badge {
+  width:105px;
+  height:55px;
+
+	ion-badge {
+		position: absolute;
+		top: -0.2rem;
+		right: -0.2rem;
+		opacity: 0.9;
+    font-size: 0.6rem;
+		& ~ ion-icon {
+			margin-right: 1.9rem;
+		}
+	}
+}

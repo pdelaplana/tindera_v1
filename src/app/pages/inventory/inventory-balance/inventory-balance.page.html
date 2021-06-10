@@ -1,0 +1,41 @@
+<ion-header class="ion-no-border gray-background">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button  menu="mainMenu" autoHide="true"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inventory</ion-title>
+    <ion-buttons slot="end">
+     
+      <ion-button color="primary" fill="solid" (click)="addNewItem()">
+        <ion-icon name="add-sharp"></ion-icon>
+        New
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <ion-toolbar class=""> 
+    <ion-searchbar></ion-searchbar>
+    
+  </ion-toolbar>
+  <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
+    <ion-item>
+      <ion-note slot="start">Name</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:70px">On Hand</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:70px">Total</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:20px">&nbsp;</ion-note>
+      
+    </ion-item>
+    
+    <ion-item  button="true" detail="true" *ngFor="let item of (inventoryItems$ | async)" (click)="navigateToDetails(item.id)">
+      <ion-label slot="start">{{item.name}}</ion-label>
+      <ion-note slot="end" class="ion-text-right" style="min-width:70px">{{item.currentCount}}</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:70px">{{item.currentCount * item.unitCost | currency: 'P'}}</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:20px"></ion-note>
+      
+    </ion-item>
+
+  </ion-list>
+</ion-content>
+

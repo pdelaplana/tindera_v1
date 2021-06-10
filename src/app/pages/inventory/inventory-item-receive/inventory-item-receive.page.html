@@ -1,0 +1,53 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+     
+    <ion-title>Receive Item</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <form [formGroup]="inventoryReceiveForm">
+    <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    
+      <ion-item>
+        <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+        <p>{{ (item$ | async).name }}</p>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Received On <ion-text color="danger">*</ion-text></ion-label>
+        <ion-datetime displayFormat="MMM DD YYYY" min="1994-03-14"  formControlName="receivedOn"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Received <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input inputmode="decimal" type="number" formControlName="count" ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Reference </ion-label>
+        <ion-input required type="text" formControlName="reference" ></ion-input>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Notes </ion-label>
+        <ion-textarea autoGrow="true" rows="3" formControlName="notes"></ion-textarea>
+      </ion-item>
+
+      </ion-list>
+  </form>
+
+  
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar >
+    <ion-button expand="block" color="primary" (click)="save()" >
+      Save
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

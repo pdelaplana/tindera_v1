@@ -1,6 +1,38 @@
+ion-header {
+  background: white;
+
+  div {
+    margin-top:20px;
+    .img-holder
+    {
+      display: inline;      
+      ion-avatar {
+        margin: auto;
+        height:100px;
+        width:100px;
+      } 
+    }
+    
+    .details{
+      h5{
+        color: #042C5C !important;
+      }
+    }
+  }
+
+}
+
+
+ion-menu ion-header,
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }
+
+ion-menu ion-header::after{
+  height: 2px;
+  padding-bottom: 5px;
+}
+
 
 ion-menu.md ion-content {
   --padding-start: 8px;
@@ -10,7 +42,7 @@ ion-menu.md ion-content {
 }
 
 ion-menu.md ion-list {
-  padding: 20px 0;
+  padding: 20px 5px;
 }
 
 ion-menu.md ion-note {
@@ -30,7 +62,7 @@ ion-menu.md ion-list#inbox-list ion-list-header {
   font-size: 22px;
   font-weight: 600;
 
-  min-height: 20px;
+  min-height: 250px;
 }
 
 ion-menu.md ion-list#labels-list ion-list-header {
