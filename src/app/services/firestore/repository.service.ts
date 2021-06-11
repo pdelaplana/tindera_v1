@@ -39,8 +39,8 @@ export class RepositoryService<T extends Entity> {
 
   
   query(queryParams: QueryParameter[]): Observable<T[]> {
-    /*
-    let query;
+    
+    let query: AngularFirestoreCollection<T>;
     if (queryParams.length > 0) {
       query = this.firestore.collection<T>(this.collectionName, ref => {
         queryParams.forEach((param) => {
@@ -51,8 +51,8 @@ export class RepositoryService<T extends Entity> {
     } else {
       query = this.firestore.collection<T>(this.collectionName);
     }
-    */
-    const query =this.firestore.collection<T>(this.collectionName);
+    
+    //const query =this.firestore.collection<T>(this.collectionName);
     const snapshotChanges = (query.snapshotChanges());
     return snapshotChanges.pipe(
       map(arr => {

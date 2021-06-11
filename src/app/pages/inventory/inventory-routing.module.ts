@@ -22,14 +22,13 @@ const routes: Routes = [
     path: 'details',
     loadChildren: () => import('./inventory-item-details/inventory-item-details.module').then( m => m.InventoryItemDetailsPageModule)
   },
- 
   {
     path: 'receive',
     loadChildren: () => import('./inventory-item-receive/inventory-item-receive.module').then( m => m.InventoryItemReceivePageModule)
   },
   {
-    path: 'inventory-item-history',
-    loadChildren: () => import('./inventory-item-history/inventory-item-history.module').then( m => m.InventoryItemHistoryPageModule)
+    path: 'transactions',
+    loadChildren: () => import('./inventory-item-transactions/inventory-item-transactions.module').then( m => m.InventoryItemTransactionsPageModule)
   }
   
 ];

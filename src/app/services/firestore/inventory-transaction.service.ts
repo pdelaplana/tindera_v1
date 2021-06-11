@@ -1,3 +1,4 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { InventoryItem } from '@app/models/inventory-item';
@@ -20,5 +21,9 @@ export class InventoryTransactionService extends RepositoryService<InventoryTran
 
   setCollection(shopId: string, itemId: string){
     this.collectionName = `shops/${shopId}/inventory/${itemId}/transactions`;
+  }
+
+  getTransactions(){
+    return this.query([]);
   }
 }

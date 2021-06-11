@@ -138,23 +138,24 @@ export class InventoryEffects{
         uom: action.item.uom,
         notes: action.item.notes
       }
-      
       const item = await (this.inventoryService.update(data));
 
-      const update: Update<InventoryItem> = {
-        id: item.id,
-        changes: { 
-          name: item.name,
-          description: item.description,
-          category: item.category,
-          uom: item.uom,
-          unitCost: item.unitCost,
-          reorderLevel: item.reorderLevel,
-          currentCount: item.currentCount,
-          notes: item.notes
-        }
-      };
-      return inventoryActions.updateItemSuccess({ update });
+      return inventoryActions.updateItemSuccess({
+        update: {
+          id: item.id,
+          changes: { 
+            name: item.name,
+            description: item.description,
+            category: item.category,
+            uom: item.uom,
+            unitCost: item.unitCost,
+            reorderLevel: item.reorderLevel,
+            currentCount: item.currentCount,
+            notes: item.notes
+          }
+        } 
+      })
+
     }),
     catchError((error, caught) => {
       this.store.dispatch(inventoryActions.updateItemFail({error}));
@@ -178,10 +179,25 @@ export class InventoryEffects{
       this.commonUiService.notify('Oops. We are aunable to update the  item.  Please try again');
       return null;
     })  
-  ),
-  { dispatch: false }
-  );
+  ),{ dispatch: false });
 
+  loadItemTransactions = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.loadItemTransactions),
+    switchMap(action => {
+      this.inventoryTransactionService.setCollection(this.shopid, action.itemdId);
+      const result = this.inventoryTransactionService.getTransactions();
+      return result.pipe()
+    }),
+
+    map( arr => {
+      return inventoryActions.loadItemTransactionsSuccess({transactions: arr})
+    }),
+
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.loadItemTransactionsFail({error}));
+      return caught;
+    })
+  ));
   
   receiveItem = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.receiveItem),

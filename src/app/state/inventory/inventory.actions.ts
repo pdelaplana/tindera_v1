@@ -40,6 +40,18 @@ export const inventoryActions = {
     '[Inventory] Update inventory item fail',
     props<{ error: any }>()
   ),
+  loadItemTransactions: createAction(
+    '[Inventory] Load transactions of item',
+    props<{ itemdId: string}>()
+  ),
+  loadItemTransactionsSuccess: createAction(
+    '[Inventory] Load transactions of item succes',
+    props<{ transactions: InventoryTransaction[] }>()
+  ),
+  loadItemTransactionsFail: createAction(
+    '[Inventory] Load transactions of item fail',
+    props<{ error: any }>()
+  ),
   receiveItem: createAction(
     '[Inventory] Receive item',
     props<{ transaction: InventoryTransaction }>()

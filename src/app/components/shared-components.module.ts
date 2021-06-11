@@ -4,6 +4,7 @@ import { CurrencyInputComponent } from './currency-input/currency-input.componen
 import { FormsModule } from '@angular/forms';
 import { CategoryLabelPipe } from '@app/pipes/category-label.pipe';
 import { UomLabelPipe } from '@app/pipes/uom-label.pipe';
+import { TransactionTypePipe } from '../pipes/transaction-type.pipe';
 
 
 
@@ -11,6 +12,7 @@ import { UomLabelPipe } from '@app/pipes/uom-label.pipe';
   declarations: [
     CategoryLabelPipe,
     UomLabelPipe,
+    TransactionTypePipe,
     CurrencyInputComponent
   ],
   imports: [
@@ -20,6 +22,7 @@ import { UomLabelPipe } from '@app/pipes/uom-label.pipe';
   exports: [
     CategoryLabelPipe,
     UomLabelPipe,
+    TransactionTypePipe,
     CurrencyInputComponent
   ]
 })

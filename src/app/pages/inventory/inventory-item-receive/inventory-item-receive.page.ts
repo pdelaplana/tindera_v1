@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
+import { InventoryTransactionType } from '@app/models/types';
 import { AppState } from '@app/state';
 import { inventoryActions } from '@app/state/inventory/inventory.actions';
 import { selectInventoryItem } from '@app/state/inventory/inventory.selectors';
@@ -31,7 +32,6 @@ export class InventoryItemReceivePage implements OnInit {
     this.item$ = this.store.select(selectInventoryItem(this.itemId));
 
     this.inventoryReceiveForm = this.formBuilder.group({
-      
       count: [0, Validators.required],
       receivedOn: [new Date().toISOString(), Validators.required],
       reference: [''],
@@ -55,12 +55,11 @@ export class InventoryItemReceivePage implements OnInit {
   get reference() { return this.inventoryReceiveForm.get('reference'); }
   set reference(value: any) { this.inventoryReceiveForm.get('reference').setValue(value); }
 
-
   save(){
     this.store.dispatch(inventoryActions.receiveItem({
- 
       transaction : <InventoryTransaction>{
         id:'',
+        transactionType: InventoryTransactionType.Receipt,
         itemId: this.itemId,
         transactionOn: this.receivedOn.value,
         quantityIn: Number(this.count.value),

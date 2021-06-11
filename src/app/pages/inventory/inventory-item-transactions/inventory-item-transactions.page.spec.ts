@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { InventoryItemHistoryPage } from './inventory-item-history.page';
+import { InventoryItemTransactionsPage } from './inventory-item-transactions.page';
 
-describe('InventoryItemHistoryPage', () => {
-  let component: InventoryItemHistoryPage;
-  let fixture: ComponentFixture<InventoryItemHistoryPage>;
+describe('InventoryItemTransactionsPage', () => {
+  let component: InventoryItemTransactionsPage;
+  let fixture: ComponentFixture<InventoryItemTransactionsPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ InventoryItemHistoryPage ],
+      declarations: [ InventoryItemTransactionsPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(InventoryItemHistoryPage);
+    fixture = TestBed.createComponent(InventoryItemTransactionsPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

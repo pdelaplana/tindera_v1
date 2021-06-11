@@ -28,13 +28,15 @@ import { CurrencyPipe } from '@angular/common';
 import { InventoryEffects } from './state/inventory/inventory.effects';
 import { CategoryLabelPipe } from './pipes/category-label.pipe';
 import { UomLabelPipe } from './pipes/uom-label.pipe';
+import { TransactionTypePipe } from './pipes/transaction-type.pipe';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoryLabelPipe,
-    UomLabelPipe
+    UomLabelPipe,
+    TransactionTypePipe
   ],
   entryComponents: [],
   imports: [

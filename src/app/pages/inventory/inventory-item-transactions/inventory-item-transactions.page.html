@@ -1,0 +1,37 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+     
+    <ion-title>Transactions</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
+    <ion-item>
+      <ion-note slot="start">Date</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:70px">Qty +/-</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:20px">&nbsp;</ion-note>
+    </ion-item>
+
+    <ion-item *ngFor="let transaction of (transactions$ | async)">
+      
+      <ion-label >
+        <p>
+          {{ transaction.transactionType | transactionType }}
+        </p>
+        <p style="font-size:small">
+          <ion-text color="medium">{{ transaction.transactionOn | date}}</ion-text>
+        </p>
+      </ion-label>
+      
+
+      
+      <ion-note slot="end" class="ion-text-right" style="min-width:70px">{{ transaction.quantityIn-transaction.quantityOut }}</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:20px">&nbsp;</ion-note>
+    </ion-item>
+  </ion-list>
+</ion-content>

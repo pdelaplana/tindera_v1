@@ -26,7 +26,6 @@ export class InventoryBalancePage implements OnInit {
     private navController: NavController
   ) { 
     
-   
   }
 
   ngOnInit() {
