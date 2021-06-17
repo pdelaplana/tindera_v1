@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-products',
@@ -9,14 +8,10 @@ import { NavController } from '@ionic/angular';
 export class ProductsPage implements OnInit {
 
   constructor(
-    private navController: NavController
   ) { }
 
   ngOnInit() {
   }
 
-  navigateToDetails(){
-    this.navController.navigateForward('products/details');
-  }
-
+  
 }

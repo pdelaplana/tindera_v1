@@ -1,0 +1,57 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Bill of Materials</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <form [formGroup]="productItemForm" >
+    <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    
+      <ion-item>
+        <ion-label position="stacked">Item <ion-text color="danger">*</ion-text></ion-label>
+        <ionic-selectable
+          #inventoryItemLookup
+          formControlName="item"
+          [items]="inventoryItems"
+          itemValueField="id"
+          itemTextField="name"
+          [canSearch]="true">
+          <ng-template ionicSelectableHeaderTemplate>
+            <ion-toolbar class="ion-no-border">    
+            <ion-title>Select Item</ion-title>
+            <ion-buttons slot="end">
+              <ion-button (click)="inventoryItemLookup.close()">
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+            
+          </ion-toolbar>
+          </ng-template>
+        </ionic-selectable>  
+      </ion-item>
+  
+      <ion-item>
+        <ion-label position="stacked">Quantity <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text" formControlName="quantity" ></ion-input>   
+      </ion-item>
+      
+     
+    </ion-list>
+  
+    
+    </form>
+  
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar >
+    <ion-button expand="block" color="primary" (click)="save()" >
+      Save
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

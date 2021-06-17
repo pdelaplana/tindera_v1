@@ -4,18 +4,23 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ProductsPageRoutingModule } from './products-routing.module';
+import { ProductAddPageRoutingModule } from './product-add-routing.module';
 
-import { ProductsPage } from './products.page';
+import { ProductAddPage } from './product-add.page';
+import { TagInputModule } from 'ngx-chips';
+
+
 
 @NgModule({
   imports: [
+
+    TagInputModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    ProductsPageRoutingModule
+    ProductAddPageRoutingModule
   ],
-  declarations: [ProductsPage]
+  declarations: [ProductAddPage]
 })
-export class ProductsPageModule {}
+export class ProductAddPageModule {}

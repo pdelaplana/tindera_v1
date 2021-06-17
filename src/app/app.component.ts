@@ -8,6 +8,7 @@ import { AuthState } from './state/auth/auth.state';
 import { MenuController, NavController } from '@ionic/angular';
 import { ofType } from '@ngrx/effects';
 import { inventoryActions } from './state/inventory/inventory.actions';
+import { ShopActions } from './state/shop/shop.actions';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,7 @@ export class AppComponent implements OnInit {
   appPages = [
     { title: 'Order', url: '/order', icon: 'cart' },
     { title: 'Sales', url: '/sales', icon: 'cash' },
-    { title: 'Products', url: '/products', icon: 'pricetags' },
+    { title: 'Products', url: '/products/list', icon: 'pricetags' },
     { title: 'Inventory', url: '/inventory/balance', icon: 'cube' },
     { title: 'Store', url: '/store/setup', icon: 'business' },
     { title: 'Settings', url: '/folder/Archived', icon: 'cog' },
@@ -43,25 +44,26 @@ export class AppComponent implements OnInit {
     this.email = store.select(state => state.auth.email);
     this.isEmailVerified = store.select(state => state.auth.emailVerified);
     this.isAuthenticated = store.select(state => state.auth.isAuthenticated);
-  }
-
-  ngOnInit(): void {
-    this.store.dispatch(AuthActions.getAuthState());
-    this.isAuthenticated.subscribe(value => this.menuController.enable(value));
-
     this.store.select(state => state.auth).subscribe((auth) =>{
-      console.log(auth);
+      console.log('auth',auth);
       if (auth.isAuthenticated){
         if (auth.shopIds.length==0){
-          
           this.navController.navigateRoot('setup/store');
         } else {
+          this.store.dispatch(ShopActions.loadShopState({ id: auth.shopIds[0] }));
           this.menuController.enable(auth.isAuthenticated);
           this.navController.navigateRoot('order');
         }
       }
     
     });
+  }
+
+  ngOnInit(): void {
+    this.store.dispatch(AuthActions.getAuthState());
+    this.isAuthenticated.subscribe(value => this.menuController.enable(value));
+
+   
 
     this.store.select(state => state.shop.id).subscribe((shopid) => {
       if (shopid){

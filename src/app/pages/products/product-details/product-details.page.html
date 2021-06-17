@@ -1,0 +1,90 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+     
+    <ion-title>Product Details</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <form [formGroup]="productForm" >
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+  
+    <ion-item>
+      <ion-label position="stacked">Code <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required type="text" formControlName="code" ></ion-input>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input required type="text" formControlName="name" ></ion-input>   
+    </ion-item>
+    
+    <ion-item>
+      <ion-label position="stacked">Description</ion-label>
+      <ion-input formControlName="description"></ion-input>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Unit Price  <ion-text color="danger">*</ion-text></ion-label>
+      <ion-input inputmode="decimal" type="number" formControlName="price"  ></ion-input>
+    </ion-item>
+
+    
+
+    <ion-item>
+      <ion-label position="stacked">Remarks </ion-label>
+      <ion-textarea autoGrow="true" rows="5"></ion-textarea>
+    </ion-item>
+
+  </ion-list>
+
+  <ion-list-header class="ion-border-bottom">
+    <ion-label color="medium">Tags</ion-label>
+  </ion-list-header>
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    <ion-item>
+      <tag-input formControlName="tags" theme="minimal"></tag-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-list-header class="ion-border-bottom">
+    <ion-label color="medium">Bill of Materials</ion-label>
+  </ion-list-header>
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+   
+    <ion-item>
+      <ion-note slot="start">Name</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:100px">Qty</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:100px">Cost</ion-note>
+    </ion-item>
+    <ion-item-sliding *ngFor="let productItem of productItems">
+      <ion-item>
+        <ion-label slot="start">{{ productItem.item.name }}</ion-label>
+        <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{ productItem.quantity }}</ion-note>
+        <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{ productItem.quantity * productItem.item.unitCost | currency:'P' }}</ion-note>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="deleteItem(productId, productItem)">
+          <ion-icon slot="top" name="trash"></ion-icon>
+          <ion-text class="ion-text-capitalize" style="font-size: smaller;">Remove</ion-text>
+          
+        </ion-item-option>
+        <ion-item-option color="light" (click)="navigateToBOM(productId, productItem)">
+          <ion-icon slot="top" name="ellipsis-horizontal"></ion-icon>
+          <ion-text class="ion-text-capitalize" style="font-size: smaller;">Change</ion-text>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  
+   
+    <ion-item  button="true" detail="true" (click)="navigateToBOM(productId, null)">
+      <ion-label color="secondary"><h4>Add Material</h4></ion-label>
+    </ion-item>
+  </ion-list>
+  </form>
+
+</ion-content>

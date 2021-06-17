@@ -29,7 +29,9 @@ import { InventoryEffects } from './state/inventory/inventory.effects';
 import { CategoryLabelPipe } from './pipes/category-label.pipe';
 import { UomLabelPipe } from './pipes/uom-label.pipe';
 import { TransactionTypePipe } from './pipes/transaction-type.pipe';
-
+import { ProductEffects } from './state/product/product.effects';
+import { TagInputModule } from 'ngx-chips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,8 @@ import { TransactionTypePipe } from './pipes/transaction-type.pipe';
   ],
   entryComponents: [],
   imports: [
-    BrowserModule, 
+    BrowserModule,
+    BrowserAnimationsModule, 
     IonicModule.forRoot(), 
     AppRoutingModule,
     HttpClientModule,
@@ -68,9 +71,10 @@ import { TransactionTypePipe } from './pipes/transaction-type.pipe';
     EffectsModule.forRoot([
       AuthEffects,
       ShopEffects,
-      InventoryEffects
-      
-    ])
+      InventoryEffects,
+      ProductEffects
+    ]),
+    TagInputModule
   ],
   providers: [
     CurrencyPipe,

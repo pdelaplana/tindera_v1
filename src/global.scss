@@ -33,8 +33,10 @@ ion-content.gray-background ion-toolbar {
   --background: #f8f9f9 !important; 
 }
 
-ion-header::after{
-  --height:0px;
+
+// remove bottom border in ionic-selectable modal dialog
+.ionic-selectable-modal .header-md::after{
+  height:0px !important;
 }
 
 .modal-wrapper{
