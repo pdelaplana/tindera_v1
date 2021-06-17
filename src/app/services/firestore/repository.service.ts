@@ -95,4 +95,9 @@ export class RepositoryService<T extends Entity> {
 
   }
 
+  async delete(entity:T):Promise<void>{
+    const { id, ...rest } = entity;
+    return await this.firestore.collection(this.collectionName).doc(id).delete()
+  }
+
 }

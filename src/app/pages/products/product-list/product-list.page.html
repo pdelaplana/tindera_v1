@@ -1,0 +1,39 @@
+<ion-header class="ion-no-border gray-background" translucent="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button  menu="mainMenu" autoHide="true"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Products</ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="primary" fill="solid" (click)="addNewProduct()">
+        <ion-icon name="add-sharp"></ion-icon>
+        New
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <ion-toolbar class=""> 
+    <ion-searchbar></ion-searchbar>
+  </ion-toolbar>
+ 
+  <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
+
+    <ion-item>
+      <ion-note slot="start">Product</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:20px">&nbsp;</ion-note>
+    </ion-item>
+    
+    <ion-item *ngFor="let product of (products$ | async)"  lines="full"  button="true" detail="true" (click)="navigateToDetails(product.id)">
+      <ion-label>
+        <h2>{{ product.name }}</h2>
+
+      </ion-label>
+      <ion-label slot="end"></ion-label>
+    </ion-item>
+   
+  </ion-list>
+</ion-content>
+
+

@@ -1,0 +1,58 @@
+<ion-header class="ion-no-border ">
+  <ion-toolbar>    
+    <ion-title>Add Product</ion-title>
+    
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <form [formGroup]="productForm" >
+    <ion-list lines="full" >
+      <ion-item>
+        <ion-label position="stacked">Code <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text" formControlName="code" ></ion-input>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text" formControlName="name" ></ion-input>   
+      </ion-item>
+      
+      <ion-item>
+        <ion-label position="stacked">Description</ion-label>
+        <ion-input formControlName="description"></ion-input>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Unit Price  <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input inputmode="decimal" type="number" formControlName="price"  ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <tag-input formControlName="tags" theme="minimal"></tag-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Remarks </ion-label>
+        <ion-textarea autoGrow="true" rows="5"></ion-textarea>
+      </ion-item>
+
+    </ion-list>
+  </form>
+  
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block" (click)="save()">
+      Save
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

@@ -27,7 +27,6 @@ export class AuthEffects {
     switchMap(async (action) => {
       if (this.authenticationService.localAuthState) {
         const localAuthState = this.authenticationService.localAuthState;
-        this.store.dispatch(ShopActions.loadShopState({ id: localAuthState.shopIds[0] }));
         return AuthActions.userIsLoggedIn({
           displayName: localAuthState.displayName,
           email: localAuthState.email,

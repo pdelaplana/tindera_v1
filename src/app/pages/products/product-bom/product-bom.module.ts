@@ -4,18 +4,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ProductsPageRoutingModule } from './products-routing.module';
+import { ProductBOMPageRoutingModule } from './product-bom-routing.module';
 
-import { ProductsPage } from './products.page';
+import { ProductBOMPage } from './product-bom.page';
+import { IonicSelectableModule } from 'ionic-selectable';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    IonicSelectableModule,
     IonicModule,
-    ProductsPageRoutingModule
+    ProductBOMPageRoutingModule
   ],
-  declarations: [ProductsPage]
+  declarations: [ProductBOMPage]
 })
-export class ProductsPageModule {}
+export class ProductBOMPageModule {}

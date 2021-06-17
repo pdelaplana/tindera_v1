@@ -1,5 +1,3 @@
-import { ThrowStmt } from '@angular/compiler';
-import { i18nMetaToJSDoc } from '@angular/compiler/src/render3/view/i18n/meta';
 import { Injectable } from '@angular/core';
 import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
@@ -10,9 +8,8 @@ import { RepositoryService } from '@app/services/firestore/repository.service';
 import { act, Actions, createEffect, ofType } from '@ngrx/effects';
 import { Update } from '@ngrx/entity';
 import { Store } from '@ngrx/store';
-import { EMPTY, of } from 'rxjs';
-import { dispatch } from 'rxjs/internal/observable/pairs';
-import { catchError, concatMap, debounceTime, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+
+import { catchError, debounceTime, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '..';
 import { inventoryActions } from './inventory.actions';
 

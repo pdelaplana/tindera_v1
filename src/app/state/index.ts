@@ -18,12 +18,15 @@ import { ShopState } from './shop/shop.state';
 import { shopReducer } from './shop/shop.reducers';
 import { inventoryReducer } from './inventory/inventory.reducers';
 import { InventoryState } from './inventory/inventory.state';
+import { productReducer } from './product/product.reducers';
+import { ProductState } from './product/product.state';
 
 
 export interface AppState {
   auth: AuthState;
   shop: ShopState;
   inventory: InventoryState;
+  products: ProductState;
 }
 
 export function loggerFactory(logger: NGXLogger): MetaReducer<AppState> {
@@ -41,7 +44,8 @@ export function loggerFactory(logger: NGXLogger): MetaReducer<AppState> {
 export const reducers: ActionReducerMap<AppState> = {
   auth: fromAuthReducer.reducer,
   shop: shopReducer,
-  inventory: inventoryReducer
+  inventory: inventoryReducer,
+  products: productReducer
 };
 
 

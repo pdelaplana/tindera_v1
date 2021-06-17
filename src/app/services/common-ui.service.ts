@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,7 @@ export class CommonUIService {
 
   constructor(
     private toastController: ToastController,
+    private alertController: AlertController,
     private loadingController: LoadingController
   ) { }
 
@@ -63,6 +64,32 @@ export class CommonUIService {
         return this.loading.dismiss();
       }
     }, 1000);
+  }
+
+  async confirmDelete():Promise<any>{
+    return new Promise(async (resolve) =>{
+      const alert = await this.alertController.create({
+        header: 'Confirm Deletion',
+        message: 'Do you want to delete this item?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: (cancel) => {
+              resolve('cancel');
+            }
+          }, {
+            text: 'Continue',
+            handler: (ok) => {
+              resolve('continue');
+            }
+          }
+        ]
+      });
+      alert.present();
+    })
+    
   }
   
 }
