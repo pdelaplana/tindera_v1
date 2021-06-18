@@ -1,5 +1,10 @@
 export const ErrorMessages = {
   signup: {
+    displayName: [
+      { type: 'required', message: 'Display name is required'},
+      { type: 'minlength', message: 'Display name length must be longer than or equal to 6 characters '},
+      { type: 'maxlength', message: 'Display name length Cannot exceed 20 characters '},
+    ],
     username: [
       { type: 'required', message: 'Username is required'},
       { type: 'minlength', message: 'Username length must be longer than or equal to 6 characters '},
