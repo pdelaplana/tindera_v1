@@ -28,7 +28,7 @@ export class InventoryItemDetailsPage implements OnInit, OnDestroy {
   private unsubscribe = new Subject<void>()
 
   
-  private itemId: string;
+  itemId: string;
 
   inventoryItem$:  Observable<InventoryItem>;
 

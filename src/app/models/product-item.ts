@@ -1,9 +1,9 @@
-import { Entity } from './entity';
+import { InventoryItem } from './inventory-item';
 import { UnitOfMeasure } from './types';
 
 export interface ProductItem {
   itemId: string;
-  item: ProductItem,
+  item: InventoryItem,
   quantity: number;
   uom: UnitOfMeasure;
 }

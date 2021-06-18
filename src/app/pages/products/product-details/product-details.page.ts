@@ -19,9 +19,9 @@ import { concatMap, debounceTime, takeUntil } from 'rxjs/operators';
 })
 export class ProductDetailsPage implements OnInit, OnDestroy {
 
-  private productId: string;
   private unsubscribe = new Subject<void>()
   
+  productId: string;
   productForm: FormGroup;
   productItems: ProductItem[];
   constructor(
