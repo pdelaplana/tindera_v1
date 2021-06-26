@@ -1,28 +1,34 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title></ion-title>
+    <ion-title >
+      {{ product.name}}
+    </ion-title>
+    
     <ion-buttons slot="end">
-      <ion-button (click)="close()">Close</ion-button>
+      <ion-button (click)="close()" class="ion-float-right">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-no-padding">
+<ion-content >
   <ion-grid class="ion-no-padding ">
     <ion-row>
-      <ion-col class="ion-padding-horizontal">
-        <ion-text class="ion-no-padding">
-          <h1>Imperial Mix</h1>
+      <ion-col class="ion-margin">
+        <ion-label class="ion-no-padding">
+          <h2>{{ product.price | currency:currencyCode }} each</h2>
+        
           <p>
             <ion-text color="medium">
-              5 pcs Shrimp Tempura, 5pcs Kani Tempura, 2pcs Chili Cheese Tempura
+              {{ product.description }}
             </ion-text>
           </p>
-        </ion-text>
+        </ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col>
+      <ion-col class="ion-padding ion-margin">
         <div class="img-wrapper" >
           <ion-img [src]="'../../assets/images/bucket.jpg'" ></ion-img>
         </div>  
@@ -36,19 +42,16 @@
 <ion-footer >
   <ion-toolbar >
     <ion-buttons slot="start">
-      <ion-button>
+      <ion-button (click)="decrement()">
         <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
       </ion-button>
-      <ion-item>
-        <ion-input inputmode="decimal" size="1" type="text" value="1" class="ion-text-center"></ion-input>
-      
-      </ion-item>
-      <ion-button>
+      <ion-label>{{ quantity }}</ion-label>
+      <ion-button (click)="increment()">
         <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button color="secondary" fill="solid" size="large" expand="block">Add to Order - PhP 4.89</ion-button>
+      <ion-button color="primary" fill="solid" size="large" expand="block" (click)="addToCart()">Add to Order - {{ total | currency:currencyCode}}</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-footer>

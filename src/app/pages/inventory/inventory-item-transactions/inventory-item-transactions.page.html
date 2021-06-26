@@ -24,7 +24,7 @@
           {{ transaction.transactionType | transactionType }}
         </p>
         <p style="font-size:small">
-          <ion-text color="medium">{{ transaction.transactionOn | date}}</ion-text>
+          <ion-text color="medium">{{ transaction.transactionOn.toDate() | date }}</ion-text>
         </p>
       </ion-label>
       

@@ -14,6 +14,9 @@ export class TransactionTypePipe implements PipeTransform {
         return 'Issue';
       case InventoryTransactionType.Adjustment:
         return 'Adjustment';
+        case InventoryTransactionType.Sale:
+          return 'Sale';
+          
       default:
         return 'Unknown';
     }

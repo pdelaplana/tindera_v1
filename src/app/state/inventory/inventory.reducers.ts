@@ -41,7 +41,14 @@ const reducer = createReducer(
       ...state,
       transactions: inventoryTransactionAdapter.addOne(transaction, state.transactions)
     }
-  })
+  }),
+  on(inventoryActions.updateInventoryBalanceSuccess, (state, {transaction })=> {
+    return {
+      ...state,
+      transactions: inventoryTransactionAdapter.addOne(transaction, state.transactions)
+    }
+  }),
+  
   
  
 );

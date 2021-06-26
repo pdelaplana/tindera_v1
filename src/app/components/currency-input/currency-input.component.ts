@@ -1,9 +1,6 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { IonInput } from '@ionic/angular';
 import { CurrencyPipe } from '@angular/common';
-
-import { CONSTANTS } from '@app/app.constants';
-import { ControlValueAccessor, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-currency-input',
@@ -11,101 +8,73 @@ import { ControlValueAccessor, FormControl } from '@angular/forms';
   styleUrls: ['./currency-input.component.scss'],
   providers: [CurrencyPipe]
 })
-export class CurrencyInputComponent implements OnInit, ControlValueAccessor {
+export class CurrencyInputComponent implements OnInit, AfterViewInit {
 
   private static BACKSPACE_KEY = 'Backspace';
   private static BACKSPACE_INPUT_TYPE = 'deleteContentBackward';
+  private static TAB_KEY = 'Tab';
 
-  @ViewChild('dummyFacade', {static: false}) private dummyFacade: IonInput;
+  @ViewChild('currencyInput') 
+  private currencyInput: IonInput;
 
-  @Input() precision: number;
+  @Input()
+  currencyCode: string;
 
-  @Input() amountIn: number;
-  amount: string;
+  @Input() 
+  precision: number;
 
-  @Output() amountEntered = new EventEmitter<number>();
+  @Input() 
+  amount: number;
+  
+  @Output() 
+  amountChange = new EventEmitter<number>();
 
-  propagateChange = (_: any) => {};
+  amountf: string;
 
   constructor(private currencyPipe: CurrencyPipe) { }
-
-  writeValue(value: any): void {
-    if (value !== undefined) {
-      this.amount = value;
-    }
-  }
-  registerOnChange(fn: any): void {
-    this.propagateChange = fn;
-  }
-  registerOnTouched(fn: any): void {
-    throw new Error('Method not implemented.');
-  }
-  setDisabledState?(isDisabled: boolean): void {
-    throw new Error('Method not implemented.');
+  
+  ngAfterViewInit(): void {
+    this.amountf = this.currencyPipe.transform(this.amount, this.currencyCode); 
+    this.currencyInput.value = this.amountf;
   }
 
   ngOnInit() {
-    this.amount = (+this.amountIn * Math.pow(10, this.precision)).toString();
-    // if (this.amount && this.amount !== '') {
-    //   this.amountEntered.emit(+this.amount);
-    // }
+    
   }
 
-  handleKeyUp(event: KeyboardEvent) {
-    // this handles keyboard input for backspace
-    if (event.key === CurrencyInputComponent.BACKSPACE_KEY) {
-      this.delDigit();
+  handleKeyDown (event: KeyboardEvent){
+    //const pattern = /[0-9,.]/;
+    const pattern = /^[0-9]*\.?[0-9]*$/;
+    
+    if ((event.key != CurrencyInputComponent.TAB_KEY) 
+        && (event.key != CurrencyInputComponent.BACKSPACE_KEY) 
+        && !pattern.test(event.key)) {
+      // invalid character, prevent input
+      event.preventDefault();
+      return false;
     }
+    
+    return true;
   }
 
-  handleInput(event: CustomEvent) {
-    this.clearInput();
-    // check if digit
-    if (event.detail.data  &&  !isNaN(event.detail.data)) {
-      this.addDigit(event.detail.data);
-    } else if (event.detail.inputType === CurrencyInputComponent.BACKSPACE_INPUT_TYPE) {
-      // this handles numpad input for delete/backspace
-      this.delDigit();
-    }
+  handleBlur(){
+    this.amount = Number(this.currencyInput.value);
+    this.amountf = this.currencyPipe.transform(this.amount, this.currencyCode);    
+    this.currencyInput.value = this.amountf;
+    this.amountChange.emit(this.amount);
   }
 
-  private reformat(amount: number) {
-    return amount / Math.pow(10, this.precision);
-  }
-  private addDigit(key: string) {
-    this.amount = this.amount + key;
-    // this.amountEntered.emit(+this.amount);
-    this.amountEntered.emit(this.reformat(+this.amount));
-  }
-
-  private delDigit() {
-    this.amount = this.amount.substring(0, this.amount.length - 1);
-    this.amountEntered.emit(this.reformat(+this.amount));
-  }
-
-  private clearInput() {
-    this.dummyFacade.value = CONSTANTS.EMPTY; // ensures work for mobile devices
-    // ensures work for browser
+  handleFocus(){
+    this.amountf = this.amount.toString();
+    this.currencyInput.value = this.amountf;
+    
     /*
-    this.dummyFacade.getInputElement().then((native: HTMLInputElement) => {
-      native.value = CONSTANTS.EMPTY;
+    this.currencyInput.getInputElement().then((native: HTMLInputElement) => {
+      native.select();
     });
     */
   }
 
-  transformAmount(event: CustomEvent){
-    this.amount = this.currencyPipe.transform(this.amountIn, 'USD');
-    // Remove or comment this line if you dont want to show the formatted amount in the textbox.
-    this.dummyFacade.value = this.formattedAmount;
-  }
-
-  get formattedAmount(): string {
-    return this.currencyPipe.transform( (+this.amount / Math.pow(10, this.precision)));
-  }
-
-  openInput() {
-    //this.dummyFacade.setFocus();
-  }
 
 
 }

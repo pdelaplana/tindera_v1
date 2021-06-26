@@ -9,6 +9,7 @@ import { MenuController, NavController } from '@ionic/angular';
 import { ofType } from '@ngrx/effects';
 import { inventoryActions } from './state/inventory/inventory.actions';
 import { ShopActions } from './state/shop/shop.actions';
+import { productActions } from './state/product/product.actions';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,6 @@ export class AppComponent implements OnInit {
     { title: 'Sales', url: '/sales', icon: 'cash' },
     { title: 'Products', url: '/products/list', icon: 'pricetags' },
     { title: 'Inventory', url: '/inventory/balance', icon: 'cube' },
-    { title: 'Store', url: '/store/setup', icon: 'business' },
     { title: 'Settings', url: '/folder/Archived', icon: 'cog' },
     { title: 'Log Out', url: 'logout', icon: 'log-out' },
   ];
@@ -63,11 +63,10 @@ export class AppComponent implements OnInit {
     this.store.dispatch(AuthActions.getAuthState());
     this.isAuthenticated.subscribe(value => this.menuController.enable(value));
 
-   
-
     this.store.select(state => state.shop.id).subscribe((shopid) => {
       if (shopid){
         this.store.dispatch(inventoryActions.loadInventory({shopid}));  
+        this.store.dispatch(productActions.loadProducts({ shopid }))
       }
       
     })

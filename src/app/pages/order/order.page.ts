@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { Product } from '@app/models/product';
 import { CommonUIService } from '@app/services/common-ui.service';
+import { AppState } from '@app/state';
+import { selectCartItems } from '@app/state/cart/cart.selectors';
+import { productActions } from '@app/state/product/product.actions';
+import { selectAllProducts, selectProductState } from '@app/state/product/product.selectors';
 import { ModalController, NavController } from '@ionic/angular';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 import { MenuItem } from 'src/app/models/menu-item';
-import { OrderProductPage } from '../order-product/order-product.page';
+import { OrderProductPage } from './order-product/order-product.page';
 
 @Component({
   selector: 'app-order',
@@ -11,41 +18,45 @@ import { OrderProductPage } from '../order-product/order-product.page';
 })
 export class OrderPage implements OnInit {
 
-  menuItems : MenuItem[] = [
-    <MenuItem>{
-      name: 'Tempura Bucket (12pcs)',
-      price:20.00,
-    },
-    <MenuItem>{
-      name: 'Kani Tempura',
-      price:20.00,
-    },
-    <MenuItem>{
-      name: 'Imperial Mix'
-    },
-    <MenuItem>{
-      name: 'Hotto Tempura'
-    },
-    <MenuItem>{
-      name: 'Chili Cheese Tempura (5pcs)'
-    },
-    
-  ]
+  private shopid: string;
+
+
+
+  products$ : Observable<Product[]>;
+  
+  totalCartAmount: number = 0.00;
+
+  currencyCode : string = 'P';
 
   constructor(
+    private store: Store<AppState>,
     private modalController: ModalController,
     private navController: NavController,
     private commonUIService: CommonUIService
-  ) { }
+  ) { 
+    this.store.select(state =>state.shop)
+      .subscribe((shop) => {
+        this.shopid = shop.id;
+        this.currencyCode = shop.currencyCode;
+      });
+    this.store.select(selectCartItems())
+      .subscribe((items) => {
+        this.totalCartAmount = items.map(item => item.amount).reduce((a,b)=> a + b, 0)
+      });
 
-  ngOnInit() {
+    this.products$ = this.store.select(selectAllProducts());
   }
 
-  async orderProduct(){
+  ngOnInit() {
+    
+  }
+
+  async orderProduct(product: Product){
     const modal = await this.modalController.create({
       component: OrderProductPage,
       //cssClass: 'small-modal',
       componentProps: {
+        product
         //month: moment(this.spendingPeriod).format('M'),
         //year: moment(this.spendingPeriod).format('YYYY')
       }
@@ -59,7 +70,7 @@ export class OrderPage implements OnInit {
   }
 
   navigateToItem(){
-    this.navController.navigateForward('order/item');
+    this.navController.navigateForward('item');
   }
 
 }

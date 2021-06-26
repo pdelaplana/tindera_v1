@@ -52,15 +52,6 @@ export class ProductBOMPage implements OnInit, OnDestroy {
       });
     }
 
-    
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  ngOnInit() {
-
     this.subscription
       .add(
         this.actions.pipe(
@@ -71,6 +62,17 @@ export class ProductBOMPage implements OnInit, OnDestroy {
           this.store.dispatch(productActions.loadProductDetails());
         })
       )
+
+    
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  ngOnInit() {
+
+    
   }
 
   get item() { return this.productItemForm.get('item'); }
