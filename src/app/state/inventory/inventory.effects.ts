@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
+import { InventoryTransactionType } from '@app/models/types';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { InventoryTransactionService } from '@app/services/firestore/inventory-transaction.service';
 import { InventoryService } from '@app/services/firestore/inventory.service';
-import { RepositoryService } from '@app/services/firestore/repository.service';
-import { act, Actions, createEffect, ofType } from '@ngrx/effects';
-import { Update } from '@ngrx/entity';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
-import { catchError, debounceTime, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, concatMap, debounceTime, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { AppState } from '..';
 import { inventoryActions } from './inventory.actions';
 
@@ -23,13 +22,11 @@ export class InventoryEffects{
     private commonUiService: CommonUIService,
     private inventoryService: InventoryService,
     private inventoryTransactionService: InventoryTransactionService
-    //private repositoryService: RepositoryService<InventoryItem>
   ) {
     this.store.select(state => state.auth.uid).subscribe(uid => this.uid = uid);
     
     this.store.select(state => state.shop.id).subscribe(
       shopid => this.shopid = shopid
-      //shopId => this.repositoryService.collectionName = `shops/${shopId}/inventory`
     );
      
   }
@@ -220,6 +217,44 @@ export class InventoryEffects{
     map(async (action) => {
       const balance = await this.inventoryService.incrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityIn)
       this.commonUiService.notify(`Inventory received successfully. New balance ${balance}`);
+      return null;
+    })
+  ),{ dispatch: false });
+
+  updateInventoryBalance = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.updateInventoryBalance),
+    mergeMap(async (action) => {
+      const data = <InventoryTransaction>{
+        id:'',
+        ...action.transaction
+      }
+      this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
+      const result = await this.inventoryTransactionService.add(data);
+      return inventoryActions.updateInventoryBalanceSuccess({
+        transaction: result
+      })
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.updateInventoryBalanceFail({error}));
+      return caught;
+    })  
+  ));
+
+  updateInventoryBalanceSuccess = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.updateInventoryBalanceSuccess),
+    mergeMap(async (action) => {
+      let balance = 0;
+      switch(action.transaction.transactionType){
+        case InventoryTransactionType.Receipt:
+          balance = await this.inventoryService.incrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityIn)
+          this.commonUiService.notify(`Inventory received successfully. New balance ${balance}`);    
+          break;
+        case InventoryTransactionType.Issue:
+        case InventoryTransactionType.Sale:
+          balance = await this.inventoryService.decrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityOut)
+          console.log(`${action.transaction.itemId} Balance decremented by ${action.transaction.quantityOut}`)
+          break;
+      }
       return null;
     })
   ),{ dispatch: false });

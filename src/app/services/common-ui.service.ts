@@ -1,3 +1,4 @@
+import { stringify } from '@angular/compiler/src/util';
 import { Injectable } from '@angular/core';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
 
@@ -89,7 +90,31 @@ export class CommonUIService {
       });
       alert.present();
     })
-    
+  }
+
+  async confirmAction(header:string, message:string):Promise<any>{
+    return new Promise(async (resolve) =>{
+      const alert = await this.alertController.create({
+        header: header,
+        message: message,
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            cssClass: 'secondary',
+            handler: (cancel) => {
+              resolve('cancel');
+            }
+          }, {
+            text: 'Continue',
+            handler: (ok) => {
+              resolve('continue');
+            }
+          }
+        ]
+      });
+      alert.present();
+    })
   }
   
 }

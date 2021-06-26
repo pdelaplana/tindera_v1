@@ -23,7 +23,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
   
   productId: string;
   productForm: FormGroup;
-  productItems: ProductItem[];
+  productItems: ProductItem[] = [];
   constructor(
     private store: Store<AppState>,
     private actions: ActionsSubject,
@@ -37,7 +37,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
       
       this.store.select(selectProduct(this.productId)).subscribe(product => {
         
-        this.productItems = product.productItems;
+        this.productItems = product.productItems ?? [];
 
         this.productForm = this.formBuilder.group({
           code: [product.code, Validators.required],

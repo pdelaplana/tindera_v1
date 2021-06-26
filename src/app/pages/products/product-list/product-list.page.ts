@@ -31,7 +31,7 @@ export class ProductListPage implements OnInit {
   }
 
   ngOnInit() {
-    this.store.dispatch(productActions.loadProducts({ shopid: this.shopid }))
+    //this.store.dispatch(productActions.loadProducts({ shopid: this.shopid }))
   }
 
 

@@ -26,12 +26,10 @@ import { NGXLogger } from 'ngx-logger';
 import { loggerFactory } from './state';
 import { CurrencyPipe } from '@angular/common';
 import { InventoryEffects } from './state/inventory/inventory.effects';
-import { CategoryLabelPipe } from './pipes/category-label.pipe';
-import { UomLabelPipe } from './pipes/uom-label.pipe';
-import { TransactionTypePipe } from './pipes/transaction-type.pipe';
 import { ProductEffects } from './state/product/product.effects';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OrderEffects } from './state/orders/order.effects';
 
 @NgModule({
   declarations: [
@@ -69,7 +67,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       AuthEffects,
       ShopEffects,
       InventoryEffects,
-      ProductEffects
+      ProductEffects,
+      OrderEffects
     ]),
     TagInputModule
   ],

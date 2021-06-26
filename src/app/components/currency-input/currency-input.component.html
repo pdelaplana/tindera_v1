@@ -1,14 +1,10 @@
-<div (click)="openInput()" >
-  <div>
-    <ion-input 
-      formcontrol="dummyFacade" 
-      id="dummyFacade" 
-      #dummyFacade 
-      type="number" 
-      inputmode="numeric" 
-      (ionBlur)="transformAmount()"
-      [(value)]="amount"
-      >
-    </ion-input>
-  </div>
-</div>
+<ion-input #currencyInput
+  name="currencyInput" id="currencyInput" 
+  slot="end" 
+  inputmode="decimal"  
+
+  (ionFocus)="handleFocus()" 
+  (ionBlur)="handleBlur()" 
+  (keydown)="handleKeyDown($event)"        
+  class="ion-text-right">
+</ion-input>

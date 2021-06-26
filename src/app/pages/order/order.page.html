@@ -24,18 +24,18 @@
   </ion-toolbar>
   <ion-grid>
     <ion-row >
-      <ion-col sizeLg="4" sizeMd="4" sizeXs="6" *ngFor="let menuItem of menuItems">
-        <ion-card button="true" (click)="orderProduct()">
+      <ion-col sizeLg="4" sizeMd="4" sizeXs="6" *ngFor="let product of (products$ | async)">
+        <ion-card button="true" (click)="orderProduct(product)">
           
           <ion-card-header class="ion-no-padding ion-padding-bottom">
             <div class="img-wrapper" [style.background-image]="'url(../../assets/images/bucket.jpg)'"></div>
           </ion-card-header>
 
           <ion-card-content class="">
-            <ion-card-title>{{ menuItem.name}}</ion-card-title>
-            <ion-card-subtitle>PHP {{ menuItem.price }}</ion-card-subtitle>
+            <ion-card-title>{{ product.name}}</ion-card-title>
+            <ion-card-subtitle>{{ product.price | currency:currencyCode }}</ion-card-subtitle>
             <p>
-              Our best seller
+              {{ product.description }}
             </p>
           </ion-card-content>
         
@@ -53,7 +53,7 @@
       <ion-button fill="solid" expand="block" color="primary" (click)="navigateToCart()">
         <ion-icon name="cart-outline" slot="start"></ion-icon>
         <ion-text class="ion-margin-left" slot="end">
-          Php120.00
+          {{ totalCartAmount | currency:currencyCode }}
         </ion-text>
         
       </ion-button>

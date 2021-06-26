@@ -61,7 +61,7 @@ export class InventoryItemReceivePage implements OnInit {
         id:'',
         transactionType: InventoryTransactionType.Receipt,
         itemId: this.itemId,
-        transactionOn: this.receivedOn.value,
+        transactionOn: new Date(this.receivedOn.value),
         quantityIn: Number(this.count.value),
         quantityOut: 0,
         reference: this.reference.value,
