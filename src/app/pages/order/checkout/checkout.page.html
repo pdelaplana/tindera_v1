@@ -52,7 +52,6 @@
       <ion-item >
         <ion-label class="field-label" color="medium"><h3>Cash Received</h3></ion-label>
         <app-currency-input 
-          precision="2" 
           [amount]="payment.value" 
           [currencyCode]="currencyCode" 
           (amountChange)="amountChange($event)"
