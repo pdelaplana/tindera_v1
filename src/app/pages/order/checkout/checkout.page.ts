@@ -5,8 +5,10 @@ import { CartItem } from '@app/models/cart-item';
 import { Order } from '@app/models/order';
 import { OrderItem } from '@app/models/order-item';
 import { PaymentType } from '@app/models/payment-type';
+import { User } from '@app/models/user';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
+import { selectAuthUser } from '@app/state/auth/auth.selectors';
 import { cartActions } from '@app/state/cart/cart.actions';
 import { selectCartItems } from '@app/state/cart/cart.selectors';
 import { orderActions } from '@app/state/orders/order.actions';
@@ -23,6 +25,7 @@ import { Observable, Subscription } from 'rxjs';
 export class CheckoutPage implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
+  private user: User;
 
   currencyCode: string;
   paymentTypes: PaymentType[];
@@ -40,6 +43,8 @@ export class CheckoutPage implements OnInit, OnDestroy {
     private commonUIService: CommonUIService,
     private navController: NavController
   ) { 
+    this.store.select(selectAuthUser())
+      .subscribe( user => this.user = user);
     this.store.select(state => state.shop)
       .subscribe((shop) => {
         this.currencyCode = shop.currencyCode;
@@ -142,7 +147,8 @@ export class CheckoutPage implements OnInit, OnDestroy {
             paymentType: this.paymentType.value,
             paymentReceived: (this.paymentType.value == 'CASH'),
             totalSale: this.totalCartAmount,
-            orderItems: orderItems
+            orderItems: orderItems,
+            servedBy: this.user,
           }
         }))
       

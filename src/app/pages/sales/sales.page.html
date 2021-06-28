@@ -1,12 +1,24 @@
-<ion-header class="ion-no-border gray-background">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button  menu="mainMenu" autoHide="true"></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Sales</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-tabs>
 
-<ion-content class="gray-background">
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="">
+      <ion-icon name="podium"></ion-icon>
+      <ion-label>Dashboard</ion-label>
 
-</ion-content>
+    </ion-tab-button>
+
+    <ion-tab-button tab="orders">
+      <ion-icon name="cash"></ion-icon>
+      <ion-label>Orders</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="speakers">
+      <ion-icon name="create"></ion-icon>
+      <ion-label>Count</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+
+
+</ion-tabs>
+

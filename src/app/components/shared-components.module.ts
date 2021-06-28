@@ -28,7 +28,8 @@ import { CurrencyInputComponent } from './currency-input/currency-input.componen
     CurrencyInputComponent,
     CategoryLabelPipe,
     UomLabelPipe,
-    TransactionTypePipe
+    TransactionTypePipe,
+    ShopCurrencyPipe
   ]
 })
 export class SharedComponentsModule { }
