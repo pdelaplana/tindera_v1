@@ -1,21 +1,24 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationExtras } from '@angular/router';
 import { Order } from '@app/models/order';
 import { AppState } from '@app/state';
+import { NavController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-orders-list',
-  templateUrl: './orders-list.page.html',
-  styleUrls: ['./orders-list.page.scss'],
+  selector: 'app-order-list',
+  templateUrl: './order-list.page.html',
+  styleUrls: ['./order-list.page.scss'],
 })
-export class OrdersListPage implements OnInit {
+export class OrderListPage implements OnInit {
 
   orders$: Observable<Order[]>
 
   constructor(
     private store: Store<AppState>,
+    private navController: NavController
   ) { 
    
     this.orders$ = this.store.select(state => 
@@ -33,5 +36,11 @@ export class OrdersListPage implements OnInit {
 
   ngOnInit() {
   }
+
+  navigateToDetails(orderId: string){
+    const navigationExtras: NavigationExtras = { state: { orderId } };
+    this.navController.navigateForward('sales/order/details', navigationExtras);
+  }
+
 
 }

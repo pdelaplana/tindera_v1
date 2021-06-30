@@ -1,0 +1,76 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+     
+    <ion-title>Order Details</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="gray-background">
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+  
+    <ion-item>
+      <ion-label position="stacked">Date </ion-label>
+      <p>{{ order.orderDate.toDate() | date:'medium'}}</p>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Total Sale </ion-label>
+      <p>{{ order.totalSale | shopCurrency }}</p>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Payment By </ion-label>
+      <p>{{ order.paymentType }}</p>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Served By </ion-label>
+      <p>{{ order.servedBy?.displayName }}</p>   
+    </ion-item>
+
+  </ion-list>
+
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+  
+    <ion-item>
+      <ion-label position="stacked">Customer Name </ion-label>
+      <p>{{ order.customerName }}</p>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Customer Email </ion-label>
+      <p>{{ order.customerEmail }}</p>   
+    </ion-item>
+    
+    <ion-item>
+      <ion-label position="stacked">Customer Phone </ion-label>
+      <p>{{ order.customerPhone }}</p>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Customer Reference </ion-label>
+      <p>{{ order.customerReference  }}</p>   
+    </ion-item>
+
+  </ion-list>
+
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+  
+    <ion-item>
+      <ion-note slot="start">Items </ion-note>
+      <ion-note slot="end" class="text-align-right">Qty </ion-note>
+    </ion-item>
+
+    <ion-item *ngFor="let item of order.orderItems">
+      <ion-label slot="start">{{ item.productName}}</ion-label>
+      <ion-note slot="end" class="text-align-right">{{ item.quantity }}</ion-note>
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>

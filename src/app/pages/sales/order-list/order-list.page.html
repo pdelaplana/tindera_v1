@@ -37,13 +37,11 @@
   <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
 
     <ion-item>
-      <ion-note slot="start">Orders </ion-note>
-  
+      <ion-note slot="start">Sales </ion-note>  
     </ion-item>
     
-    <ion-item *ngFor="let order of (orders$|async)" lines="full"  button="true" detail="true" >
+    <ion-item *ngFor="let order of (orders$|async)" lines="full"  button="true" detail="true" (click)="navigateToDetails(order.id)">
       <ion-label>
-       
        
         <ion-badge>{{ order.paymentType }}</ion-badge>
         <h2>{{ order.orderDate.toDate() | date:'medium' }} </h2>

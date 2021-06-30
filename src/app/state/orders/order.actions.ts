@@ -1,5 +1,5 @@
 import { Order } from '@app/models/order';
-import { OrdersListPage } from '@app/pages/sales/orders-list/orders-list.page';
+import { OrderListPage } from '@app/pages/sales/order-list/order-list.page';
 import { createAction, props } from '@ngrx/store';
 
 export const orderActions = {

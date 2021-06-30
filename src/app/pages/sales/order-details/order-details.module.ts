@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { OrdersListPageRoutingModule } from './orders-list-routing.module';
+import { OrderDetailsPageRoutingModule } from './order-details-routing.module';
 
-import { OrdersListPage } from './orders-list.page';
+import { OrderDetailsPage } from './order-details.page';
 import { SharedComponentsModule } from '@app/components/shared-components.module';
 
 @NgModule({
@@ -15,8 +15,8 @@ import { SharedComponentsModule } from '@app/components/shared-components.module
     FormsModule,
     IonicModule,
     SharedComponentsModule,
-    OrdersListPageRoutingModule
+    OrderDetailsPageRoutingModule
   ],
-  declarations: [OrdersListPage]
+  declarations: [OrderDetailsPage]
 })
-export class OrdersListPageModule {}
+export class OrderDetailsPageModule {}
