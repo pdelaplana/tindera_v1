@@ -10,6 +10,7 @@ import { ofType } from '@ngrx/effects';
 import { inventoryActions } from './state/inventory/inventory.actions';
 import { ShopActions } from './state/shop/shop.actions';
 import { productActions } from './state/product/product.actions';
+import { orderActions } from './state/orders/order.actions';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,7 @@ export class AppComponent implements OnInit {
   
   appPages = [
     { title: 'Order', url: '/order', icon: 'cart' },
-    { title: 'Sales', url: '/sales', icon: 'cash' },
+    { title: 'Sales', url: '/sales/orders', icon: 'cash' },
     { title: 'Products', url: '/products/list', icon: 'pricetags' },
     { title: 'Inventory', url: '/inventory/balance', icon: 'cube' },
     { title: 'Settings', url: '/folder/Archived', icon: 'cog' },
@@ -66,7 +67,9 @@ export class AppComponent implements OnInit {
     this.store.select(state => state.shop.id).subscribe((shopid) => {
       if (shopid){
         this.store.dispatch(inventoryActions.loadInventory({shopid}));  
-        this.store.dispatch(productActions.loadProducts({ shopid }))
+        this.store.dispatch(productActions.loadProducts({ shopid }));
+        this.store.dispatch(orderActions.loadOrders({ shopid }));
+        
       }
       
     })

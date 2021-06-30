@@ -1,38 +1,48 @@
 import { Injectable } from '@angular/core';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { InventoryTransactionType } from '@app/models/types';
+import { User } from '@app/models/user';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { OrderService } from '@app/services/firestore/order.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { AppState } from '..';
+import { selectAuthUser } from '../auth/auth.selectors';
 import { inventoryActions } from '../inventory/inventory.actions';
 import { selectProduct } from '../product/product.selectors';
 import { orderActions } from './order.actions';
 
 @Injectable()
 export class OrderEffects{
-  private uid: string;
-  private shopid: string;
   constructor(
     private store: Store<AppState>,
     private actions: Actions,
     private commonUiService: CommonUIService,
     private orderService: OrderService
   ) {
-    this.store.select(state => state.auth.uid).subscribe(
-      uid => this.uid = uid
-    );
-    this.store.select(state => state.shop.id).subscribe(
-      shopid => this.shopid = shopid
-    );
+   
   }
+
+  loadOrders = createEffect(() => this.actions.pipe(
+    ofType(orderActions.loadOrders),
+    switchMap(action => {
+      const result = this.orderService.query([]);
+      return result.pipe();
+    }),
+    map( arr => {
+      return orderActions.loadOrdersSuccess({orders: arr})
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(orderActions.loadOrdersFail({error}));
+      return caught;
+    })   
+  ));
 
   createOrder = createEffect(() => this.actions.pipe(
     ofType(orderActions.createOrder),
     switchMap(async (action) => {
-      const result = await this.orderService.add(action.order)
+     const result = await this.orderService.add(action.order)
       return orderActions.createOrderSuccess({
         order: result
       })

@@ -1,0 +1,57 @@
+<ion-header class="ion-no-border gray-background">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button  menu="mainMenu" autoHide="true"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Sales By Order</ion-title>
+    <ion-buttons slot="end">
+      
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <ion-toolbar class=""> 
+    <ion-searchbar></ion-searchbar>
+    
+  </ion-toolbar>
+
+  <ion-toolbar class="ion-margin">
+    <ion-chip [color]="toggleFilterChips('today')" (click)="filterBy('today')">
+      <ion-label>Today</ion-label>
+    </ion-chip>
+    <ion-chip [color]="toggleFilterChips('thisWeek')"  (click)="filterBy('thisWeek')">
+      <ion-label>This Week</ion-label>
+    </ion-chip>
+    <ion-chip [color]="toggleFilterChips('thisMonth')" (click)="filterBy('thisMonth')">
+      <ion-label>This Month</ion-label>
+    </ion-chip>
+    <ion-chip [color]="toggleFilterChips('thisYear')" (click)="filterBy('thisYear')">
+      <ion-label>This Year</ion-label>
+    </ion-chip>
+    <ion-chip [color]="toggleFilterChips('all')"  (click)="filterBy('all')">
+      <ion-label>All time</ion-label>
+    </ion-chip>
+  </ion-toolbar>
+ 
+  <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
+
+    <ion-item>
+      <ion-note slot="start">Sales </ion-note>  
+    </ion-item>
+    
+    <ion-item *ngFor="let order of (orders$|async)" lines="full"  button="true" detail="true" (click)="navigateToDetails(order.id)">
+      <ion-label>
+        <app-payment-type-badge [text]="order.paymentType" [color]="primary"></app-payment-type-badge>
+        <h2>{{ order.orderDate.toDate() | date:'medium' }} </h2>
+        <ion-note>{{ order.servedBy ? 'Served by: ' + order.servedBy.displayName : '' }}</ion-note>
+       
+      </ion-label>
+      <ion-icon slot="start" name="radio-button-off" *ngIf="!order.paymentReceived" color="danger" title="Payment not rceived"></ion-icon>
+      <ion-icon slot="start" name="checkmark-circle" *ngIf="order.paymentReceived" color="success"></ion-icon>
+      <ion-label slot="end" class="ion-text-right">{{ order.totalSale | shopCurrency }}</ion-label>
+    </ion-item>
+   
+  </ion-list>
+
+</ion-content>

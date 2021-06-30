@@ -22,7 +22,7 @@
 
     <ion-item>
       <ion-note slot="start">Product</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:20px">&nbsp;</ion-note>
+     
     </ion-item>
     
     <ion-item *ngFor="let product of (products$ | async)"  lines="full"  button="true" detail="true" (click)="navigateToDetails(product.id)">
