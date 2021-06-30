@@ -7,12 +7,14 @@ import { TransactionTypePipe } from './pipes/transaction-type.pipe';
 import { IonicModule } from '@ionic/angular';
 import { ShopCurrencyPipe } from './pipes/shop-currency.pipe';
 import { CurrencyInputComponent } from './currency-input/currency-input.component';
+import { PaymentTypeBadgeComponent } from './payment-type-badge/payment-type-badge.component';
 
 
 
 @NgModule({
   declarations: [
     CurrencyInputComponent,
+    PaymentTypeBadgeComponent,
     CategoryLabelPipe,
     UomLabelPipe,
     TransactionTypePipe,
@@ -26,6 +28,7 @@ import { CurrencyInputComponent } from './currency-input/currency-input.componen
   ],
   exports: [
     CurrencyInputComponent,
+    PaymentTypeBadgeComponent,
     CategoryLabelPipe,
     UomLabelPipe,
     TransactionTypePipe,

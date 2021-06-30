@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button  menu="mainMenu" autoHide="true"></ion-menu-button>
     </ion-buttons>
-    <ion-title>Orders</ion-title>
+    <ion-title>Sales By Order</ion-title>
     <ion-buttons slot="end">
       
     </ion-buttons>
@@ -17,19 +17,19 @@
   </ion-toolbar>
 
   <ion-toolbar class="ion-margin">
-    <ion-chip color="primary">
+    <ion-chip [color]="toggleFilterChips('today')" (click)="filterBy('today')">
       <ion-label>Today</ion-label>
     </ion-chip>
-    <ion-chip>
+    <ion-chip [color]="toggleFilterChips('thisWeek')"  (click)="filterBy('thisWeek')">
       <ion-label>This Week</ion-label>
     </ion-chip>
-    <ion-chip >
+    <ion-chip [color]="toggleFilterChips('thisMonth')" (click)="filterBy('thisMonth')">
       <ion-label>This Month</ion-label>
     </ion-chip>
-    <ion-chip >
+    <ion-chip [color]="toggleFilterChips('thisYear')" (click)="filterBy('thisYear')">
       <ion-label>This Year</ion-label>
     </ion-chip>
-    <ion-chip >
+    <ion-chip [color]="toggleFilterChips('all')"  (click)="filterBy('all')">
       <ion-label>All time</ion-label>
     </ion-chip>
   </ion-toolbar>
@@ -42,8 +42,7 @@
     
     <ion-item *ngFor="let order of (orders$|async)" lines="full"  button="true" detail="true" (click)="navigateToDetails(order.id)">
       <ion-label>
-       
-        <ion-badge>{{ order.paymentType }}</ion-badge>
+        <app-payment-type-badge [text]="order.paymentType" [color]="primary"></app-payment-type-badge>
         <h2>{{ order.orderDate.toDate() | date:'medium' }} </h2>
         <ion-note>{{ order.servedBy ? 'Served by: ' + order.servedBy.displayName : '' }}</ion-note>
        
