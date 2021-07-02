@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "www",
+    "public": "dist/tindera-dev",
     "ignore": [
       "firebase.json",
       "**/.*",
