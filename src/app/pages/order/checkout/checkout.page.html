@@ -53,8 +53,8 @@
         <ion-label class="field-label" color="medium"><h3>Cash Received</h3></ion-label>
         <app-currency-input 
           [amount]="payment.value" 
-          [currencyCode]="currencyCode" 
           (amountChange)="amountChange($event)"
+          class="ion-text-right"
           style="width:100%"
           ></app-currency-input>
       </ion-item>

@@ -3,7 +3,8 @@ import { UnitOfMeasure } from './types';
 
 export interface ProductItem {
   itemId: string;
-  item: InventoryItem,
+  itemName: string;
+  unitCost: number;
   quantity: number;
   uom: UnitOfMeasure;
 }

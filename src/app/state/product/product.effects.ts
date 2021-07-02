@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Product } from '@app/models/product';
+import { ProductAddOn } from '@app/models/product-addon';
 import { ProductItem } from '@app/models/product-item';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { ProductService } from '@app/services/firestore/product.service';
@@ -148,8 +149,9 @@ export class ProductEffects{
       } else {
         productItems.push(<ProductItem>{ 
           itemId: action.productItem.itemId, 
-          item: action.productItem.item,
+          itemName: action.productItem.itemName,
           quantity: action.productItem.quantity, 
+          unitCost: action.productItem.unitCost,
           uom: action.productItem.uom 
         })
       }
@@ -188,6 +190,65 @@ export class ProductEffects{
       return caught;
     })
   ));
+
+  upsertProductAddon = createEffect(() => this.actions.pipe(
+    ofType(productActions.upsertProductAddon),
+    switchMap(async (action) => {
+      const product = await this.productService.get(action.productId);
+      let productAddons = product.productAddOns; 
+      if (productAddons == null) {
+        productAddons = [];
+      }
+      const productAddon = productAddons.find(a => a.itemId == action.productAddon.itemId);
+
+      if (productAddon != null) {
+        Object.assign(productAddon, action.productAddon);
+      } else {
+        productAddons.push(<ProductAddOn>{
+          name: action.productAddon.name,
+          price: action.productAddon.price,
+          itemId: action.productAddon.itemId, 
+          itemName: action.productAddon.itemName,
+          itemCost: action.productAddon.itemCost,
+          quantity: action.productAddon.quantity,  
+        })
+      }
+      product.productAddOns = productAddons;
+      await this.productService.update(product);
+      return productActions.upsertProductAddonSuccess({productId: action.productId, productAddons });
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(productActions.upsertProductAddonFail({error}));
+      return caught;
+    })
+  ));
+
+  upsertProductAddonSuccess = createEffect(() => this.actions.pipe(
+    ofType(productActions.upsertProductAddonSuccess),
+    map((action) => {
+      this.commonUiService.notify('Product addon has been updated.');
+    })
+  ), {dispatch: false});
+
+  deleteProductAddon = createEffect(() => this.actions.pipe(
+    ofType(productActions.deleteProductAddon),
+    switchMap(async (action) =>{
+      const product = await this.productService.get(action.productId);
+      let productAddons = product.productAddOns; 
+      if (productAddons != null) {
+        productAddons = productAddons.filter(a => a.itemId != action.productAddon.itemId);
+      }
+      product.productAddOns = productAddons;
+      await this.productService.update(product);
+      return productActions.deleteProductAddonSuccess({productId: action.productId, productAddons })
+
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(productActions.deleteProductAddonFail({error}));
+      return caught;
+    })
+  ));
+
 
 }
 

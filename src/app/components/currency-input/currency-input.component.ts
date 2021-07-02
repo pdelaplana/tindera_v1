@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { IonInput } from '@ionic/angular';
 import { CurrencyPipe } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { AppState } from '@app/state';
 
 @Component({
   selector: 'app-currency-input',
@@ -17,21 +19,26 @@ export class CurrencyInputComponent implements OnInit, AfterViewInit {
   @ViewChild('currencyInput') 
   private currencyInput: IonInput;
 
-  @Input()
+  //@Input()
   currencyCode: string;
 
   @Input() 
   precision: number;
 
   @Input() 
-  amount: number;
+  amount: number = 0;
   
   @Output() 
   amountChange = new EventEmitter<number>();
 
   amountf: string;
 
-  constructor(private currencyPipe: CurrencyPipe) { }
+  constructor(
+    private store: Store<AppState>,
+    private currencyPipe: CurrencyPipe
+    ) { 
+      this.store.select(state => state.shop).subscribe(shop => this.currencyCode = shop.currencyCode)
+    }
   
   ngAfterViewInit(): void {
     this.amountf = this.currencyPipe.transform(this.amount, this.currencyCode); 

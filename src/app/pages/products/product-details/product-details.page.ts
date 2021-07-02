@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { Product } from '@app/models/product';
+import { ProductAddOn } from '@app/models/product-addon';
 import { ProductItem } from '@app/models/product-item';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
@@ -24,6 +25,8 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
   productId: string;
   productForm: FormGroup;
   productItems: ProductItem[] = [];
+  productAddOns: ProductAddOn[] =[];
+
   constructor(
     private store: Store<AppState>,
     private actions: ActionsSubject,
@@ -38,6 +41,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
       this.store.select(selectProduct(this.productId)).subscribe(product => {
         
         this.productItems = product.productItems ?? [];
+        this.productAddOns = product.productAddOns ?? [];
 
         this.productForm = this.formBuilder.group({
           code: [product.code, Validators.required],
@@ -92,8 +96,9 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
   navigateToBOM(productId: string, productItem: ProductItem){
     if (productItem == null) {
       productItem = <ProductItem>{
-        itemId: '1GefVCT2WushlcNjPdYP',
-        item: null,
+        itemId: '',
+        itemName: '',
+        unitCost: 0,
         quantity: 1
       }
     }
@@ -101,10 +106,36 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
     this.navController.navigateForward('products/bom', navigationExtras);
   }
 
+  navigateToAddOn(productId: string, productAddOn: ProductAddOn){
+    
+    if (productAddOn == null) {
+      productAddOn = <ProductAddOn>{
+        name: '',
+        itemId: '',
+        itemName: '',
+        itemCost: 0,
+        price: 0,
+        quantity: 0
+      }
+    }
+    
+    const navigationExtras: NavigationExtras = { state: { productId, productAddOn } };
+    this.navController.navigateForward('products/addon', navigationExtras);
+    
+  }
+
   deleteItem(productId: string, productItem: ProductItem){
     this.commonUIService.confirmDelete().then(result => {
       if (result == 'continue') {
         this.store.dispatch(productActions.deleteProductItem({ productId, productItem }))
+      }
+    });
+  }
+
+  deleteAddon(productId: string, productAddon: ProductAddOn){
+    this.commonUIService.confirmDelete().then(result => {
+      if (result == 'continue') {
+        this.store.dispatch(productActions.deleteProductAddon({ productId,productAddon }))
       }
     });
   }

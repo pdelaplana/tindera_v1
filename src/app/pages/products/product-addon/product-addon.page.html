@@ -3,13 +3,36 @@
     <ion-buttons slot="start">
       <ion-back-button text=""></ion-back-button>
     </ion-buttons>
-    <ion-title>Inventory</ion-title>
+    <ion-title>Product Add On</ion-title>
 
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="gray-background">
-  <form [formGroup]="productItemForm" >
+  <form [formGroup]="productAddonForm" >
+    <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    
+      <ion-item>
+        <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text" formControlName="name" ></ion-input>   
+      </ion-item>      
+
+      
+      <ion-item>
+        <ion-label position="stacked">Price</ion-label>
+        <app-currency-input 
+          [amount]="price.value" 
+          (amountChange)="amountChange($event)"
+          style="width:100%"
+          ></app-currency-input>
+      </ion-item>
+  
+    </ion-list>
+
+    <ion-list-header class="ion-border-bottom">
+      <ion-label color="medium">Inventory Tracking</ion-label>
+    </ion-list-header>
+
     <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
     
       <ion-item>
@@ -34,15 +57,17 @@
           </ng-template>
         </ionic-selectable>  
       </ion-item>
-  
+
       <ion-item>
-        <ion-label position="stacked">Quantity Consumed Per Sale<ion-text color="danger">*</ion-text></ion-label>
+        <ion-label position="stacked">Quantity Consumed <ion-text color="danger">*</ion-text></ion-label>
         <ion-input required type="text" formControlName="quantity" ></ion-input>   
       </ion-item>
-      
+
+
     </ion-list>
-    </form>
+  </form>
 </ion-content>
+
 
 <ion-footer>
   <ion-toolbar >

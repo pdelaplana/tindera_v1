@@ -24,7 +24,7 @@ export class ShopCurrencyPipe implements PipeTransform {
         | 'symbol-narrow'
         | string
         | boolean = 'symbol',
-    digitsInfo: string = '3.2-2',
+    digitsInfo: string = '1.2-2',
     locale: string = 'en-US',
 ): string | null {
     

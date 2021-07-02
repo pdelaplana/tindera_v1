@@ -21,6 +21,12 @@ const reducer = createReducer(
   }),
   on(productActions.deleteProductItemSuccess, (state, { productId, productItems }) => {
     return productAdapter.updateOne({ id: productId, changes: { productItems: productItems }}, state)
+  }),
+  on(productActions.upsertProductAddonSuccess, (state, { productId, productAddons }) => {
+    return productAdapter.updateOne({ id: productId, changes: { productAddOns: productAddons }}, state)
+  }),
+  on(productActions.deleteProductAddonSuccess, (state, { productId, productAddons }) => {
+    return productAdapter.updateOne({ id: productId, changes: { productAddOns: productAddons }}, state)
   })
 )
 
