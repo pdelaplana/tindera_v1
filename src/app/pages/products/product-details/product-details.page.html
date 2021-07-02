@@ -52,20 +52,52 @@
   </ion-list>
 
   <ion-list-header class="ion-border-bottom">
-    <ion-label color="medium">Bill of Materials</ion-label>
+    <ion-label color="medium">Add Ons</ion-label>
   </ion-list-header>
   <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
    
     <ion-item>
       <ion-note slot="start">Name</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:100px">Qty</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:100px">Cost</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:100px">Price</ion-note>
+    </ion-item>
+    <ion-item-sliding *ngFor="let productAddon of productAddOns">
+      <ion-item>
+        <ion-label slot="start">{{ productAddon.name }}</ion-label>
+        <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{ productAddon.price | shopCurrency }}</ion-note>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="deleteAddon(productId, productAddon)">
+          <ion-icon slot="top" name="trash"></ion-icon>
+          <ion-text class="ion-text-capitalize" style="font-size: smaller;">Remove</ion-text>
+          
+        </ion-item-option>
+        <ion-item-option color="light" (click)="navigateToAddOn(productId, productAddon)">
+          <ion-icon slot="top" name="ellipsis-horizontal"></ion-icon>
+          <ion-text class="ion-text-capitalize" style="font-size: smaller;">Change</ion-text>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  
+    <ion-item  button="true" detail="true" (click)="navigateToAddOn(productId, null)">
+      <ion-icon name="folder-outline" size="small"></ion-icon>
+      <ion-label color="medium" size="small" class="ion-margin-start">Include Add On</ion-label>
+    </ion-item>
+  </ion-list>
+
+
+  <ion-list-header class="ion-border-bottom">
+    <ion-label color="medium">Inventory Tracking</ion-label>
+  </ion-list-header>
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+   
+    <ion-item>
+      <ion-note slot="start">Name</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:100px">Qty per Sale</ion-note>
     </ion-item>
     <ion-item-sliding *ngFor="let productItem of productItems">
       <ion-item>
-        <ion-label slot="start">{{ productItem.item.name }}</ion-label>
+        <ion-label slot="start">{{ productItem.itemName }}</ion-label>
         <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{ productItem.quantity }}</ion-note>
-        <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{ productItem.quantity * productItem.item.unitCost | currency:'P' }}</ion-note>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="danger" (click)="deleteItem(productId, productItem)">
@@ -80,11 +112,13 @@
       </ion-item-options>
     </ion-item-sliding>
   
-   
     <ion-item  button="true" detail="true" (click)="navigateToBOM(productId, null)">
-      <ion-label color="secondary"><h4>Add Material</h4></ion-label>
+      <ion-icon name="link-outline" size="small"></ion-icon>
+      <ion-label color="medium" class="ion-margin-start">Link to Inventory</ion-label>
     </ion-item>
   </ion-list>
+
+
   </form>
 
 </ion-content>

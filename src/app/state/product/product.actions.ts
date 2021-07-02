@@ -1,4 +1,5 @@
 import { Product } from '@app/models/product';
+import { ProductAddOn } from '@app/models/product-addon';
 import { ProductItem } from '@app/models/product-item';
 import { Update } from '@ngrx/entity';
 import { createAction, props } from '@ngrx/store';
@@ -65,6 +66,31 @@ export const productActions = {
   ),
   deleteProductItemFail: createAction(
     '[Product] Product item delete',
+    props<{ error: any }>()
+  ),
+  upsertProductAddon: createAction(
+    '[Product] Upsert product addon',
+    props<{ productId: string, productAddon: ProductAddOn}>()
+  ),
+  upsertProductAddonSuccess: createAction(
+    '[Product] Upsert product addon success',
+    props<{ productId: string, productAddons: ProductAddOn[] }>()
+  ),
+  upsertProductAddonFail: createAction(
+    '[Product] Upsert product addon fail',
+    props<{ error: any }>()
+  ),
+ 
+  deleteProductAddon: createAction(
+    '[Product] Product addon delete',
+    props<{ productId: string, productAddon: ProductAddOn }>()
+  ),
+  deleteProductAddonSuccess: createAction(
+    '[Product] Product addon delete success',
+    props<{ productId: string, productAddons: ProductAddOn[] }>()
+  ),
+  deleteProductAddonFail: createAction(
+    '[Product] Product addon delete fail',
     props<{ error: any }>()
   ),
 

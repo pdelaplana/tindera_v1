@@ -27,6 +27,17 @@ const routes: Routes = [
     path: 'bom',
     loadChildren: () => import('./product-bom/product-bom.module').then( m => m.ProductBOMPageModule)
   },
+  {
+    path: 'addon',
+    loadChildren: () => import('./product-addon/product-addon.module').then( m => m.ProductAddonPageModule)
+  },
+
+  /*
+  {
+    path: 'addon',
+    loadChildren: () => import('./product-add-on/product-add-on.module').then( m => m.ProductAddOnPageModule)
+  },
+  */
   
 ];
 

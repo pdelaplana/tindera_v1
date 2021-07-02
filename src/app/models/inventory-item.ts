@@ -11,3 +11,4 @@ export interface InventoryItem extends Entity{
   reorderLevel: number;
   notes: string;
 }
+

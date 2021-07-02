@@ -26,6 +26,7 @@ export class ProductBOMPage implements OnInit, OnDestroy {
   
   productItemForm: FormGroup;
   inventoryItems: InventoryItem[];
+  selectedItem: InventoryItem;
 
   @ViewChild('inventoryItemLookup') inventoryItemLookup: IonicSelectableComponent;
   
@@ -46,8 +47,9 @@ export class ProductBOMPage implements OnInit, OnDestroy {
     if (this.router.getCurrentNavigation().extras.state) {
       this.productItem = this.router.getCurrentNavigation().extras.state.productItem;
       this.productId = this.router.getCurrentNavigation().extras.state.productId;
+      this.selectedItem = this.inventoryItems.find(s =>s.id == this.productItem.itemId);
       this.productItemForm = this.formBuilder.group({
-        item: [this.productItem.item, Validators.required],
+        item: [this.selectedItem, Validators.required],
         quantity: [this.productItem.quantity, Validators.required]
       });
     }
@@ -87,7 +89,8 @@ export class ProductBOMPage implements OnInit, OnDestroy {
         productId: this.productId,
         productItem : <ProductItem>{ 
           itemId: this.item.value.id, 
-          item: this.item.value,
+          itemName: this.item.value.name,
+          unitCost: this.item.value.unitCost,
           quantity: this.quantity.value, 
           uom: 'piece' 
         }

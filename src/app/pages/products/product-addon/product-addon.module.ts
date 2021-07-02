@@ -4,22 +4,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ProductDetailsPageRoutingModule } from './product-details-routing.module';
+import { ProductAddonPageRoutingModule } from './product-addon-routing.module';
 
-import { ProductDetailsPage } from './product-details.page';
-import { TagInputModule } from 'ngx-chips';
+import { ProductAddonPage } from './product-addon.page';
+import { IonicSelectableModule } from 'ionic-selectable';
 import { SharedComponentsModule } from '@app/components/shared-components.module';
 
 @NgModule({
   imports: [
-    TagInputModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    IonicModule,
+    IonicSelectableModule,
     SharedComponentsModule,
-    ProductDetailsPageRoutingModule
+    IonicModule,
+    ProductAddonPageRoutingModule
   ],
-  declarations: [ProductDetailsPage]
+  declarations: [ProductAddonPage]
 })
-export class ProductDetailsPageModule {}
+export class ProductAddonPageModule {}

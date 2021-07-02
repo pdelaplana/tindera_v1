@@ -17,19 +17,19 @@
   </ion-toolbar>
 
   <ion-toolbar class="ion-margin">
-    <ion-chip [color]="toggleFilterChips('today')" (click)="filterBy('today')">
+    <ion-chip [color]="toggleFilters('today')" (click)="filterBy('today')">
       <ion-label>Today</ion-label>
     </ion-chip>
-    <ion-chip [color]="toggleFilterChips('thisWeek')"  (click)="filterBy('thisWeek')">
+    <ion-chip [color]="toggleFilters('thisWeek')"  (click)="filterBy('thisWeek')">
       <ion-label>This Week</ion-label>
     </ion-chip>
-    <ion-chip [color]="toggleFilterChips('thisMonth')" (click)="filterBy('thisMonth')">
+    <ion-chip [color]="toggleFilters('thisMonth')" (click)="filterBy('thisMonth')">
       <ion-label>This Month</ion-label>
     </ion-chip>
-    <ion-chip [color]="toggleFilterChips('thisYear')" (click)="filterBy('thisYear')">
+    <ion-chip [color]="toggleFilters('thisYear')" (click)="filterBy('thisYear')">
       <ion-label>This Year</ion-label>
     </ion-chip>
-    <ion-chip [color]="toggleFilterChips('all')"  (click)="filterBy('all')">
+    <ion-chip [color]="toggleFilters('all')"  (click)="filterBy('all')">
       <ion-label>All time</ion-label>
     </ion-chip>
   </ion-toolbar>
