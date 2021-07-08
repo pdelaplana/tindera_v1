@@ -1,3 +1,4 @@
+import { CartItemAddon } from './cart-item-addon';
 import { Product } from './product';
 
 export interface CartItem {
@@ -5,4 +6,5 @@ export interface CartItem {
   product: Product;
   quantity: number;
   amount: number;
+  addons: CartItemAddon[];
 }
