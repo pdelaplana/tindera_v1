@@ -17,10 +17,13 @@
     <ion-item-sliding #slidingItem *ngFor="let item of (cartItems$|async)">
       <ion-item  lines="full" >
         <ion-badge slot="start" class="ion-text-right">
-          {{item.quantity}} x
+          {{item.quantity}}x
         </ion-badge>
         <ion-label slot="start">
          {{ item.product.name }} 
+         <p *ngFor="let addon of (item.addons)">
+          Addon: {{addon.name}} {{addon.quantity}}x
+         </p>
         </ion-label>
         <ion-label slot="end" class="ion-text-right " >
           {{ item.amount | currency: currencyCode }}
@@ -32,10 +35,9 @@
           <ion-icon slot="top" name="trash"></ion-icon>
           <ion-text class="ion-text-capitalize" style="font-size: smaller;">Remove</ion-text>
         </ion-item-option>
-        <ion-item-option color="light" (click)="modifyItem(item.product, item.quantity)">
+        <ion-item-option color="light" (click)="modifyItem(item.product, item.quantity, item.addons)">
           <ion-icon slot="top" name="ellipsis-horizontal"></ion-icon>
           <ion-text class="ion-text-capitalize" style="font-size: smaller;">Change</ion-text>
-          
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>

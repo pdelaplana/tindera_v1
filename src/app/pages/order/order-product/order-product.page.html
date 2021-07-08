@@ -1,6 +1,6 @@
-<ion-header>
+<ion-header class="ion-no-border" translucent="true">
   <ion-toolbar>
-    <ion-title >
+    <ion-title *ngIf="!hideTitle">
       {{ product.name}}
     </ion-title>
     
@@ -12,30 +12,65 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
-  <ion-grid class="ion-no-padding ">
-    <ion-row>
-      <ion-col class="ion-margin">
+<ion-content fullscreen="true" scrollEvents="true" (ionScroll)='onContentScroll($event)'>
+  <ion-grid class="ion-no-padding ion-padding-horizontal">
+
+    <ion-row  class="ion-no-margin ion-margin-bottom ion-margin-horizontal">
+      <ion-col>
+        <ion-label class="heading">
+          {{ product.name}}
+        </ion-label>
         <ion-label class="ion-no-padding">
-          <h2>{{ product.price | currency:currencyCode }} each</h2>
-        
+          <h2>
+            {{ product.price | shopCurrency}}
+          </h2>
           <p>
-            <ion-text color="medium">
+            <ion-text>
               {{ product.description }}
             </ion-text>
           </p>
         </ion-label>
       </ion-col>
     </ion-row>
+
     <ion-row>
-      <ion-col class="ion-padding ion-margin">
+      <ion-col class="ion-border">
         <div class="img-wrapper" >
           <ion-img [src]="'../../assets/images/bucket.jpg'" ></ion-img>
         </div>  
       </ion-col>
      
-    </ion-row>
+    </ion-row>  
+
   </ion-grid>
+
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" *ngIf="hasProductAddOns">
+    
+    <ion-list-header >
+      <ion-label>Add Ons</ion-label>      
+    </ion-list-header>
+    <ion-item *ngFor="let addon of cartItemAddons">
+      <ion-label slot="start">
+        <h2>{{ addon.name }}</h2>
+        <p style="font-size:smaller">{{ addon.price > 0 ? (addon.price | shopCurrency) : 'free'}}</p>
+      
+      </ion-label>
+      <ion-toolbar >
+        <ion-buttons slot="end">
+          <ion-button (click)="decrementAddonQuantity(addon)">
+            <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
+          </ion-button>
+          <ion-label>{{ addon.quantity }}</ion-label>
+          <ion-button (click)="incrementAddonQuantity(addon)">
+            <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        
+      </ion-toolbar>
+      
+    </ion-item>
+    
+  </ion-list>
   
 </ion-content>
 
@@ -51,7 +86,7 @@
       </ion-button>
     </ion-buttons>
     <ion-buttons slot="end">
-      <ion-button color="primary" fill="solid" size="large" expand="block" (click)="addToCart()">Add to Order - {{ total | currency:currencyCode}}</ion-button>
+      <ion-button color="primary" fill="solid" size="large" expand="block" (click)="addToCart()">Add to Order - {{ total | shopCurrency}}</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-footer>

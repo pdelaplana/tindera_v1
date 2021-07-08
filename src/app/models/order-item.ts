@@ -1,4 +1,4 @@
-import { Product } from './product';
+import { OrderItemAddon } from './order-item-addon';
 
 export interface OrderItem {
   productId: string;
@@ -6,5 +6,5 @@ export interface OrderItem {
   productDescription: string;
   productUnitPrice: number;
   quantity: number;
-  
+  addons: OrderItemAddon[];
 }

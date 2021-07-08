@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CartItemAddon } from '@app/models/cart-item-addon';
 import { Product } from '@app/models/product';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
@@ -41,7 +42,7 @@ export class OrderPage implements OnInit {
       });
     this.store.select(selectCartItems())
       .subscribe((items) => {
-        this.totalCartAmount = items.map(item => item.amount).reduce((a,b)=> a + b, 0)
+        this.totalCartAmount = items.map(item => item.amount).reduce((a,b)=> a + b, 0) 
       });
 
     this.products$ = this.store.select(selectAllProducts());
@@ -56,12 +57,16 @@ export class OrderPage implements OnInit {
       component: OrderProductPage,
       //cssClass: 'small-modal',
       componentProps: {
-        product
-        //month: moment(this.spendingPeriod).format('M'),
-        //year: moment(this.spendingPeriod).format('YYYY')
+        product,
+        cartItemAddons: product.productAddOns 
+          ? product.productAddOns.map(a => <CartItemAddon>{ 
+            itemId: a.itemId,
+            name: a.name,
+            price: a.price,
+            quantity: 0
+          }) : []
       }
     });
-   
     return await modal.present();
   }
 

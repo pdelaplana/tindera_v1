@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CartItemAddon } from '@app/models/cart-item-addon';
 import { Product } from '@app/models/product';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
@@ -68,12 +69,13 @@ export class CartPage implements OnInit {
     });
   }
 
-  async modifyItem(product: Product, quantity: number){
+  async modifyItem(product: Product, quantity: number, cartItemAddons: CartItemAddon[]){
     const modal = await this.modalController.create({
       component: OrderProductPage,
       componentProps: {
         product,
-        quantity
+        quantity,
+        cartItemAddons
       }
     });
    
