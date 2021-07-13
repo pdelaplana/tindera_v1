@@ -48,34 +48,6 @@ export class InventoryEffects{
     })
   ));
 
-  /*
-  loadInventory = createEffect(() => this.actions.pipe(
-    ofType(inventoryActions.loadInventory),
-    switchMap(action => {
-      console.log(action);
-      const snapshotChanges = this.inventoryService.query([]);
-      return snapshotChanges.pipe(
-        map(arr => {
-          return arr.map( doc => {
-            const data = doc.payload.doc.data();
-            console.log (data);
-            return { id: doc.payload.doc.id, ...data} as InventoryItem
-          })
-        }
-      ))
-    }),
-
-    map( arr => {
-      return inventoryActions.loadInventorySuccess({items: arr})
-    }),
-
-    catchError((error, caught) => {
-      this.store.dispatch(inventoryActions.loadInventoryFail({error}));
-      return caught;
-    })
-  ));
-  */
-
   createItem = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.createItem),
     switchMap(async (action) => {

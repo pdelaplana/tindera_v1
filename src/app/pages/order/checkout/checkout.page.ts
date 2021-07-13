@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CartItem } from '@app/models/cart-item';
 import { Order } from '@app/models/order';
 import { OrderItem } from '@app/models/order-item';
+import { OrderItemAddon } from '@app/models/order-item-addon';
 import { PaymentType } from '@app/models/payment-type';
 import { User } from '@app/models/user';
 import { CommonUIService } from '@app/services/common-ui.service';
@@ -133,7 +134,13 @@ export class CheckoutPage implements OnInit, OnDestroy {
             productName: item.product.name,
             productDescription: item.product.description,
             productUnitPrice: item.product.price,
-            quantity: item.quantity
+            quantity: item.quantity,
+            addons: item.addons.map(addon => <OrderItemAddon>{
+              itemId: addon.itemId,
+              name: addon.name,
+              price: addon.price,
+              quantity: addon.quantity
+            })
           })
         });
         this.store.dispatch(orderActions.createOrder({
