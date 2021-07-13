@@ -21,18 +21,14 @@
   <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
     <ion-item>
       <ion-note slot="start">Name</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:70px">On Hand</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:70px">Total</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:20px">&nbsp;</ion-note>
-      
+      <ion-note slot="end" class="ion-text-right" style="min-width:100px">On Hand</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:30px">&nbsp;</ion-note>
     </ion-item>
     
     <ion-item  button="true" detail="true" *ngFor="let item of (inventoryItems$ | async)" (click)="navigateToDetails(item.id)">
       <ion-label slot="start">{{item.name}}</ion-label>
-      <ion-note slot="end" class="ion-text-right" style="min-width:70px">{{item.currentCount}}</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:70px">{{item.currentCount * item.unitCost | currency: 'P'}}</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:20px"></ion-note>
-      
+      <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{item.currentCount}}</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:5px"></ion-note>
     </ion-item>
 
   </ion-list>
