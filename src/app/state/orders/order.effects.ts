@@ -74,9 +74,22 @@ export class OrderEffects{
                 quantityOut:  Number(item.quantity)*quantity,
                 reference: `order=${action.order.id}`,
                 notes: '',
-              })
-               
+              })       
             })
+
+            item.addons.forEach(a =>
+              transactions.push(<InventoryTransaction>{
+                id:'',
+                transactionType: InventoryTransactionType.Sale,
+                itemId: a.itemId,
+                transactionOn: new Date(),
+                quantityIn: 0,
+                quantityOut:  Number(a.quantity)*quantity,
+                reference: `order=${action.order.id}`,
+                notes: '',
+              }) 
+            )
+        
           })
       });
       
