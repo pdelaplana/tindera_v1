@@ -3,6 +3,7 @@ import { Product } from '@app/models/product';
 import { ProductAddOn } from '@app/models/product-addon';
 import { ProductItem } from '@app/models/product-item';
 import { CommonUIService } from '@app/services/common-ui.service';
+import { FileStorageService } from '@app/services/firestorage/file-storage.service';
 import { ProductService } from '@app/services/firestore/product.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
@@ -18,7 +19,8 @@ export class ProductEffects{
     private store: Store<AppState>,
     private actions: Actions,
     private commonUiService: CommonUIService,
-    private productService: ProductService
+    private productService: ProductService,
+    private fileStorageService: FileStorageService
   ) {
     this.store.select(state => state.auth.uid).subscribe(uid => this.uid = uid);
     this.store.select(state => state.shop.id).subscribe(
@@ -249,7 +251,37 @@ export class ProductEffects{
     })
   ));
 
+  
+  uploadProductPhoto = createEffect(() => this.actions.pipe(
+    ofType(productActions.uploadProductPhoto),
+    switchMap(async (action) => {
+      const url = await this.fileStorageService.uploadFile(action.files);
+      let product = await this.productService.get(action.productId);
+      product.imageUrl = url;
+      product = await (this.productService.update(product));
+      return productActions.uploadProductPhotoSuccess({ productId: product.id, uploadFileUrl: product.imageUrl });
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(productActions.uploadProductPhotoFail({error}));
+      return caught;
+    })
+  ));
 
+  deleteProductPhoto = createEffect(() => this.actions.pipe(
+    ofType(productActions.deleteProductPhoto),
+    switchMap(async (action) => {
+      let product = await this.productService.get(action.productId);
+      await this.fileStorageService.deleteFile(product.imageUrl).toPromise();
+      product.imageUrl = null;
+      product = await (this.productService.update(product));
+      return productActions.deleteProductPhotoSuccess({ productId: product.id });
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(productActions.deleteProductPhotoFail({error}));
+      return caught;
+    })
+  ));
+  
 }
 
 

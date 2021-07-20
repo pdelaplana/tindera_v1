@@ -27,7 +27,14 @@ const reducer = createReducer(
   }),
   on(productActions.deleteProductAddonSuccess, (state, { productId, productAddons }) => {
     return productAdapter.updateOne({ id: productId, changes: { productAddOns: productAddons }}, state)
-  })
+  }),
+  on(productActions.uploadProductPhotoSuccess, (state, { productId, uploadFileUrl }) => {
+    return productAdapter.updateOne({ id: productId, changes: { imageUrl: uploadFileUrl }}, state)
+  }),
+  on(productActions.deleteProductPhotoSuccess, (state, { productId }) => {
+    return productAdapter.updateOne({ id: productId, changes: { imageUrl: null }}, state)
+  }),
+  
 )
 
 export function productReducer(state: ProductState | undefined, action: Action) {

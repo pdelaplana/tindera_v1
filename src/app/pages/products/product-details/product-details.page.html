@@ -43,6 +43,26 @@
   </ion-list>
 
   <ion-list-header class="ion-border-bottom">
+    <ion-label color="medium">Product Photo</ion-label>
+  </ion-list-header>
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    
+    <ion-item *ngIf="imageUrl">
+      <p class="ion-padding" style=" margin:0 auto;">
+        <ion-img [src]="imageUrl"></ion-img>
+      </p>
+    </ion-item>
+    <ion-item>
+      <div class="ion-text-center" style=" margin:0 auto;">
+        <input class="ion-hide" type="file" #f accept="image/*" (change)="uploadFile($event.target.files)"/>
+        <ion-button (click)="f.click()">Upload</ion-button>
+        <ion-button color="danger" *ngIf="imageUrl" (click)="removeFile()">Remove</ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+  
+
+  <ion-list-header class="ion-border-bottom">
     <ion-label color="medium">Tags</ion-label>
   </ion-list-header>
   <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >

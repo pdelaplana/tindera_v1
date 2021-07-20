@@ -8,7 +8,7 @@ import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
 import { productActions } from '@app/state/product/product.actions';
 import { selectProduct } from '@app/state/product/product.selectors';
-import { NavController } from '@ionic/angular';
+import { ModalController, NavController } from '@ionic/angular';
 import { ActionsSubject, Store } from '@ngrx/store';
 import { of, Subject } from 'rxjs';
 import { concatMap, debounceTime, takeUntil } from 'rxjs/operators';
@@ -26,6 +26,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
   productForm: FormGroup;
   productItems: ProductItem[] = [];
   productAddOns: ProductAddOn[] =[];
+  imageUrl: string;
 
   constructor(
     private store: Store<AppState>,
@@ -33,7 +34,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
     private router: Router,
     private formBuilder: FormBuilder,
     private navController: NavController,
-    private commonUIService: CommonUIService
+    private commonUIService: CommonUIService,
   ) { 
     if (this.router.getCurrentNavigation().extras.state) {
       this.productId = this.router.getCurrentNavigation().extras.state.productId;
@@ -42,6 +43,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
         
         this.productItems = product.productItems ?? [];
         this.productAddOns = product.productAddOns ?? [];
+        this.imageUrl = product.imageUrl;
 
         this.productForm = this.formBuilder.group({
           code: [product.code, Validators.required],
@@ -65,6 +67,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
       });
     }
   }
+
   ngOnDestroy(): void {
     this.unsubscribe.next();
   }
@@ -123,6 +126,17 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
     this.navController.navigateForward('products/addon', navigationExtras);
     
   }
+
+
+  async uploadFile(files: FileList){
+    const clonedFiles = { ...files };
+    this.store.dispatch(productActions.uploadProductPhoto({ productId: this.productId, files: clonedFiles }))
+  }
+
+  removeFile(){
+    this.store.dispatch(productActions.deleteProductPhoto({ productId: this.productId, url: this.imageUrl}));
+  }
+
 
   deleteItem(productId: string, productItem: ProductItem){
     this.commonUIService.confirmDelete().then(result => {
