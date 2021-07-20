@@ -14,6 +14,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { META_REDUCERS, StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './state';
 
@@ -52,6 +53,7 @@ import { OrderEffects } from './state/orders/order.effects';
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFirestoreModule.enablePersistence(),
+    AngularFireStorageModule,
     StoreModule.forRoot(reducers, {
       metaReducers,
       runtimeChecks: {

@@ -13,4 +13,5 @@ export interface Product extends Entity{
   productItems: ProductItem[];
   productAddOns: ProductAddOn[];
   productOptions: ProductOption[];
+  imageUrl: string;
 }

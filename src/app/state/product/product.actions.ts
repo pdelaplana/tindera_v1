@@ -94,4 +94,30 @@ export const productActions = {
     props<{ error: any }>()
   ),
 
+  uploadProductPhoto: createAction(
+    '[Product] Product photo upload',
+    props<{ productId: string, files: FileList}>()
+  ),
+  uploadProductPhotoSuccess: createAction(
+    '[Product] Product photo upload success',
+    props<{ productId: string, uploadFileUrl: string}>()
+  ),
+  uploadProductPhotoFail: createAction(
+    '[Product] Product photo upload fail',
+    props<{ error: any }>()
+  ),
+
+  deleteProductPhoto: createAction(
+    '[Product] Product photo delete',
+    props<{ productId: string, url:string}>()
+  ),
+  deleteProductPhotoSuccess: createAction(
+    '[Product] Product photo delete success',
+    props<{ productId: string }>()
+  ),
+  deleteProductPhotoFail: createAction(
+    '[Product] Product photo delete fail',
+    props<{ error: any }>()
+  )
+
 }
