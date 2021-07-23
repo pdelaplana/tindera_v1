@@ -30,10 +30,12 @@
 
     <ion-item>
       <ion-label position="stacked">Unit Price  <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input inputmode="decimal" type="number" formControlName="price"  ></ion-input>
+      <app-currency-input 
+          [amount]="price.value" 
+          (amountChange)="amountChange($event)"
+          style="width:100%"
+      ></app-currency-input>
     </ion-item>
-
-    
 
     <ion-item>
       <ion-label position="stacked">Remarks </ion-label>
