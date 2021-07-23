@@ -167,6 +167,11 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
     });
   }
 
+  amountChange(value: number) {
+    this.price = value;
+  }
+
+
   async save(){
     if (this.productForm.valid){
       this.store.dispatch(productActions.updateProduct({
@@ -178,6 +183,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
           description: this.description.value,
           price: this.price.value,
           remarks: this.remarks.value,
+          imageUrl: this.imageUrl,
           productItems: this.productItems
         }
       }))
