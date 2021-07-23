@@ -21,8 +21,6 @@ export class OrderPage implements OnInit {
 
   private shopid: string;
 
-
-
   products$ : Observable<Product[]>;
   
   totalCartAmount: number = 0.00;

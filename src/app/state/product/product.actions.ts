@@ -96,7 +96,7 @@ export const productActions = {
 
   uploadProductPhoto: createAction(
     '[Product] Product photo upload',
-    props<{ productId: string, files: FileList}>()
+    props<{ productId: string, file: File}>()
   ),
   uploadProductPhotoSuccess: createAction(
     '[Product] Product photo upload success',

@@ -34,8 +34,8 @@ export class FileStorageService {
     this.isUploaded = false;
   }
 
-  uploadFile(files: FileList){
-    const file = files[0];
+  uploadFile(file: File){
+    //const file = files[0];
     if (file.type.split('/')[0] !== 'image') { 
       console.error('unsupported file type :( ')
       return;

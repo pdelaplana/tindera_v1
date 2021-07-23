@@ -7,6 +7,7 @@ import { FileStorageService } from '@app/services/firestorage/file-storage.servi
 import { ProductService } from '@app/services/firestore/product.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
+import { NgxImageCompressService } from 'ngx-image-compress';
 import { catchError, debounceTime, map, switchMap } from 'rxjs/operators';
 import { AppState } from '..';
 import { productActions } from './product.actions';
@@ -20,7 +21,8 @@ export class ProductEffects{
     private actions: Actions,
     private commonUiService: CommonUIService,
     private productService: ProductService,
-    private fileStorageService: FileStorageService
+    private fileStorageService: FileStorageService,
+    private ngxImageCompressService: NgxImageCompressService
   ) {
     this.store.select(state => state.auth.uid).subscribe(uid => this.uid = uid);
     this.store.select(state => state.shop.id).subscribe(
@@ -255,7 +257,7 @@ export class ProductEffects{
   uploadProductPhoto = createEffect(() => this.actions.pipe(
     ofType(productActions.uploadProductPhoto),
     switchMap(async (action) => {
-      const url = await this.fileStorageService.uploadFile(action.files);
+      const url = await this.fileStorageService.uploadFile(action.file);
       let product = await this.productService.get(action.productId);
       product.imageUrl = url;
       product = await (this.productService.update(product));

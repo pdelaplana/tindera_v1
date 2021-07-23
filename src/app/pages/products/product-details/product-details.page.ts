@@ -8,8 +8,9 @@ import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
 import { productActions } from '@app/state/product/product.actions';
 import { selectProduct } from '@app/state/product/product.selectors';
-import { ModalController, NavController } from '@ionic/angular';
+import {  NavController } from '@ionic/angular';
 import { ActionsSubject, Store } from '@ngrx/store';
+import { Ng2ImgMaxService } from 'ng2-img-max';
 import { of, Subject } from 'rxjs';
 import { concatMap, debounceTime, takeUntil } from 'rxjs/operators';
 
@@ -35,6 +36,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private navController: NavController,
     private commonUIService: CommonUIService,
+    private ng2ImgMaxService: Ng2ImgMaxService 
   ) { 
     if (this.router.getCurrentNavigation().extras.state) {
       this.productId = this.router.getCurrentNavigation().extras.state.productId;
@@ -129,9 +131,20 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
 
 
   async uploadFile(files: FileList){
-    const clonedFiles = { ...files };
-    this.store.dispatch(productActions.uploadProductPhoto({ productId: this.productId, files: clonedFiles }))
+    const file = files.item(0);
+    const fileName = file['name'];
+
+    this.ng2ImgMaxService.resizeImage(file, 10000, 300).subscribe(
+      result => {
+        const imageFile = new File([result], fileName, { type: 'image/jpg' });
+        this.store.dispatch(productActions.uploadProductPhoto({ productId: this.productId, file: imageFile }))
+      },
+      error => {
+        console.log(error);
+      }
+    )
   }
+
 
   removeFile(){
     this.store.dispatch(productActions.deleteProductPhoto({ productId: this.productId, url: this.imageUrl}));

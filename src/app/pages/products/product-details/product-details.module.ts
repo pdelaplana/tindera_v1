@@ -9,6 +9,7 @@ import { ProductDetailsPageRoutingModule } from './product-details-routing.modul
 import { ProductDetailsPage } from './product-details.page';
 import { TagInputModule } from 'ngx-chips';
 import { SharedComponentsModule } from '@app/components/shared-components.module';
+import { Ng2ImgMaxModule } from 'ng2-img-max';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { SharedComponentsModule } from '@app/components/shared-components.module
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    Ng2ImgMaxModule,
     IonicModule,
     SharedComponentsModule,
     ProductDetailsPageRoutingModule
