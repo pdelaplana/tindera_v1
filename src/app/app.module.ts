@@ -31,6 +31,7 @@ import { ProductEffects } from './state/product/product.effects';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OrderEffects } from './state/orders/order.effects';
+import { NgxImageCompressService } from 'ngx-image-compress';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { OrderEffects } from './state/orders/order.effects';
       provide: RouteReuseStrategy, 
       useClass: IonicRouteStrategy 
     },
+    NgxImageCompressService
     /*
     {
       provide: META_REDUCERS,

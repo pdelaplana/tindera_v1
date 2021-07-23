@@ -1,6 +1,6 @@
 
 ion-card{
-  height:200px;
+  height:145px;
 }
 
 ion-card-title {
@@ -11,7 +11,7 @@ ion-card-title {
 }
 
 .img-wrapper {
-  min-height: 220px;
+  min-height: 150px;
   width: 100%;
   background-size: cover;
   background-repeat: no-repeat;
@@ -32,4 +32,13 @@ ion-card-title {
 			margin-right: 1.9rem;
 		}
 	}
+}
+
+ion-img {
+  margin: 0px;
+
+  width: 130px;
+  height: 130px;
+  border-radius: 0.9em;
+  object-fit:cover;
 }
