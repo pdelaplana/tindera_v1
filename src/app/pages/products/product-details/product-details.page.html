@@ -14,11 +14,6 @@
   <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
   
     <ion-item>
-      <ion-label position="stacked">Code <ion-text color="danger">*</ion-text></ion-label>
-      <ion-input required type="text" formControlName="code" ></ion-input>   
-    </ion-item>
-
-    <ion-item>
       <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
       <ion-input required type="text" formControlName="name" ></ion-input>   
     </ion-item>
@@ -26,6 +21,13 @@
     <ion-item>
       <ion-label position="stacked">Description</ion-label>
       <ion-input formControlName="description"></ion-input>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Category <ion-text color="danger">*</ion-text></ion-label>
+      <ion-select multiple="false" placeholder="" formControlName="productCategory">
+        <ion-select-option *ngFor="let category of productCategories" [value]="category">{{category.description}}</ion-select-option>
+      </ion-select>
     </ion-item>
 
     <ion-item>

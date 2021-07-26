@@ -1,4 +1,5 @@
 import { PaymentType } from '@app/models/payment-type';
+import { ProductCategory } from '@app/models/product-category';
 import { Action, createReducer, on } from '@ngrx/store';
 import { ShopActions } from './shop.actions';
 import { ShopState } from './shop.state';
@@ -13,6 +14,13 @@ const initialState: ShopState = {
     <PaymentType>{ code: 'CASH', description: 'Cash' },
     <PaymentType>{ code: 'PANDA', description: 'Food Panda' },
     <PaymentType>{ code: 'GRAB', description: 'Grabfood' },
+  ],
+  productCategories: [
+    <ProductCategory>{ code: 'SHRIMP', description: 'Shrimp Tempura', sequence: 1 },
+    <ProductCategory>{ code: 'TEMPURA', description: 'Tempura', sequence:2 },
+    <ProductCategory>{ code: 'GLAZED', description: 'Glazed Series', sequence:3 },
+    <ProductCategory>{ code: 'FAMILY', description: 'Family Bucket', sequence:4 },
+    <ProductCategory>{ code: 'DRINKS', description: 'Drinks', sequence:5 },
   ]
 };
 

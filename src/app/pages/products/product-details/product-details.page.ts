@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { Product } from '@app/models/product';
 import { ProductAddOn } from '@app/models/product-addon';
+import { ProductCategory } from '@app/models/product-category';
 import { ProductItem } from '@app/models/product-item';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
@@ -28,6 +29,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
   productItems: ProductItem[] = [];
   productAddOns: ProductAddOn[] =[];
   imageUrl: string;
+  productCategories: ProductCategory[];
 
   constructor(
     private store: Store<AppState>,
@@ -41,32 +43,39 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
     if (this.router.getCurrentNavigation().extras.state) {
       this.productId = this.router.getCurrentNavigation().extras.state.productId;
       
-      this.store.select(selectProduct(this.productId)).subscribe(product => {
-        
-        this.productItems = product.productItems ?? [];
-        this.productAddOns = product.productAddOns ?? [];
-        this.imageUrl = product.imageUrl;
+      this.store.select(state => state.shop).subscribe(shop => {
+        this.productCategories = shop.productCategories;
 
-        this.productForm = this.formBuilder.group({
-          code: [product.code, Validators.required],
-          name: [product.name, Validators.required],
-          description: [product.description],
-          tags: [product.tags],
-          price: [product.price],
-          priceFormatted: ['0.00'],
-          remarks: [product.remarks],
-        },
-        { updateOn: 'blur' });
+        this.store.select(selectProduct(this.productId)).subscribe(product => {
         
-        this.productForm.valueChanges
-          .pipe(
-            debounceTime(1500),
-            concatMap(form => of(this.save())),
-            takeUntil(this.unsubscribe)
-          )
-          .subscribe()
-        
+          this.productItems = product.productItems ?? [];
+          this.productAddOns = product.productAddOns ?? [];
+          this.imageUrl = product.imageUrl;
+          
+          const category = this.productCategories.filter(c => c.code == product.productCategory?.code)
+          this.productForm = this.formBuilder.group({
+            name: [product.name, Validators.required],
+            description: [product.description],
+            tags: [product.tags],
+            price: [product.price],
+            priceFormatted: ['0.00'],
+            remarks: [product.remarks],
+            productCategory: [category ?? null]
+          },
+          { updateOn: 'blur' });
+          
+          this.productForm.valueChanges
+            .pipe(
+              debounceTime(1000),
+              concatMap(form => of(this.save())),
+              takeUntil(this.unsubscribe)
+            )
+            .subscribe()
+          
+        });
       });
+
+      
     }
   }
 
@@ -76,9 +85,6 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
 
   ngOnInit() {
   }
-
-  get code() { return this.productForm.get('code'); }
-  set code(value: any) { this.productForm.get('code').setValue(value); }
 
   get name() { return this.productForm.get('name'); }
   set name(value: any) { this.productForm.get('name').setValue(value); }
@@ -97,6 +103,9 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
 
   get remarks() { return this.productForm.get('remarks'); }
   set remarks(value: any) { this.productForm.get('remarks').setValue(value); }
+
+  get productCategory() { return this.productForm.get('productCategory'); }
+  set productCategory(value: any) { this.productForm.get('productCategory').setValue(value); }
 
   navigateToBOM(productId: string, productItem: ProductItem){
     if (productItem == null) {
@@ -177,14 +186,14 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
       this.store.dispatch(productActions.updateProduct({
         product : <Product>{
           id: this.productId,
-          code: this.code.value,
           name: this.name.value,
           tags: this.tags.value,
           description: this.description.value,
           price: this.price.value,
           remarks: this.remarks.value,
-          imageUrl: this.imageUrl,
-          productItems: this.productItems
+          imageUrl: this.imageUrl ?? '',
+          productItems: this.productItems,
+          productCategory: this.productCategory.value
         }
       }))
     }

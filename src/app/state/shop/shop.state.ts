@@ -1,4 +1,5 @@
 import { PaymentType } from '@app/models/payment-type';
+import { ProductCategory } from '@app/models/product-category';
 
 export interface ShopState {
   id: string;
@@ -7,4 +8,5 @@ export interface ShopState {
   location: string;
   currencyCode: string;
   paymentTypes: PaymentType[];
+  productCategories: ProductCategory[];
 }

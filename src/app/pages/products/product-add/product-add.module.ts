@@ -8,6 +8,7 @@ import { ProductAddPageRoutingModule } from './product-add-routing.module';
 
 import { ProductAddPage } from './product-add.page';
 import { TagInputModule } from 'ngx-chips';
+import { SharedComponentsModule } from '@app/components/shared-components.module';
 
 
 
@@ -18,6 +19,7 @@ import { TagInputModule } from 'ngx-chips';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedComponentsModule,
     IonicModule,
     ProductAddPageRoutingModule
   ],

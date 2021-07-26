@@ -9,49 +9,54 @@
 
 <ion-content fullscreen="true" class="gray-background">
   <ion-toolbar class="ion-no-padding"> 
-    <ion-searchbar></ion-searchbar>
+    <ion-searchbar (ionInput)="searchFor($event)"></ion-searchbar>
   </ion-toolbar>
-  <ion-toolbar>
-    <ion-chip>
+  <ion-toolbar  class="ion-margin">
+    <ion-chip [color]="toggleFilters('all')" (click)="filterBy('all')">
       <ion-label>All</ion-label>
     </ion-chip>
-    <ion-chip>
-      <ion-label>Popular Items</ion-label>
-    </ion-chip>
-    <ion-chip>
-      <ion-label>Beverages</ion-label>
+    <ion-chip *ngFor="let category of productCategories" [color]="toggleFilters(category.description)" (click)="filterBy(category.description)">
+      <ion-label>{{ category.description }}</ion-label>
     </ion-chip>
   </ion-toolbar>
   <ion-grid>
-    <ion-row >
-      <ion-col sizeLg="6" sizeMd="8" sizeXs="12" *ngFor="let product of (products$ | async)">
-        <ion-card button="true" (click)="orderProduct(product)">
+    <ng-container *ngFor="let group of (products$ | async)" >
+      <ion-row *ngIf="filter=='all' || filter == group.category">
+        <ion-col class="ion-padding">
+          <ion-label>{{ group.category }}</ion-label>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="filter=='all' || filter == group.category ">
+        <ion-col sizeLg="4" sizeMd="8" sizeXs="12" *ngFor="let product of (group.products)">
+          <ion-card button="true" (click)="orderProduct(product)">
+            
+            <ion-card-content class="ion-no-padding ion-no-margin" >
+              <ion-row class="ion-no-padding ion-no-margin" >
+                <ion-col class="" size="5" >
+                  <div *ngIf="product.imageUrl">
+                    <ion-img [src]="product.imageUrl" ></ion-img>
+                  </div>
+                  <div  *ngIf="!product.imageUrl">
+                    <ion-img src="assets/images/no-image-available.png" alt="" *ngIf="!product.imageUrl"></ion-img>
+                  </div>
+                </ion-col>
+                <ion-col class="ion-padding" size="7">
+                  <ion-card-title>{{ product.name}}</ion-card-title>
+                  <ion-card-subtitle>{{ product.price | shopCurrency }}</ion-card-subtitle>
+                  <p>
+                    {{ product.description }}
+                  </p>
+                </ion-col>
+                
+              </ion-row>
+            </ion-card-content>
           
-          <ion-card-content class="ion-no-padding ion-no-margin">
-            <ion-row class="ion-no-padding ion-no-margin">
-              <ion-col class="ion-no-padding ion-no-margin" size="5" >
-                <div class="img-wrapper ion-no-padding ion-no-margin" *ngIf="product.imageUrl"
-                    [style.background-image]="'url(' + product.imageUrl + ')'">
-                </div>
-                <div class="img-wrapper ion-no-padding ion-no-margin" *ngIf="!product.imageUrl">
-                  <ion-img src="assets/images/no-image-available.png" alt="" *ngIf="!product.imageUrl"></ion-img>
-                </div>
-              </ion-col>
-              <ion-col class="ion-padding" size="7">
-                <ion-card-title>{{ product.name}}</ion-card-title>
-                <ion-card-subtitle>{{ product.price | currency:currencyCode }}</ion-card-subtitle>
-                <p>
-                  {{ product.description }}
-                </p>
-              </ion-col>
-              
-            </ion-row>
-          </ion-card-content>
+          </ion-card>
+        </ion-col>
         
-        </ion-card>
-      </ion-col>
-      
-    </ion-row>
+      </ion-row>
+    </ng-container>
+  
   </ion-grid>
 
 </ion-content>

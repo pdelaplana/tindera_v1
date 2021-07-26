@@ -15,24 +15,24 @@
 
 <ion-content class="gray-background">
   <ion-toolbar class=""> 
-    <ion-searchbar></ion-searchbar>
+    <ion-searchbar (ionInput)="searchFor($event)"></ion-searchbar>
   </ion-toolbar>
  
-  <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
+  <ion-list *ngFor="let group of (products$ | async)" inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
 
-    <ion-item>
-      <ion-note slot="start">Product</ion-note>
-     
-    </ion-item>
-    
-    <ion-item *ngFor="let product of (products$ | async)"  lines="full"  button="true" detail="true" (click)="navigateToDetails(product.id)">
+    <ion-item-divider>
+      <ion-label slot="start">{{ group.category  }}</ion-label>
+    </ion-item-divider>
+
+    <ion-item *ngFor="let product of (group.products )"  lines="full"  button="true" detail="true" (click)="navigateToDetails(product.id)">
       <ion-label>
         <h2>{{ product.name }}</h2>
 
       </ion-label>
       <ion-label slot="end"></ion-label>
     </ion-item>
-   
+    
+  
   </ion-list>
 </ion-content>
 
