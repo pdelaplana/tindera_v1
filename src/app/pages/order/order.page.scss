@@ -35,10 +35,14 @@ ion-card-title {
 }
 
 ion-img {
-  margin: 0px;
+  margin-top: 8%;
+  margin-bottom: auto;
+  margin-left: auto;
+  margin-right: auto;
 
-  width: 130px;
-  height: 130px;
-  border-radius: 0.9em;
-  object-fit:cover;
+  width: 80%;
+  width: 110px;
+  height: 110px;
+  border-radius: 0.6em;
+  object-fit:scale-down;
 }

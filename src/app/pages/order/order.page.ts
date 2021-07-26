@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CartItemAddon } from '@app/models/cart-item-addon';
 import { Product } from '@app/models/product';
+import { ProductCategory } from '@app/models/product-category';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
 import { selectCartItems } from '@app/state/cart/cart.selectors';
 import { productActions } from '@app/state/product/product.actions';
-import { selectAllProducts, selectProductState } from '@app/state/product/product.selectors';
+import { selectAllAndGroupProducts, selectAllProducts, selectProductState } from '@app/state/product/product.selectors';
 import { ModalController, NavController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { MenuItem } from 'src/app/models/menu-item';
 import { OrderProductPage } from './order-product/order-product.page';
 
@@ -21,11 +23,13 @@ export class OrderPage implements OnInit {
 
   private shopid: string;
 
-  products$ : Observable<Product[]>;
+  products$ : Observable<any>;
+  productCategories : ProductCategory[];
   
   totalCartAmount: number = 0.00;
 
-  currencyCode : string = 'P';
+
+  filter = "all";
 
   constructor(
     private store: Store<AppState>,
@@ -36,18 +40,35 @@ export class OrderPage implements OnInit {
     this.store.select(state =>state.shop)
       .subscribe((shop) => {
         this.shopid = shop.id;
-        this.currencyCode = shop.currencyCode;
+        this.productCategories = shop.productCategories;
       });
     this.store.select(selectCartItems())
       .subscribe((items) => {
         this.totalCartAmount = items.map(item => item.amount).reduce((a,b)=> a + b, 0) 
       });
 
-    this.products$ = this.store.select(selectAllProducts());
+    this.products$ = this.store.select(selectAllAndGroupProducts(null));
   }
 
   ngOnInit() {
     
+  }
+
+  searchFor(event: any){
+    const queryTerm = event.srcElement.value;
+    this.products$ = this.store.select(selectAllAndGroupProducts(queryTerm));
+  }
+
+  filterBy(category: string){
+    this.filter = category;   
+  }
+
+  toggleFilters(category: string){
+    if (this.filter == category)
+      return 'primary';
+    else
+      return '';
+   
   }
 
   async orderProduct(product: Product){

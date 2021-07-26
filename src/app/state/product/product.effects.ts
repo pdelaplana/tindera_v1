@@ -52,11 +52,11 @@ export class ProductEffects{
     switchMap(async (action) => {
       const data = <Product>{
         id:'',
-        code: action.product.code,
         name: action.product.name,
         description: action.product.description,
         price: action.product.price,
         tags: action.product.tags,
+        productCategory: action.product.productCategory,
         productItems:[]
       }
       const result = await this.productService.add(data)
@@ -92,13 +92,14 @@ export class ProductEffects{
      
       const data = <Product>{
         id: action.product.id,
-        code: action.product.code,
         name: action.product.name,
         description: action.product.description,
         price: action.product.price,
         tags: action.product.tags,
         remarks: action.product.remarks,
-        productItems: action.product.productItems
+        productCategory: action.product.productCategory,
+        imageUrl: action.product.imageUrl,
+        productItems: action.product.productItems,
       }
       const product = await (this.productService.update(data));
 
@@ -106,11 +107,12 @@ export class ProductEffects{
         update: {
           id: product.id,
           changes: { 
-            code: product.code,
             name: product.name,
             description: product.description,
             price: product.price,
             tags: product.tags,
+            imageUrl: product.imageUrl,
+            productCategory: product.productCategory,
             remarks: product.remarks
           }
         } 
@@ -134,6 +136,7 @@ export class ProductEffects{
     ofType(productActions.updateProductFail),
     map((action) => {
       this.commonUiService.notify('Oops. We are aunable to update the product.  Please try again');
+      console.log(action.error);
       return null;
     })  
   ),{ dispatch: false });
@@ -245,7 +248,6 @@ export class ProductEffects{
       product.productAddOns = productAddons;
       await this.productService.update(product);
       return productActions.deleteProductAddonSuccess({productId: action.productId, productAddons })
-
     }),
     catchError((error, caught) => {
       this.store.dispatch(productActions.deleteProductAddonFail({error}));

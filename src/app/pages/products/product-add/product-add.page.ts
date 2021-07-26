@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Product } from '@app/models/product';
+import { ProductCategory } from '@app/models/product-category';
 import { AppState } from '@app/state';
 import { productActions } from '@app/state/product/product.actions';
 import { ModalController } from '@ionic/angular';
@@ -19,6 +20,7 @@ export class ProductAddPage implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   
   productForm: FormGroup;
+  productCategories: ProductCategory[];
 
   constructor(
     private store: Store<AppState>,
@@ -26,14 +28,17 @@ export class ProductAddPage implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private modalController: ModalController,
   ) { 
+    this.store.select(state => state.shop)
+      .subscribe(shop => this.productCategories = shop.productCategories)
+
     this.productForm = this.formBuilder.group({
-      code: ['', Validators.required],
       name: ['', Validators.required],
       description: [''],
       tags: [[]],
       price: [0.00],
       priceFormatted: ['0.00'],
       remarks: [''],
+      productCategory: [null],
     });
 
     this.subscription
@@ -55,9 +60,6 @@ export class ProductAddPage implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  get code() { return this.productForm.get('code'); }
-  set code(value: any) { this.productForm.get('code').setValue(value); }
-
   get name() { return this.productForm.get('name'); }
   set name(value: any) { this.productForm.get('name').setValue(value); }
 
@@ -76,16 +78,12 @@ export class ProductAddPage implements OnInit, OnDestroy {
   get remarks() { return this.productForm.get('remarks'); }
   set remarks(value: any) { this.productForm.get('remarks').setValue(value); }
 
-  /*
-  formatUnitCost(){
-    this.price = this.priceFormatted.value; 
-    this.priceFormatted = this.currencyPipe.transform(this.price.value, 'P');
-  }
+  get productCategory() { return this.productForm.get('productCategory'); }
+  set productCategory(value: any) { this.productForm.get('productCategory').setValue(value); }
 
-  resetUnitCost(){
-    this.priceFormatted = this.price.value
+  amountChange(value: number) {
+    this.price = value;
   }
-  */
 
   onTagsChange(value){
     console.log(value)
@@ -102,12 +100,12 @@ export class ProductAddPage implements OnInit, OnDestroy {
       this.store.dispatch(productActions.createProduct({
         product : <Product>{
           id: '',
-          code: this.code.value,
           name: this.name.value,
           tags: this.tags.value,
           description: this.description.value,
           price: this.price.value,
-          remarks: this.remarks.value
+          remarks: this.remarks.value,
+          productCategory: this.productCategory.value
         }
       }))
     }
