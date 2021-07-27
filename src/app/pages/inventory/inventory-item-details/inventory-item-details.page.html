@@ -26,7 +26,7 @@
     <ion-item>
       <ion-label position="stacked">Category <ion-text color="danger">*</ion-text></ion-label>
       <ion-select multiple="false" placeholder="" formControlName="category">
-        <ion-select-option *ngFor="let category of categories" value="{{category.value}}">{{category.label}}</ion-select-option>
+        <ion-select-option *ngFor="let category of inventoryCategories" [value]="category">{{category.description}}</ion-select-option>
       </ion-select>
     </ion-item>
 

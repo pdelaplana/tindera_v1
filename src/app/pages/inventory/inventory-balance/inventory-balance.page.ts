@@ -3,7 +3,7 @@ import { NavigationExtras } from '@angular/router';
 import { InventoryItem } from '@app/models/inventory-item';
 import { AppState } from '@app/state';
 import { inventoryActions } from '@app/state/inventory/inventory.actions';
-import { selectAllInventory } from '@app/state/inventory/inventory.selectors';
+import { selectAllAndGroupInventory, selectAllInventory } from '@app/state/inventory/inventory.selectors';
 import { InventoryState } from '@app/state/inventory/inventory.state';
 import { ModalController, NavController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
@@ -18,7 +18,7 @@ import { AddInventoryItemPage } from '../add-inventory-item/add-inventory-item.p
 })
 export class InventoryBalancePage implements OnInit {
 
-  inventoryItems$: Observable<InventoryItem[]>
+  inventoryItems$: Observable<any>
 
   constructor(
     private store: Store<AppState>,
@@ -29,15 +29,13 @@ export class InventoryBalancePage implements OnInit {
   }
 
   ngOnInit() {
-    this.inventoryItems$ = this.store.select(state => selectAllInventory(state.inventory.items));
+    this.inventoryItems$ = this.store.select(selectAllAndGroupInventory(null));
+     
+  }
 
-    this.inventoryItems$ = this.inventoryItems$.pipe(
-      map(data =>{
-        data.sort((a,b)=> { return (a.name > b.name) ? 1 : -1 });
-        return data;
-      })  
-    );
-    
+  searchFor(event: any){
+    const queryTerm = event.srcElement.value;
+    this.inventoryItems$ = this.store.select(selectAllAndGroupInventory(queryTerm));
   }
 
   async addNewItem(){

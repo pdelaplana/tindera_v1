@@ -15,22 +15,34 @@
 
 <ion-content class="gray-background">
   <ion-toolbar class=""> 
-    <ion-searchbar></ion-searchbar>
+    <ion-searchbar (ionInput)="searchFor($event)"></ion-searchbar>
     
   </ion-toolbar>
-  <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
-    <ion-item>
-      <ion-note slot="start">Name</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:100px">On Hand</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:30px">&nbsp;</ion-note>
-    </ion-item>
     
-    <ion-item  button="true" detail="true" *ngFor="let item of (inventoryItems$ | async)" (click)="navigateToDetails(item.id)">
-      <ion-label slot="start">{{item.name}}</ion-label>
-      <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{item.currentCount}}</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:5px"></ion-note>
-    </ion-item>
+    <ng-container *ngFor="let group of (inventoryItems$ | async)">
 
-  </ion-list>
+     
+      <ion-list-header class="ion-border-bottom">
+        <ion-label color="medium">{{ group.category }}</ion-label>
+      </ion-list-header>
+
+    <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">  
+    
+      <ion-item>
+        <ion-note slot="start">Name</ion-note>
+        <ion-note slot="end" class="ion-text-right" style="min-width:100px">On Hand</ion-note>
+        <ion-note slot="end" class="ion-text-right" style="min-width:30px">&nbsp;</ion-note>
+      </ion-item>
+    
+      <ion-item  button="true" detail="true" *ngFor="let item of (group.inventoryItems)" (click)="navigateToDetails(item.id)">
+        <ion-label slot="start">{{item.name}}</ion-label>
+        <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{item.currentCount}}</ion-note>
+        <ion-note slot="end" class="ion-text-right" style="min-width:5px"></ion-note>
+      </ion-item>
+    </ion-list>
+    </ng-container>
+    
+    
+
 </ion-content>
 

@@ -1,3 +1,4 @@
+import { InventoryCategory } from '@app/models/inventory-category';
 import { PaymentType } from '@app/models/payment-type';
 import { ProductCategory } from '@app/models/product-category';
 import { Action, createReducer, on } from '@ngrx/store';
@@ -21,6 +22,17 @@ const initialState: ShopState = {
     <ProductCategory>{ code: 'GLAZED', description: 'Glazed Series', sequence:3 },
     <ProductCategory>{ code: 'FAMILY', description: 'Family Bucket', sequence:4 },
     <ProductCategory>{ code: 'DRINKS', description: 'Drinks', sequence:5 },
+  ],
+  inventoryCategories: [
+    <InventoryCategory>{ code: 'MEATS', description: 'Meat', sequence: 1},
+    <InventoryCategory>{ code: 'SEAFOODS', description: 'Seafoods', sequence: 2},
+    <InventoryCategory>{ code: 'SAUCES', description: 'Sauces', sequence: 3},
+    <InventoryCategory>{ code: 'GROCERIES', description: 'Groceries', sequence: 4},
+    <InventoryCategory>{ code: 'DRYGOODS', description: 'Dry Goods', sequence: 5},
+    
+    
+    
+    
   ]
 };
 
