@@ -1,3 +1,4 @@
+import { InventoryItem } from '@app/models/inventory-item';
 import {  createSelector, select } from '@ngrx/store';
 import { startWith } from 'rxjs/operators';
 import { AppState } from '..';
@@ -13,10 +14,39 @@ const {
   selectTotal
 } = adapter.getSelectors();
 
+const groupByCategory = (array:InventoryItem[]): { category: string, inventoryItems: InventoryItem[]}[] => {
+  return array
+    .sort((a: InventoryItem, b: InventoryItem) => {
+      return a.category?.sequence > b.category?.sequence ? 1 : -1;
+    })
+    .reduce((groups: { category: string, inventoryItems: InventoryItem[]}[], thisItem:  InventoryItem) => {
+      let thisCategory = thisItem.category.description;
+      if (thisCategory == null) thisCategory = 'None';
+      let found = groups.find(group => group.category === thisCategory);
+      if (found === undefined) {
+        found = { category: thisCategory,inventoryItems: [] };
+        groups.push(found);
+      }
+      found.inventoryItems.push(thisItem);
+      return groups;
+    }, [])
+}
+
+
 export const selectAllInventory = selectAll;
 
-//export const selectInventoryState = createFeatureSelector<InventoryState>('inventory');
 export const selectInventoryState = (state: AppState) => state.inventory;
+
+export const selectAllAndGroupInventory = (searchTerm: string) =>
+  createSelector(
+    selectInventoryState,
+    state => {
+      let items = Object.entries(state.items.entities).map(([id, item]) => item);
+      if (searchTerm)
+        items = items.filter(item => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 )
+      return groupByCategory(items);
+    }
+  )
 
 export const selectInventoryTransactions = (id: string ) =>
   createSelector(

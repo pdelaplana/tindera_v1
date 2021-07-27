@@ -1,3 +1,4 @@
+import { InventoryCategory } from '@app/models/inventory-category';
 import { PaymentType } from '@app/models/payment-type';
 import { ProductCategory } from '@app/models/product-category';
 
@@ -9,4 +10,5 @@ export interface ShopState {
   currencyCode: string;
   paymentTypes: PaymentType[];
   productCategories: ProductCategory[];
+  inventoryCategories: InventoryCategory[];
 }

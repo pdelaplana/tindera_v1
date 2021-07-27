@@ -2,6 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CATEGORIES } from '@app/models/categories';
+import { InventoryCategory } from '@app/models/inventory-category';
 import { InventoryItem } from '@app/models/inventory-item';
 import { UOMS } from '@app/models/uom';
 import { CommonUIService } from '@app/services/common-ui.service';
@@ -25,10 +26,9 @@ export class AddInventoryItemPage implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   addInventoryItemForm : FormGroup;
+  categories : InventoryCategory[];
 
   errorMessages = ErrorMessages;
-
-  categories = CATEGORIES;
 
   uoms = UOMS;
   
@@ -40,28 +40,34 @@ export class AddInventoryItemPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private commonUiService: CommonUIService 
   ) { 
-    this.addInventoryItemForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      description: [''],
-      category: [''],
-      uom: [''],
-      unitCost: [0.00],
-      unitCostFormatted: ['0.00'],
-      balance: [0],
-      reorderLevel: [0],
-      notes: ['']
-    });
-
-    this.subscription
-      .add(
-        this.actions.pipe(
-          ofType(inventoryActions.createItemSuccess),
-          take(1)
-        ).subscribe(action =>{
-          this.modalController.dismiss({dismissed: true});
-        })
-      )
-      
+    this.store.select(state => state.shop).subscribe(
+      shop => {
+        this.categories = shop.inventoryCategories;
+        this.addInventoryItemForm = this.formBuilder.group({
+          name: ['', Validators.required],
+          description: [''],
+          category: [''],
+          uom: [''],
+          unitCost: [0.00],
+          unitCostFormatted: ['0.00'],
+          balance: [0],
+          reorderLevel: [0],
+          notes: ['']
+        });
+    
+        this.subscription
+          .add(
+            this.actions.pipe(
+              ofType(inventoryActions.createItemSuccess),
+              take(1)
+            ).subscribe(action =>{
+              this.modalController.dismiss({dismissed: true});
+            })
+          )
+    
+      }
+    )
+         
   }
 
   ngOnDestroy(): void {

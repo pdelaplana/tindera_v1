@@ -1,12 +1,11 @@
 <ion-header class="ion-no-border ">
   <ion-toolbar>
-    
     <ion-title>Add Item</ion-title>
-    <!--
     <ion-buttons slot="end">
-      <ion-button (click)="close()">Close</ion-button>
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
-    -->
   </ion-toolbar>
 </ion-header>
 
@@ -26,7 +25,7 @@
       <ion-item>
         <ion-label position="stacked">Category <ion-text color="danger">*</ion-text></ion-label>
         <ion-select multiple="false" placeholder="" formControlName="category">
-          <ion-select-option *ngFor="let category of categories" value="{{category.value}}">{{category.label}}</ion-select-option>
+          <ion-select-option *ngFor="let category of categories" [value]="category">{{category.description}}</ion-select-option>
         </ion-select>
       </ion-item>
 
@@ -67,6 +66,5 @@
     <ion-button expand="block" (click)="save()">
       Save
     </ion-button>
-    <ion-button expand="block" fill="clear" (click)="close()">Close</ion-button>
   </ion-toolbar>
 </ion-footer>

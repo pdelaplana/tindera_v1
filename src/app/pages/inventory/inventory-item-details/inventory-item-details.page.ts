@@ -4,6 +4,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { CATEGORIES } from '@app/models/categories';
+import { InventoryCategory } from '@app/models/inventory-category';
 import { InventoryItem } from '@app/models/inventory-item';
 import { UOMS } from '@app/models/uom';
 import { CommonUIService } from '@app/services/common-ui.service';
@@ -27,14 +28,10 @@ export class InventoryItemDetailsPage implements OnInit, OnDestroy {
 
   private unsubscribe = new Subject<void>()
 
-  
   itemId: string;
-
   inventoryItem$:  Observable<InventoryItem>;
-
   inventoryItemForm : FormGroup;
-
-  categories = CATEGORIES;
+  inventoryCategories: InventoryCategory[];
 
   uoms = UOMS;
   
@@ -49,57 +46,40 @@ export class InventoryItemDetailsPage implements OnInit, OnDestroy {
     private commonUiService: CommonUIService
   ) { 
 
-    /*
-    this.route.queryParams.subscribe(_params => {
-      this.inventoryItemForm = this.formBuilder.group({
-        name: ['', Validators.required],
-        description: [''],
-        category: [''],
-        uom: [''],
-        unitCost: [0.00],
-        unitCostFormatted: [''],
-        currentCount: [0],
-        reorderLevel: [0],
-        notes: ['']
-      },
-      { updateOn: 'blur' });
-      
-      this.inventoryItemForm.valueChanges
-        .pipe(
-          debounceTime(1500),
-          switchMap(form => of(this.save()))
-        )
-        .subscribe()
-      */
 
       if (this.router.getCurrentNavigation().extras.state) {
         this.itemId = this.router.getCurrentNavigation().extras.state.itemId;
-        //this.inventoryItem$ = this.store.select(selectInventoryItem(this.itemId));
 
-        this.store.select(selectInventoryItem(this.itemId)).subscribe(item => {
+        this.store.select(state => state.shop).subscribe(
+          shop => {
+            this.inventoryCategories = shop.inventoryCategories;
+
+            this.store.select(selectInventoryItem(this.itemId)).subscribe(item => {
           
-          this.inventoryItemForm = this.formBuilder.group({
-            name: [item.name, Validators.required],
-            description: [item.description],
-            category: [item.category],
-            uom: [item.uom],
-            unitCost: [item.unitCost],
-            unitCostFormatted: [item.unitCost],
-            currentCount: [item.currentCount],
-            reorderLevel: [item.reorderLevel],
-            notes: [item.notes]
-          },
-          { updateOn: 'blur' });
-          
-          this.inventoryItemForm.valueChanges
-            .pipe(
-              debounceTime(1500),
-              concatMap(form => of(this.save())),
-              takeUntil(this.unsubscribe)
-            )
-            .subscribe()
-          
-        });
+              this.inventoryItemForm = this.formBuilder.group({
+                name: [item.name, Validators.required],
+                description: [item.description],
+                category: [this.inventoryCategories.filter(c => c.code == item.category?.code)],
+                uom: [item.uom],
+                unitCost: [item.unitCost],
+                unitCostFormatted: [item.unitCost],
+                currentCount: [item.currentCount],
+                reorderLevel: [item.reorderLevel],
+                notes: [item.notes]
+              },
+              { updateOn: 'blur' });
+              
+              this.inventoryItemForm.valueChanges
+                .pipe(
+                  debounceTime(1500),
+                  concatMap(form => of(this.save())),
+                  takeUntil(this.unsubscribe)
+                )
+                .subscribe()  
+            });
+          }
+        )
+        
       }
   }
 

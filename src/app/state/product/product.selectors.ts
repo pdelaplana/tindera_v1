@@ -32,7 +32,7 @@ export const selectAllProducts = () =>
 
 
 
-  export const selectAllAndGroupProducts = (searchTerm: string) => 
+export const selectAllAndGroupProducts = (searchTerm: string) => 
   createSelector(
     selectProductState,
     state => {
