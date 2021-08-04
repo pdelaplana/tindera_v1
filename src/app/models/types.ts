@@ -2,7 +2,9 @@ export enum InventoryTransactionType {
   Receipt = 'receipt',
   Issue = 'issue',
   Sale = 'sale',
-  Adjustment = 'adjustment'
+  Adjustment = 'adjustment',
+  CountAdjustment = 'countAdjustment',
+
 }
 
 export enum UnitOfMeasure { 

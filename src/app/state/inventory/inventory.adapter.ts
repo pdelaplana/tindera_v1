@@ -1,3 +1,4 @@
+import { InventoryCount } from '@app/models/inventory-count';
 import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { createEntityAdapter, EntityAdapter } from '@ngrx/entity';
@@ -9,4 +10,8 @@ export const inventoryItemAdapter : EntityAdapter<InventoryItem> = createEntityA
 
 export const inventoryTransactionAdapter : EntityAdapter<InventoryTransaction> = createEntityAdapter<InventoryTransaction>({
   selectId: (transaction: InventoryTransaction) => transaction.id
+});
+
+export const inventoryCountAdapter : EntityAdapter<InventoryCount> = createEntityAdapter<InventoryCount>({
+  selectId: (count:  InventoryCount) =>  count.id
 });

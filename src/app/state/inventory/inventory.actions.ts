@@ -1,3 +1,4 @@
+import { InventoryCount } from '@app/models/inventory-count';
 import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { Update } from '@ngrx/entity';
@@ -76,5 +77,54 @@ export const inventoryActions = {
     '[Inventory] Update inventory balance fail',
     props<{ error: any }>()
   ), 
-  
+  loadCounts: createAction(
+    '[Inventory] Load inventory counts',
+    props<{ shopid: string }>()
+  ),
+  loadCountsSuccess: createAction(
+    '[Inventory] Load inventory counts success',
+    props<{ counts: InventoryCount[] }>()
+  ),
+  loadCountsFail: createAction(
+    '[Inventory] Load inventory counts fail',
+    props<{ error: any }>()
+  ),
+  submitCount: createAction(
+    '[Inventory] Submit count',
+    props<{ count: InventoryCount }>()
+  ),
+  submitCountSuccess: createAction(
+    '[Inventory] Submit count success',
+    props<{ count: InventoryCount }>()
+  ),
+  submitCountFail: createAction(
+    '[Inventory] Submit count success',
+    props<{ error: any }>()
+  ),
+  archiveCount: createAction(
+    '[Inventory] Archive count',
+    props<{ id: string }>()
+  ),
+  archiveCountSuccess: createAction(
+    '[Inventory] Archive count success',
+    props<{ update: Update<InventoryCount> }>()
+  ),
+  archiveCountFail: createAction(
+    '[Inventory] Archive count success',
+    props<{ error: any }>()
+  ),
+  deleteCount: createAction(
+    '[Inventory] Delete count',
+    props<{ id: string}>()
+  ),
+  deleteCountSuccess: createAction(
+    '[Inventory] Delete count success'
+  ),
+  deleteCountFail: createAction(
+    '[Inventory] Delete count fail',
+    props<{ error: any }>()
+  ),
+  clearInventoryActions: createAction(
+    '[Inventory] Clear action'
+  )
 }

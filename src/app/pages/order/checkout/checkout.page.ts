@@ -79,7 +79,6 @@ export class CheckoutPage implements OnInit, OnDestroy {
         this.navController.navigateRoot('order');
       })
     )
-
   
   }
   ngOnDestroy(): void {

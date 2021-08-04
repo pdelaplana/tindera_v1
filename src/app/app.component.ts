@@ -69,7 +69,7 @@ export class AppComponent implements OnInit {
         this.store.dispatch(inventoryActions.loadInventory({shopid}));  
         this.store.dispatch(productActions.loadProducts({ shopid }));
         this.store.dispatch(orderActions.loadOrders({ shopid }));
-        
+        this.store.dispatch(inventoryActions.loadCounts({ shopid })); 
       }
       
     })

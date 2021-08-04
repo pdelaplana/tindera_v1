@@ -68,3 +68,15 @@ export const selectItemTransactions = ( id: string) =>
       .filter(([id,transaction]) => transaction.itemId == id)
       .map(([id,transaction]) => transaction)
   );
+
+export const selectAllInventoryCounts = () =>
+  createSelector(
+    selectInventoryState,
+    (state) => (Object.entries(state.counts.entities))
+      .map(([id,count]) => count)
+  );
+
+export const selectInventoryCount = (id: string) => 
+  createSelector(
+    selectInventoryState,
+    (state) => state.counts.entities[id]);

@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { InventoryCount } from '@app/models/inventory-count';
 import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { InventoryTransactionType } from '@app/models/types';
 import { CommonUIService } from '@app/services/common-ui.service';
+import { InventoryCountService } from '@app/services/firestore/inventory-count.service';
 import { InventoryTransactionService } from '@app/services/firestore/inventory-transaction.service';
 import { InventoryService } from '@app/services/firestore/inventory.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -21,7 +23,8 @@ export class InventoryEffects{
     private actions: Actions,
     private commonUiService: CommonUIService,
     private inventoryService: InventoryService,
-    private inventoryTransactionService: InventoryTransactionService
+    private inventoryTransactionService: InventoryTransactionService,
+    private inventoryCountService: InventoryCountService
   ) {
     this.store.select(state => state.auth.uid).subscribe(uid => this.uid = uid);
     
@@ -226,11 +229,99 @@ export class InventoryEffects{
           balance = await this.inventoryService.decrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityOut)
           console.log(`${action.transaction.itemId} Balance decremented by ${action.transaction.quantityOut}`)
           break;
+        case InventoryTransactionType.CountAdjustment:
+          if (action.transaction.quantityIn > 0){
+            balance = await this.inventoryService.incrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityIn)
+            console.log(`${action.transaction.itemId} Balance incremented by ${action.transaction.quantityIn}`);
+          } else if (action.transaction.quantityOut > 0)  {
+            balance = await this.inventoryService.decrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityOut)
+            console.log(`${action.transaction.itemId} Balance decremented by ${action.transaction. quantityOut}`);
+          }
+          break;
       }
       return null;
     })
   ),{ dispatch: false });
 
+  loadCounts = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.loadCounts),
+    switchMap(action => {
+      const result = this.inventoryCountService.query([{name: 'archivedOn', operator: '!=', value: true}]);
+      return result.pipe()
+    }),
+
+    map( counts => {
+      return inventoryActions.loadCountsSuccess({ counts })
+    }),
+
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.loadInventoryFail({error}));
+      return caught;
+    })
+  ));
+
+  submitCount = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.submitCount),
+    switchMap(async (action) => {
+      const data = <InventoryCount>{
+        id:'',
+        ...action.count
+      }
+      const result = await this.inventoryCountService.add(data);
+      return inventoryActions.submitCountSuccess({
+        count: result
+      })
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.submitCountFail({error}));
+      return caught;
+    })  
+  ));
+
+  submitCountSuccess = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.submitCountSuccess),
+    map(async (action) => {
+      this.commonUiService.notify(`Inventory count submitted`);
+      return null;
+    })
+  ),{ dispatch: false });
+
+  archiveCount = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.archiveCount),
+    switchMap(async (action) => {
+      const data = await this.inventoryCountService.get(action.id);
+      if (data == null) throw('Record not found');
+      data.archivedOn = new Date();
+      const item = await this.inventoryCountService.update(data);
+      
+      return inventoryActions.archiveCountSuccess({
+        update: {
+          id: item.id,
+          changes: { 
+            archivedOn : item.archivedOn
+          }
+        } 
+      })
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.archiveCountFail({error}));
+      return caught;
+    })  
+  ));
+
+  deleteCount = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.deleteCount),
+    switchMap(async (action) => {
+      const data = await this.inventoryCountService.get(action.id);
+      if (data == null) throw('Record not found')
+      await this.inventoryCountService.delete(data);
+      return inventoryActions.deleteCountSuccess();
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.deleteCountFail({error}));
+      return caught;
+    })  
+  ));
 
 }
 
