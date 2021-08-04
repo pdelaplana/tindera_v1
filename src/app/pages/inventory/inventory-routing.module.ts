@@ -15,6 +15,10 @@ const routes: Routes = [
       {
         path: 'balance',
         loadChildren: () => import('./inventory-balance/inventory-balance.module').then( m => m.InventoryBalancePageModule)
+      },
+      {
+        path: 'counts',
+        loadChildren: () => import('./inventory-count-list/inventory-count-list.module').then( m => m.InventoryCountListPageModule)
       }
     ]
   },
@@ -29,7 +33,16 @@ const routes: Routes = [
   {
     path: 'transactions',
     loadChildren: () => import('./inventory-item-transactions/inventory-item-transactions.module').then( m => m.InventoryItemTransactionsPageModule)
-  }
+  },
+  {
+    path: 'count',
+    loadChildren: () => import('./inventory-count/inventory-count.module').then( m => m.InventoryCountPageModule)
+  },
+  {
+    path: 'count/details',
+    loadChildren: () => import('./inventory-count-list-details/inventory-count-list-details.module').then( m => m.InventoryCountListDetailsPageModule)
+  },
+ 
   
 ];
 

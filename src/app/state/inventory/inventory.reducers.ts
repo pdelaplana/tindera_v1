@@ -1,12 +1,13 @@
 import { InventoryState } from './inventory.state';
 import { inventoryActions } from './inventory.actions';
 import { Action, createReducer,  on } from '@ngrx/store';
-import { inventoryItemAdapter, inventoryTransactionAdapter } from './inventory.adapter';
+import { inventoryCountAdapter, inventoryItemAdapter, inventoryTransactionAdapter } from './inventory.adapter';
 
 const initialInventoryState: InventoryState = 
 {
   items: inventoryItemAdapter.getInitialState({ selectedInventoryItemId: null}),
-  transactions: inventoryTransactionAdapter.getInitialState({ selectedInventoryTransactionId: null })
+  transactions: inventoryTransactionAdapter.getInitialState({ selectedInventoryTransactionId: null }),
+  counts: inventoryCountAdapter.getInitialState({ selectedInventoryCountId: null})
 }
 
 
@@ -48,7 +49,24 @@ const reducer = createReducer(
       transactions: inventoryTransactionAdapter.addOne(transaction, state.transactions)
     }
   }),
-  
+  on(inventoryActions.loadCountsSuccess, (state, { counts }) => {
+    return {
+      ...state,
+      counts: inventoryCountAdapter.setAll(counts, state.counts)
+    } 
+  }),
+  on(inventoryActions.submitCountSuccess, (state, { count }) => {
+    return {
+      ... state,
+      counts: inventoryCountAdapter.addOne(count, state.counts)
+    }
+  }),
+  on(inventoryActions.archiveCountSuccess, (state, { update }) => {
+    return {
+      ... state,
+      counts: inventoryCountAdapter.updateOne(update, state.counts)
+    }
+  })
   
  
 );

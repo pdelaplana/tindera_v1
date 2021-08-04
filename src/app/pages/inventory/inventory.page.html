@@ -4,17 +4,18 @@
     <ion-tab-button tab="balance">
       <ion-icon name="podium"></ion-icon>
       <ion-label>Balances</ion-label>
-      <ion-badge>6</ion-badge>
+      
     </ion-tab-button>
 
     <ion-tab-button tab="map">
-      <ion-icon name="Scan"></ion-icon>
+      <ion-icon name="barcode"></ion-icon>
       <ion-label>Receive</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="speakers">
-      <ion-icon name="create"></ion-icon>
-      <ion-label>Count</ion-label>
+    <ion-tab-button tab="counts">
+      <ion-icon name="albums"></ion-icon>
+      <ion-label>Counts</ion-label>
+      <ion-badge *ngIf="openInventoryCounts>0">{{ openInventoryCounts }}</ion-badge>
     </ion-tab-button>
 
   </ion-tab-bar>

@@ -169,4 +169,10 @@ export class InventoryItemDetailsPage implements OnInit, OnDestroy {
     this.navController.navigateForward('inventory/transactions', navigationExtras);
   }
 
+  navigateToItemCount(itemId: string){
+    const navigationExtras: NavigationExtras = { state: { itemId: itemId } };
+    this.navController.navigateForward('inventory/count', navigationExtras);
+  }
+
+
 }

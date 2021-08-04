@@ -1,0 +1,44 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    <ion-item>
+      <ion-label position="stacked">Item</ion-label>
+      <p>{{ item.name }}</p>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">On hand</ion-label>
+      <p>{{ item.currentCount }}</p>
+    </ion-item>
+  </ion-list>
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    <ion-item>
+      <ion-label position="stacked">Qty Counted</ion-label>
+      <p>{{ count.count }} ({{  count.count - item.currentCount }}) </p>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Counted On</ion-label>
+      <p>{{ count.countOn?.toDate() | date }}</p>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Counted By</ion-label>
+      <p>{{ count.countBy.displayName }}</p>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar >
+    <ion-button expand="block" color="primary" (click)="presentActionSheet()" >
+      Action
+    </ion-button>
+    
+  </ion-toolbar>
+</ion-footer>
