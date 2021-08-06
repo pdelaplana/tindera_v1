@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
 import { InventoryCount } from '@app/models/inventory-count';
 import { InventoryItem } from '@app/models/inventory-item';
+import { countTypes } from '@app/models/types';
 import { User } from '@app/models/user';
 import { AppState } from '@app/state';
 import { selectAuthUser } from '@app/state/auth/auth.selectors';
@@ -28,13 +29,7 @@ export class InventoryCountPage implements OnInit, OnDestroy {
   item$: Observable<InventoryItem>;
   inventoryCountForm : FormGroup;
 
-  countTypes = [
-    'End of Day',
-    'Start of Day',
-    'Cycle',
-    'Adhoc',
-    'Stocktake'
-  ];
+  countTypes = countTypes;
 
   constructor(
     private store: Store<AppState>,

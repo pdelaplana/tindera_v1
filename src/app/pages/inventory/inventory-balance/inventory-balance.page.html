@@ -21,13 +21,12 @@
     
     <ng-container *ngFor="let group of (inventoryItems$ | async)">
 
-     
-      <ion-list-header class="ion-border-bottom">
-        <ion-label color="medium">{{ group.category }}</ion-label>
-      </ion-list-header>
-
     <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">  
     
+      <ion-item-divider>
+        <ion-label slot="start">{{ group.category  }}</ion-label>
+      </ion-item-divider>
+      
       <ion-item>
         <ion-note slot="start">Name</ion-note>
         <ion-note slot="end" class="ion-text-right" style="min-width:100px">On Hand</ion-note>
