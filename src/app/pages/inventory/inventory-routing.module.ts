@@ -42,6 +42,10 @@ const routes: Routes = [
     path: 'count/details',
     loadChildren: () => import('./inventory-count-list-details/inventory-count-list-details.module').then( m => m.InventoryCountListDetailsPageModule)
   },
+  {
+    path: 'adjust',
+    loadChildren: () => import('./inventory-item-adjustment/inventory-item-adjustment.module').then( m => m.InventoryItemAdjustmentPageModule)
+  },
  
   
 ];

@@ -1,6 +1,8 @@
+import { InventoryAdjustmentReason } from '@app/models/inventory-adjustment-reason';
 import { InventoryCategory } from '@app/models/inventory-category';
 import { PaymentType } from '@app/models/payment-type';
 import { ProductCategory } from '@app/models/product-category';
+import { inventoryAdjustmentReasons, InventoryAdjustmentType } from '@app/models/types';
 import { Action, createReducer, on } from '@ngrx/store';
 import { ShopActions } from './shop.actions';
 import { ShopState } from './shop.state';
@@ -29,10 +31,14 @@ const initialState: ShopState = {
     <InventoryCategory>{ code: 'SAUCES', description: 'Sauces', sequence: 3},
     <InventoryCategory>{ code: 'GROCERIES', description: 'Groceries', sequence: 4},
     <InventoryCategory>{ code: 'DRYGOODS', description: 'Dry Goods', sequence: 5},
-    
-    
-    
-    
+  ],
+  inventoryAdjustmentReasons:[
+    <InventoryAdjustmentReason>{ code: 'SPOILAGE', description: 'Spoilage', adjustmentType: InventoryAdjustmentType.Decrease},
+    <InventoryAdjustmentReason>{ code: 'THEFT', description: 'Theft', adjustmentType: InventoryAdjustmentType.Decrease},
+    <InventoryAdjustmentReason>{ code: 'DAMAGE', description: 'Damage', adjustmentType: InventoryAdjustmentType.Decrease},
+    <InventoryAdjustmentReason>{ code: 'COUNTIN', description: 'Stock Count In', adjustmentType: InventoryAdjustmentType.Increase},
+    <InventoryAdjustmentReason>{ code: 'COUNTOUT', description: 'Stock Count Out', adjustmentType: InventoryAdjustmentType.Decrease},
+    <InventoryAdjustmentReason>{ code: 'RETURNS', description: 'Customer Returns', adjustmentType: InventoryAdjustmentType.Increase},
   ]
 };
 

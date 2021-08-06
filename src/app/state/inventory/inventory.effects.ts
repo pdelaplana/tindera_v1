@@ -205,6 +205,30 @@ export class InventoryEffects{
       }
       this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
       const result = await this.inventoryTransactionService.add(data);
+
+      let balance = 0;
+      switch(result.transactionType){
+        case InventoryTransactionType.Receipt:
+          balance = await this.inventoryService.incrementBalanceOnHand(result.itemId, result.quantityIn)
+          this.commonUiService.notify(`Inventory received successfully. New balance ${balance}`);    
+          break;
+        case InventoryTransactionType.Issue:
+        case InventoryTransactionType.Sale:
+          balance = await this.inventoryService.decrementBalanceOnHand(result.itemId, result.quantityOut)
+          console.log(`${result.itemId} Balance decremented by ${result.quantityOut}`)
+          break;
+        case InventoryTransactionType.Adjustment:  
+        case InventoryTransactionType.CountAdjustment:
+          if (result.quantityIn > 0){
+            balance = await this.inventoryService.incrementBalanceOnHand(result.itemId, result.quantityIn)
+            console.log(`${result.itemId} Balance incremented by ${result.quantityIn}`);
+          } else if (result.quantityOut > 0)  {
+            balance = await this.inventoryService.decrementBalanceOnHand(result.itemId, result.quantityOut)
+            console.log(`${result.itemId} Balance decremented by ${result.quantityOut}`);
+          }
+          break;
+      }
+
       return inventoryActions.updateInventoryBalanceSuccess({
         transaction: result
       })
@@ -218,27 +242,6 @@ export class InventoryEffects{
   updateInventoryBalanceSuccess = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.updateInventoryBalanceSuccess),
     mergeMap(async (action) => {
-      let balance = 0;
-      switch(action.transaction.transactionType){
-        case InventoryTransactionType.Receipt:
-          balance = await this.inventoryService.incrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityIn)
-          this.commonUiService.notify(`Inventory received successfully. New balance ${balance}`);    
-          break;
-        case InventoryTransactionType.Issue:
-        case InventoryTransactionType.Sale:
-          balance = await this.inventoryService.decrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityOut)
-          console.log(`${action.transaction.itemId} Balance decremented by ${action.transaction.quantityOut}`)
-          break;
-        case InventoryTransactionType.CountAdjustment:
-          if (action.transaction.quantityIn > 0){
-            balance = await this.inventoryService.incrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityIn)
-            console.log(`${action.transaction.itemId} Balance incremented by ${action.transaction.quantityIn}`);
-          } else if (action.transaction.quantityOut > 0)  {
-            balance = await this.inventoryService.decrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityOut)
-            console.log(`${action.transaction.itemId} Balance decremented by ${action.transaction. quantityOut}`);
-          }
-          break;
-      }
       return null;
     })
   ),{ dispatch: false });

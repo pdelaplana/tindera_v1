@@ -1,4 +1,5 @@
 import { Entity } from './entity';
+import { InventoryAdjustmentReason } from './inventory-adjustment-reason';
 import { InventoryTransactionType } from './types';
 
 export interface InventoryTransaction extends Entity{
@@ -10,4 +11,5 @@ export interface InventoryTransaction extends Entity{
   quantityOut: number,
   reference: string;
   notes: string;
+  adjustmentReason: InventoryAdjustmentReason;
 }
