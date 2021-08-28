@@ -26,21 +26,51 @@ export const selectOrdersByPeriod = (period: string) =>
     selectAllOrders(),
     (state: Order[]) => {
       let uot: moment.unitOfTime.StartOf;
+      let start: any;
+      let end: any;
       switch (period){
+        case 'yesterday':
+          uot = 'day';
+          start = moment().subtract(1, 'day').startOf(uot);
+          end = moment().subtract(1, 'day').endOf(uot);
+          break;
         case 'today':
           uot = 'day';
+          start = moment().startOf(uot);
+          end = moment().endOf(uot);
           break;
         case 'thisWeek':
           uot = 'week';
+          start = moment().startOf(uot);
+          end = moment().endOf(uot);
           break;
         case 'thisMonth':
           uot = 'month';
+          start = moment().startOf(uot);
+          end = moment().endOf(uot);
           break;
         case 'thisYear':
           uot = 'year';
+          start = moment().startOf(uot);
+          end = moment().endOf(uot);
           break;
+        case 'lastMonth':
+          uot = 'month';
+          start = moment().add(-1, 'month').startOf(uot);
+          end = moment().add(-1, 'month').endOf(uot);
+          break;
+        case 'last3Months':
+          uot = 'month';
+          start = moment().add(-3, 'month').startOf(uot);
+          end = moment().endOf(uot);
+          break;
+        case 'last6Months':
+            uot = 'month';
+            start = moment().add(-6, 'month').startOf(uot);
+            end = moment().endOf(uot);
+            break;
       };
-      return state.filter(order => moment(order.orderDate.toDate()).isBetween(moment().startOf(uot), moment().endOf(uot)));
+      return state.filter(order => moment(order.orderDate.toDate()).isBetween(start, end));
     }
   );
 
@@ -52,8 +82,18 @@ export const selectOrdersToday = () =>
       .filter(order => moment().endOf('day').isSame(moment(order.orderDate.toDate()).endOf('day')))
   )
 
-  export const selectOrdersThisWeek = () => 
-    createSelector(
-      selectAllOrders(),
-      (state: Order[]) => state.filter(order => moment(order.orderDate.toDate()).isBetween(moment().startOf('W'), moment().endOf('W')))
-    );
+export const selectOrdersThisWeek = () => 
+  createSelector(
+    selectAllOrders(),
+    (state: Order[]) => state.filter(order => moment(order.orderDate.toDate()).isBetween(moment().startOf('W'), moment().endOf('W')))
+  );
+
+export const selectBestSellingProducts = (period:string) =>
+  createSelector(
+    selectOrdersByPeriod(period),
+    (orders) => orders
+      .map(order => order.orderItems.map(item => item))
+      .map(items => items)
+  );
+
+

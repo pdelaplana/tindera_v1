@@ -1,12 +1,9 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { AppState } from './state';
 import { AuthActions } from './state/auth/auth.actions';
-import { AuthState } from './state/auth/auth.state';
 import { MenuController, NavController } from '@ionic/angular';
-import { ofType } from '@ngrx/effects';
 import { inventoryActions } from './state/inventory/inventory.actions';
 import { ShopActions } from './state/shop/shop.actions';
 import { productActions } from './state/product/product.actions';
@@ -21,7 +18,8 @@ export class AppComponent implements OnInit {
   
   
   appPages = [
-    { title: 'Order', url: '/order', icon: 'cart' },
+    { title: 'Overview', url: '/home', icon: 'home' },
+    { title: 'Order', url: '/order', icon: 'fast-food' },
     { title: 'Sales', url: '/sales/orders', icon: 'cash' },
     { title: 'Products', url: '/products/list', icon: 'pricetags' },
     { title: 'Inventory', url: '/inventory/balance', icon: 'cube' },
@@ -53,7 +51,7 @@ export class AppComponent implements OnInit {
         } else {
           this.store.dispatch(ShopActions.loadShopState({ id: auth.shopIds[0] }));
           this.menuController.enable(auth.isAuthenticated);
-          this.navController.navigateRoot('order');
+          this.navController.navigateRoot('home');
         }
       }
     

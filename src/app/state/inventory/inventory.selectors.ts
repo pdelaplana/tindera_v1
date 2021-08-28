@@ -33,6 +33,7 @@ const groupByCategory = (array:InventoryItem[]): { category: string, inventoryIt
 }
 
 
+
 export const selectAllInventory = selectAll;
 
 export const selectInventoryState = (state: AppState) => state.inventory;
@@ -80,3 +81,14 @@ export const selectInventoryCount = (id: string) =>
   createSelector(
     selectInventoryState,
     (state) => state.counts.entities[id]);
+
+export const selectInventoryForReorder = () =>
+    createSelector(
+      selectInventoryState,
+      (state) => (Object.entries(state.items.entities))
+        .map(([id, item]) => item)
+        .filter(item => item.currentCount <= item.reorderLevel)
+        .sort((a: InventoryItem, b: InventoryItem) => {
+          return a.currentCount > b.currentCount ? 1 : -1;
+        })
+    );

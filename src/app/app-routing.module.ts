@@ -53,7 +53,11 @@ const routes: Routes = [
     path: 'setup/store',
     loadChildren: () => import('./pages/store-setup/store-setup.module').then( m => m.StoreSetupPageModule),
     canActivate:[AuthGuard]
+  },  {
+    path: 'home',
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
+
 
 ];
 
