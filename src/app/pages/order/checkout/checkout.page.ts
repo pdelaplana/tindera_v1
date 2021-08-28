@@ -64,7 +64,7 @@ export class CheckoutPage implements OnInit, OnDestroy {
       customerEmail: [''],
       customerPhone: [''],
       customerReference: [''],
-      paymentType: ['CASH'],
+      paymentType: [this.paymentTypes[0]],
       payment: [0.00],
       paymentf: [this.currencyPipe.transform(0, this.currencyCode)],
       changeDue: [0.00]

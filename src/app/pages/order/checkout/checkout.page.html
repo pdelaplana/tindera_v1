@@ -45,11 +45,11 @@
     <ion-item>
       <ion-label><h2>Payment Options</h2> </ion-label>
       <ion-select formControlName="paymentType">
-        <ion-select-option *ngFor="let paymentType of paymentTypes" value="{{paymentType.code}}">{{paymentType.description}}</ion-select-option>
+        <ion-select-option *ngFor="let paymentType of paymentTypes" [value]="paymentType">{{paymentType.description}}</ion-select-option>
       </ion-select>
     </ion-item>
 
-    <ng-container *ngIf="paymentType.value=='CASH'">
+    <ng-container *ngIf="paymentType.value.code=='CASH'">
       
       <ion-item >
         <ion-label class="field-label" color="medium"><h3>Cash Received</h3></ion-label>
