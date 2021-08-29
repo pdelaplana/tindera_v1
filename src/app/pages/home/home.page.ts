@@ -105,7 +105,7 @@ export class HomePage implements OnInit {
 
     switch (period){
       case 'last7Days':
-        startDate = moment().subtract(7, 'day').add(1,'day');
+        startDate = moment().add(1,'day').subtract(7, 'day');
         formatLabel = 'dd';
         label = 'This week'
         break;
@@ -136,7 +136,7 @@ export class HomePage implements OnInit {
 
     let currentDate = startDate;
     
-    while (currentDate < endDate){
+    while (currentDate <= endDate){
       chartData.push({x: moment(currentDate).format(formatLabel), y:0 })
       currentDate.add(1, 'day')
     }

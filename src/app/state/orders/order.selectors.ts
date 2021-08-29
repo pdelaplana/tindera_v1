@@ -56,7 +56,7 @@ export const selectOrdersByPeriod = (period: string) =>
           break;
         case 'last7Days':
           uot = 'day';
-          start = moment().subtract(7, 'day').startOf(uot);
+          start = moment().add(1, 'day').subtract(7, 'day').startOf(uot);
           end = moment().endOf(uot);
           break;
             
