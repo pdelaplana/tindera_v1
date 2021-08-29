@@ -20,7 +20,7 @@
     <ion-row>
       <ion-col>
         <div class="ion-text-center">
-          <ion-chip [color]="togglePeriodFilter('thisWeek')" (click)="filterByPeriod('thisWeek')">
+          <ion-chip [color]="togglePeriodFilter('last7Days')" (click)="filterByPeriod('last7Days')">
             <ion-label>1W</ion-label>
           </ion-chip>
           <ion-chip [color]="togglePeriodFilter('thisMonth')" (click)="filterByPeriod('thisMonth')">
@@ -121,7 +121,7 @@
               </ion-item>    
             </ion-list>
       
-            <ion-button class="ion-float-end" fill="clear" expand="block" color="primary" (click)="navigateToCart()">
+            <ion-button class="ion-float-end" fill="clear" expand="block" color="primary" (click)="navigateToLowInventoryAlerts()">
              
               <ion-text class="ion-margin-left" slot="start">
                 See  All

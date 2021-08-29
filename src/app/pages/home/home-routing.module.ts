@@ -7,7 +7,12 @@ const routes: Routes = [
   {
     path: '',
     component: HomePage
+  },
+  {
+    path: 'alerts',
+    loadChildren: () => import('./low-inventory-alerts/low-inventory-alerts.module').then( m => m.LowInventoryAlertsPageModule)
   }
+
 ];
 
 @NgModule({

@@ -12,6 +12,8 @@ import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { CurrencyPipe } from '@angular/common';
 import { PaymentType } from '@app/models/payment-type';
+import { NavController } from '@ionic/angular';
+import { NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -34,7 +36,7 @@ export class HomePage implements OnInit {
   items: InventoryItem[];
 
   filterLabel = 'This week';
-  filterPeriod = 'thisWeek';
+  filterPeriod = 'last7Days';
 
   private getSalesByPaymentType(orders:Order[]): { paymentType: string,  totalSale: number, orders: Order[]}[] {
     const paymentTypes = [];
@@ -102,8 +104,8 @@ export class HomePage implements OnInit {
     let formatLabel: string;
 
     switch (period){
-      case 'thisWeek':
-        startDate = moment().subtract(1, 'week').add(1,'day');
+      case 'last7Days':
+        startDate = moment().subtract(7, 'day').add(1,'day');
         formatLabel = 'dd';
         label = 'This week'
         break;
@@ -134,7 +136,7 @@ export class HomePage implements OnInit {
 
     let currentDate = startDate;
     
-    while (currentDate <= endDate){
+    while (currentDate < endDate){
       chartData.push({x: moment(currentDate).format(formatLabel), y:0 })
       currentDate.add(1, 'day')
     }
@@ -143,7 +145,7 @@ export class HomePage implements OnInit {
       .sort((a: Order, b: Order) => {
         const dateA = a.orderDate !== null ? a.orderDate.toDate().getTime() : 0;
         const dateB = b.orderDate !== null ? b.orderDate.toDate().getTime() : 0;
-        return dateB - dateA;
+        return dateA - dateB;
       })
       .forEach(order => {
         const thisLabel = moment(order.orderDate.toDate()).format(formatLabel);
@@ -229,7 +231,8 @@ export class HomePage implements OnInit {
 
   constructor(
     private store: Store<AppState>,
-    private currencyPipe: CurrencyPipe
+    private currencyPipe: CurrencyPipe,
+    private navController: NavController
   ) { 
     Chart.register(...registerables);
     
@@ -249,7 +252,7 @@ export class HomePage implements OnInit {
 
   ionViewDidEnter() {
     this.createSalesTrendChart();
-    this.filterByPeriod('thisWeek');
+    this.filterByPeriod('last7Days');
     /*
     this.store.select(selectOrdersByPeriod('thisWeek'))
       .pipe(take(1))
@@ -270,7 +273,7 @@ export class HomePage implements OnInit {
     this.filterPeriod = period;
 
     switch (period){
-      case 'thisWeek':
+      case 'last7Days':
         this.filterLabel = 'This week'
         break;
       case 'thisMonth':
@@ -296,6 +299,12 @@ export class HomePage implements OnInit {
     });
  
   }
+
+  navigateToLowInventoryAlerts(){
+    const navigationExtras: NavigationExtras = { state: {  } };
+    this.navController.navigateForward('home/alerts', navigationExtras);
+  }
+
 
 
 }
