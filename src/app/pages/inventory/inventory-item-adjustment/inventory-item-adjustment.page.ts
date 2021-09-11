@@ -105,6 +105,7 @@ export class InventoryItemAdjustmentPage implements OnInit, OnDestroy {
             id:'',
             transactionType: InventoryTransactionType.Adjustment,
             itemId: this.item.id,
+            itemName: this.item.name,
             transactionOn: new Date(this.adjustedOn.value),
             quantityIn: qtyIn,
             quantityOut: qtyOut,

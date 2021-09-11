@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { ShopCurrencyPipe } from './pipes/shop-currency.pipe';
 import { CurrencyInputComponent } from './currency-input/currency-input.component';
 import { PaymentTypeBadgeComponent } from './payment-type-badge/payment-type-badge.component';
+import { TextAvatarComponent } from './text-avatar/text-avatar.component';
 
 
 
@@ -18,7 +19,8 @@ import { PaymentTypeBadgeComponent } from './payment-type-badge/payment-type-bad
     CategoryLabelPipe,
     UomLabelPipe,
     TransactionTypePipe,
-    ShopCurrencyPipe
+    ShopCurrencyPipe,
+    TextAvatarComponent
   ],
   imports: [
     CommonModule,
@@ -32,7 +34,8 @@ import { PaymentTypeBadgeComponent } from './payment-type-badge/payment-type-bad
     CategoryLabelPipe,
     UomLabelPipe,
     TransactionTypePipe,
-    ShopCurrencyPipe
+    ShopCurrencyPipe,
+    TextAvatarComponent
   ]
 })
 export class SharedComponentsModule { }

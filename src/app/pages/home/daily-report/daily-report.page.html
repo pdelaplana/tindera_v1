@@ -1,0 +1,109 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Daily Report - {{currentDate | date: 'mediumDate' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  fill="clear" (click)="picker.open()">
+        <ion-icon name="calendar-sharp">
+          <ion-datetime #picker 
+          displayFormat="MMMM DD YYYY" 
+          pickerFormat="MMMM DD YYYY" 
+          class="ion-no-padding ion-hide"
+          (ionChange)="dateChanged(picker.value)"
+          >
+        </ion-datetime>
+        </ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-card color="tertiary">
+          <ion-card-content>
+            <div class="ion-text-center ion-margin ion-padding">
+              <h3 color="medium">Total Sales</h3>
+              <h1>{{ totalSales | shopCurrency }}</h1>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card >
+          <ion-card-content>
+            <div class="ion-text-center ion-margin ion-padding">
+              <h3 color="medium">Cash Sales</h3>
+              <h1>{{ totalCashSales | shopCurrency }}</h1>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <div class="ion-text-center ion-margin ion-padding">
+              <h3 color="medium">Online Sales</h3>
+              <h1>{{ totalOnlineSales | shopCurrency }}</h1>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list lines="full" inset="true" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
+          <ion-item>
+            <ion-note slot="start">Sales </ion-note>  
+          </ion-item>
+          <ion-item *ngFor="let order of (orders)" lines="full"  button="true" detail="true" (click)="navigateToOrderDetails(order.id)">
+            <ion-avatar slot="start">
+              <app-text-avatar [text]="order.paymentType.description" textColor="white"></app-text-avatar>
+            </ion-avatar>
+            <ion-label slot="start">
+              <h2>
+                {{ order.orderDate.toDate() | date:'medium' }} 
+              </h2>
+              <ion-note color="medium">{{ order.servedBy ? 'Served by ' + order.servedBy.displayName : '' }}</ion-note>
+            </ion-label>
+            <ion-label slot="start" class="ion-text-center">
+              <app-payment-type-badge [text]="order.paymentType.description" [color]="medium"></app-payment-type-badge>
+            </ion-label>
+            <ion-label  class="ion-text-right" color="medium"><strong>{{ order.totalSale | shopCurrency }}</strong></ion-label>
+            <ion-note slot="end" class="ion-text-right" style="min-width:5px">&nbsp;</ion-note>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">
+          <ion-item>
+            <ion-note slot="start">Inventory Movement</ion-note>
+            <ion-note slot="end" class="ion-text-right">Qty +/-</ion-note>
+            <ion-note slot="end" class="ion-text-right" style="min-width:20px">&nbsp;</ion-note>
+          </ion-item>
+      
+          <ion-item *ngFor="let transaction of (transactions)" button="true" detail="true" (click)="navigateToInventoryTransactions(transaction.itemId)">
+            
+            <ion-label >
+              <h2 color="medium"> 
+                {{ transaction.itemName }}
+              </h2>
+            </ion-label>
+            
+            <ion-label slot="end" class="ion-text-right" >
+              +{{ transaction.quantityIn }} <br/>
+              -{{ transaction.quantityOut }}
+            </ion-label>
+            <ion-note slot="end" class="ion-text-right" style="width:20px"></ion-note>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -4,6 +4,7 @@ import { startWith } from 'rxjs/operators';
 import { AppState } from '..';
 import { inventoryItemAdapter, inventoryTransactionAdapter } from './inventory.adapter';
 import { InventoryState } from './inventory.state';
+import * as moment from 'moment';
 
 const adapter = inventoryItemAdapter;
 
@@ -49,10 +50,44 @@ export const selectAllAndGroupInventory = (searchTerm: string) =>
     }
   )
 
-export const selectInventoryTransactions = (id: string ) =>
+export const selectInventoryTransactions = () => 
   createSelector(
     selectInventoryState,
-    (state) => state.transactions.entities
+    state => 
+      Object.entries(state.transactions.entities).map(([id,transaction]) => transaction)
+  );
+
+export const selectInventoryTransactionsOfItem = (id: string ) =>
+  createSelector(
+    selectInventoryTransactions(),
+    (transactions) => {
+      return transactions.filter(transaction => transaction.itemId == id);
+    }
+  );
+
+export const selectInventoryTransactionsByPeriod = (fromDate: Date, toDate: Date) =>
+  createSelector(
+    selectInventoryTransactions(),
+    (transactions) => {
+      return transactions.filter(transaction => moment(transaction.transactionOn.toDate()).isBetween(moment(fromDate),moment(toDate)));
+    }
+  );
+
+export const selectInventoryItemTransactions = (itemId: string, fromDate: Date, toDate: Date) =>
+  createSelector(
+    selectInventoryTransactions(),
+    (transactions) => {
+      if ((fromDate != undefined) && (toDate != undefined)){
+        return transactions.filter(transaction => 
+          transaction.itemId == itemId 
+          && moment(transaction.transactionOn.toDate()).isBetween(moment(fromDate),moment(toDate)));
+      } else {
+        return transactions.filter(transaction => 
+          transaction.itemId == itemId 
+          );
+      }
+      
+    }
   );
 
 export const selectInventoryItem = ( id: string) => 
@@ -64,7 +99,6 @@ export const selectInventoryItem = ( id: string) =>
 export const selectItemTransactions = ( id: string) =>
   createSelector(
     selectInventoryState,
-    //state => Object.keys(state.transactions.entities).filter(t => t.)
     state => (Object.entries(state.transactions.entities))
       .filter(([id,transaction]) => transaction.itemId == id)
       .map(([id,transaction]) => transaction)
