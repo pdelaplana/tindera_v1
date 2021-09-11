@@ -184,7 +184,7 @@ export class HomePage implements OnInit {
 
     this.chart.data.datasets = [{
       label: 'Total',
-      fill: true,
+      fill: false,
       lineTension: 0.5,
       backgroundColor: 'rgba(75,192,192,0.4)',
       borderColor: 'rgba(75,192,192,1)',
@@ -199,14 +199,14 @@ export class HomePage implements OnInit {
       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
       pointHoverBorderWidth: 2,
-      pointRadius: 1,
+      pointRadius: 2,
       pointHitRadius: 10,
       spanGaps: true,
       data: chartData
     },
     {
       label: 'Cash',
-      fill: true,
+      fill: false,
       lineTension: 0.5,
       backgroundColor: 'rgba(103, 58, 183,1)',
       borderColor: 'rgba(103, 58, 183, 1)',
@@ -221,14 +221,14 @@ export class HomePage implements OnInit {
       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
       pointHoverBorderWidth: 2,
-      pointRadius: 1,
+      pointRadius: 2,
       pointHitRadius: 10,
       spanGaps: true,
       data: cashSalesData
     },
     {
       label: 'FoodPanda',
-      fill: true,
+      fill: false,
       lineTension: 0.5,
       backgroundColor: 'rgba(129, 199, 132,1)',
       borderColor: 'rgba(129, 199, 132,1)',
@@ -243,14 +243,14 @@ export class HomePage implements OnInit {
       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
       pointHoverBorderWidth: 2,
-      pointRadius: 1,
+      pointRadius: 2,
       pointHitRadius: 10,
       spanGaps: true,
       data: foodPandaSalesData
     },
     {
       label: 'GrabFood',
-      fill: true,
+      fill: false,
       lineTension: 0.5,
       backgroundColor: 'rgba(144, 164, 174,1)',
       borderColor: 'rgba(144, 164, 174, 1)',
@@ -265,7 +265,7 @@ export class HomePage implements OnInit {
       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
       pointHoverBorderWidth: 2,
-      pointRadius: 1,
+      pointRadius: 2,
       pointHitRadius: 10,
       spanGaps: true,
       data: grabFoodSalesData
