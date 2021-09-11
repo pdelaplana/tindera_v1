@@ -4,19 +4,38 @@
       <ion-menu-button  menu="mainMenu" autoHide="true"></ion-menu-button>
     </ion-buttons>
     <ion-title>Overview</ion-title>
-    <ion-buttons slot="end">
-      <ion-button  fill="clear" (click)="addNewItem()">
-        <ion-icon name="ellipsis-vertical"></ion-icon>
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content class="gray-background">
 
-  
   <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+         
+          <ion-card-content>
+           
+            <div class="ion-text-center  ion-padding ion-margin">
+              <h1>Good day, <br/> <ion-text color="secondary">{{ name }}</ion-text> !</h1>
+              <h1 style="margin-top:25px">Yesterday, you sold {{ productsSoldYesterday }} products and made {{ amountProductsSoldYesteday | shopCurrency}} in sales.</h1>
+            </div>
+            
+            <div >
+              <ion-button  fill="solid" expand="block" color="primary" (click)="navigateToDailyReport()">
+             
+                <ion-text class="ion-margin-left" slot="start">
+                Open Your Daily Report
+                </ion-text>
+
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
     <ion-row>
       <ion-col>
         <div class="ion-text-center">
@@ -75,7 +94,10 @@
             
             <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
               <ion-item *ngFor="let paymentType of (salesByPaymentType)">
-                <ion-note slot="start" color="medium"><h2>{{ paymentType.description }}</h2></ion-note>
+                <ion-avatar slot="start">
+                  <app-text-avatar [text]="paymentType.description" textColor="white"></app-text-avatar>
+                </ion-avatar>
+                <ion-note slot="" color="medium" style="max-width:100px"><h2>{{ paymentType.description }}</h2></ion-note>
                 <ion-label slot="end" class="ion-text-end" >
                   {{ paymentType.totalSale | shopCurrency}}
                 </ion-label>
@@ -115,7 +137,7 @@
           </ion-card-header>
           <ion-card-content style="overflow: auto;">
             <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
-              <ion-item *ngFor="let item of (items)">
+              <ion-item *ngFor="let item of (itemsForReorder)">
                 <ion-label slot="start" color="medium"><h2>{{ item.name }}</h2></ion-label>
                 <ion-label slot="end" class="ion-text-end">{{ item.currentCount  }}</ion-label>
               </ion-item>    
@@ -135,6 +157,7 @@
       </ion-col>
     </ion-row>
 
+    
   </ion-grid>
  
 </ion-content>

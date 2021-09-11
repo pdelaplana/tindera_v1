@@ -31,6 +31,12 @@ const reducer = createReducer(
       items: inventoryItemAdapter.updateOne(update, state.items)
     }
   }),
+  on(inventoryActions.loadTransactionsSuccess, (state, { transactions }) => {
+    return {
+      ...state,
+      transactions: inventoryTransactionAdapter.upsertMany(transactions, state.transactions)
+    } 
+  }),
   on(inventoryActions.loadItemTransactionsSuccess, (state, { transactions }) => {
     return {
       ...state,

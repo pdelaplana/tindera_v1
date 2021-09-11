@@ -40,10 +40,13 @@
     </ion-item>
     
     <ion-item *ngFor="let order of (orders$|async)" lines="full"  button="true" detail="true" (click)="navigateToDetails(order.id)">
+      <ion-avatar slot="start">
+        <app-payment-type-badge [text]="order.paymentType.description" [color]="primary"></app-payment-type-badge>
+      </ion-avatar>
       <ion-label>
-        <app-payment-type-badge [text]="order.paymentType" [color]="primary"></app-payment-type-badge>
+        
         <h2>{{ order.orderDate.toDate() | date:'medium' }} </h2>
-        <ion-note>{{ order.servedBy ? 'Served by: ' + order.servedBy.displayName : '' }}</ion-note>
+        <ion-note>{{ order.servedBy ? 'Served by ' + order.servedBy.displayName : '' }}</ion-note>
        
       </ion-label>
       <ion-icon slot="start" name="radio-button-off" *ngIf="!order.paymentReceived" color="danger" title="Payment not rceived"></ion-icon>

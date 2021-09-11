@@ -80,6 +80,17 @@ export const selectOrdersByPeriod = (period: string) =>
     }
   );
 
+export const selectOrdersBetweenDates = (toDate: Date, fromDate: Date) => 
+  createSelector(
+    selectAllOrders(),
+    (state: Order[]) => {
+      let uot: moment.unitOfTime.StartOf;
+      let start = moment(toDate).startOf('day');
+      let end = moment(fromDate).endOf('day');      
+      return state.filter(order => moment(order.orderDate.toDate()).isBetween(start, end));
+    }
+  );
+
 export const selectOrdersToday = () => 
   createSelector(
     selectOrderState,

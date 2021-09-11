@@ -23,17 +23,23 @@ import { NavigationExtras } from '@angular/router';
 })
 export class HomePage implements OnInit {
 
-  @ViewChild('chart') chart;
+  @ViewChild('chart') viewChart;
+
+  chart:any;
 
   currencyCode: string;
   paymentTypes: PaymentType[];
+
+  name: string;
+  productsSoldYesterday: number;
+  amountProductsSoldYesteday: number;
   
-  showSalesSummary: boolean = true;
   salesByPaymentType: any;
   topSellingProducts: any[] = [];
+  itemsForReorder: InventoryItem[];
+
 
   orders$: Observable<Order[]>;
-  items: InventoryItem[];
 
   filterLabel = 'This week';
   filterPeriod = 'last7Days';
@@ -54,20 +60,6 @@ export class HomePage implements OnInit {
         }
       })
       return paymentTypes;
-      /*
-      .reduce((groups: { paymentType: string, totalSale: number,  orders: Order[]}[], thisOrder:  Order) => {
-        let thisPaymentType = thisOrder.paymentType.description;
-        if (thisPaymentType == null) thisPaymentType = 'None';
-        let found = groups.find(group => group.paymentType === thisPaymentType);
-        if (found === undefined) {
-          found = { paymentType: thisPaymentType, totalSale: 0, orders: [] };
-          groups.push(found);
-        }
-        found.totalSale += Number(thisOrder.totalSale);
-        found.orders.push(thisOrder);
-        return groups;
-      }, [])
-      */
   }
 
   private getTopSellingProducts(orders: Order[]){
@@ -131,13 +123,21 @@ export class HomePage implements OnInit {
         break;
     }
 
-    const chartData = []
+    const chartData = [];
+    const cashSalesData = [];
+    const foodPandaSalesData = [];
+    const grabFoodSalesData = [];
+    
     const endDate = moment();
 
     let currentDate = startDate;
     
     while (currentDate <= endDate){
-      chartData.push({x: moment(currentDate).format(formatLabel), y:0 })
+      chartData.push({x: moment(currentDate).format(formatLabel), y:0 });
+      cashSalesData.push({x: moment(currentDate).format(formatLabel), y:0 });
+      foodPandaSalesData.push({x: moment(currentDate).format(formatLabel), y:0 });
+      grabFoodSalesData.push({x: moment(currentDate).format(formatLabel), y:0 });
+      
       currentDate.add(1, 'day')
     }
 
@@ -153,7 +153,29 @@ export class HomePage implements OnInit {
         if (found !== undefined) {
           found.y += Number(order.totalSale);
         }
-      
+
+        // cash sales data
+        if (order.paymentType.code == 'CASH'){
+          found = cashSalesData.find(data => data.x === thisLabel);
+          if (found !== undefined) {
+            found.y += Number(order.totalSale);
+          }
+        }
+        
+        // food panda sales data
+        if (order.paymentType.code == 'PANDA'){
+          found = foodPandaSalesData.find(data => data.x === thisLabel);
+          if (found !== undefined) {
+            found.y += Number(order.totalSale);
+          }
+        }
+        // grab food sales data
+        if (order.paymentType.code == 'GRAB'){
+          found = grabFoodSalesData.find(data => data.x === thisLabel);
+          if (found !== undefined) {
+            found.y += Number(order.totalSale);
+          }
+        }
     })
 
     this.chart.data.labels = [];
@@ -161,8 +183,8 @@ export class HomePage implements OnInit {
     this.chart.update();
 
     this.chart.data.datasets = [{
-      label: 'Amount Sold',
-      fill: true,
+      label: 'Total',
+      fill: false,
       lineTension: 0.5,
       backgroundColor: 'rgba(75,192,192,0.4)',
       borderColor: 'rgba(75,192,192,1)',
@@ -177,17 +199,84 @@ export class HomePage implements OnInit {
       pointHoverBackgroundColor: 'rgba(75,192,192,1)',
       pointHoverBorderColor: 'rgba(220,220,220,1)',
       pointHoverBorderWidth: 2,
-      pointRadius: 1,
+      pointRadius: 2,
       pointHitRadius: 10,
       spanGaps: true,
       data: chartData
-    }];
+    },
+    {
+      label: 'Cash',
+      fill: false,
+      lineTension: 0.5,
+      backgroundColor: 'rgba(103, 58, 183,1)',
+      borderColor: 'rgba(103, 58, 183, 1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 2,
+      pointHitRadius: 10,
+      spanGaps: true,
+      data: cashSalesData
+    },
+    {
+      label: 'FoodPanda',
+      fill: false,
+      lineTension: 0.5,
+      backgroundColor: 'rgba(129, 199, 132,1)',
+      borderColor: 'rgba(129, 199, 132,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 2,
+      pointHitRadius: 10,
+      spanGaps: true,
+      data: foodPandaSalesData
+    },
+    {
+      label: 'GrabFood',
+      fill: false,
+      lineTension: 0.5,
+      backgroundColor: 'rgba(144, 164, 174,1)',
+      borderColor: 'rgba(144, 164, 174, 1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 2,
+      pointHitRadius: 10,
+      spanGaps: true,
+      data: grabFoodSalesData
+    }
+  ];
 
     this.chart.update();
   }
 
   createSalesTrendChart() {    
-    this.chart = new Chart(this.chart.nativeElement, {
+    this.chart = new Chart(this.viewChart.nativeElement, {
       type: 'line',
       data: {
         datasets: []
@@ -235,31 +324,30 @@ export class HomePage implements OnInit {
     private navController: NavController
   ) { 
     Chart.register(...registerables);
-    
   }
 
   ngOnInit() {
+    this.store.select(state => state.auth.displayName).subscribe(name => {
+      this.name = name.split(" ")[0];
+    });
     this.store.select(state => state.shop)
       .subscribe((shop) => {
         this.currencyCode = shop.currencyCode;
         this.paymentTypes = shop.paymentTypes;
       })
     this.store.select(selectInventoryForReorder()).subscribe(items => {
-      this.items = items.slice(0,5);
+      this.itemsForReorder = items.slice(0,5);
     });
+    this.store.select(selectOrdersByPeriod('yesterday')).subscribe(orders => {
+      this.amountProductsSoldYesteday = orders.reduce((sum, current) => sum + current.totalSale, 0);
+      this.productsSoldYesterday = orders.reduce((sum, current) => sum + current.orderItems.length, 0);
+    })
     
   }
 
   ionViewDidEnter() {
     this.createSalesTrendChart();
     this.filterByPeriod('last7Days');
-    /*
-    this.store.select(selectOrdersByPeriod('thisWeek'))
-      .pipe(take(1))
-      .subscribe(orders =>{
-        this.pushData(orders, 'thisWeek');
-      })
-    */
   }
 
   togglePeriodFilter(period: string){
@@ -305,6 +393,10 @@ export class HomePage implements OnInit {
     this.navController.navigateForward('home/alerts', navigationExtras);
   }
 
+  navigateToDailyReport(){
+    const navigationExtras: NavigationExtras = { state: {  } };
+    this.navController.navigateForward('home/report', navigationExtras);
+  }
 
 
 }

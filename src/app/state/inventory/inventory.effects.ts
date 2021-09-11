@@ -150,11 +150,28 @@ export class InventoryEffects{
     })  
   ),{ dispatch: false });
 
+  loadTransactions = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.loadTransactions),
+    switchMap(action => {
+      const result = this.inventoryTransactionService.getTransactionsByDate(action.fromDate, action.toDate);
+      return result.pipe()
+    }),
+
+    map( arr => {
+      return inventoryActions.loadTransactionsSuccess({transactions: arr})
+    }),
+
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.loadTransactionsFail({error}));
+      return caught;
+    })
+  ));
+
   loadItemTransactions = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.loadItemTransactions),
     switchMap(action => {
-      this.inventoryTransactionService.setCollection(this.shopid, action.itemdId);
-      const result = this.inventoryTransactionService.getTransactions();
+      //this.inventoryTransactionService.setCollection(this.shopid, action.itemdId);
+      const result = this.inventoryTransactionService.getTransactions(action.itemdId);
       return result.pipe()
     }),
 
@@ -175,7 +192,7 @@ export class InventoryEffects{
         id:'',
         ...action.transaction
       }
-      this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
+      //this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
       const result = await this.inventoryTransactionService.add(data);
       return inventoryActions.receiveItemSuccess({
         transaction: result
@@ -203,7 +220,7 @@ export class InventoryEffects{
         id:'',
         ...action.transaction
       }
-      this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
+      //this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
       const result = await this.inventoryTransactionService.add(data);
 
       let balance = 0;

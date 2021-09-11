@@ -147,6 +147,7 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
             id:'',
             transactionType: InventoryTransactionType.CountAdjustment,
             itemId: this.item.id,
+            itemName: this.item.name,
             transactionOn: new Date(),
             quantityIn: this.diff > 0 ? this.diff : 0 ,
             quantityOut:  this.diff < 0 ? Math.abs(this.diff) : 0,

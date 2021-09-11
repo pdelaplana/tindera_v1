@@ -17,13 +17,23 @@ export class InventoryTransactionService extends RepositoryService<InventoryTran
     public firestore: AngularFirestore
   ) { 
     super(store,firestore);
+    this.store.select(state => state.shop.id).subscribe(
+      shopId => this.collectionName = `shops/${shopId}/inventoryTransactions`
+    );
   }
 
   setCollection(shopId: string, itemId: string){
-    this.collectionName = `shops/${shopId}/inventory/${itemId}/transactions`;
+    //this.collectionName = `shops/${shopId}/inventory/${itemId}/transactions`;
   }
 
-  getTransactions(){
-    return this.query([]);
+  getTransactions(itemId:string){
+    return this.query([{name: 'itemId', operator: '==', value: itemId}]);
+  }
+
+  getTransactionsByDate(fromDate: Date, toDate: Date){
+    return this.query([
+      {name: 'transactionOn', operator: '>=', value: fromDate}, 
+      {name: 'transactionOn', operator: '<=', value: toDate}
+    ]);
   }
 }

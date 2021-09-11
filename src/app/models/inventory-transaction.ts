@@ -5,6 +5,7 @@ import { InventoryTransactionType } from './types';
 export interface InventoryTransaction extends Entity{
   transactionType: InventoryTransactionType,
   itemId: string;
+  itemName: string;
   userId: string;
   transactionOn: Date | any;
   quantityIn: number,

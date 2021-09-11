@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { AppState } from '@app/state';
 import { inventoryActions } from '@app/state/inventory/inventory.actions';
-import { selectInventoryTransactions, selectItemTransactions } from '@app/state/inventory/inventory.selectors';
+import { selectInventoryItemTransactions } from '@app/state/inventory/inventory.selectors';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -16,24 +16,21 @@ import { map } from 'rxjs/operators';
 export class InventoryItemTransactionsPage implements OnInit {
 
   private itemId : string;
+  private fromDate: Date;
+  private toDate: Date;
   transactions$: Observable<InventoryTransaction[]>;
   transactions: InventoryTransaction[];
 
   constructor(
     private store: Store<AppState>,
     private router: Router
-    
   ) { 
     if (this.router.getCurrentNavigation().extras.state) {
       this.itemId = this.router.getCurrentNavigation().extras.state.itemId;
+      this.fromDate = this.router.getCurrentNavigation().extras.state.fromDate;
+      this.toDate = this.router.getCurrentNavigation().extras.state.toDate;
     } 
-    //this.transactions$ = this.store.select(selectItemTransactions(this.itemId));
-    
-    this.transactions$ = this.store.select(state => 
-      Object.entries(state.inventory.transactions.entities)
-        .filter(([id,transaction])=>transaction.itemId == this.itemId)
-        .map(([id,transaction]) => transaction)
-    )
+    this.transactions$ = this.store.select(selectInventoryItemTransactions(this.itemId, this.fromDate, this.toDate));
     
     this.transactions$ = this.transactions$.pipe(
       map(data =>{

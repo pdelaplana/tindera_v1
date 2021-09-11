@@ -16,7 +16,7 @@ export class InventoryCountService extends RepositoryService<InventoryCount>{
   ) { 
     super(store,firestore);
     this.store.select(state => state.shop.id).subscribe(
-      shopId => this.collectionName = `shops/${shopId}/counts`
+      shopId => this.collectionName = `shops/${shopId}/inventoryCounts`
     );
   }
 

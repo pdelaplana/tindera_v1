@@ -18,6 +18,7 @@ import { Observable } from 'rxjs';
 export class InventoryItemReceivePage implements OnInit {
 
   itemId: string;
+  itemName: string;
   item$: Observable<InventoryItem>;
   inventoryReceiveForm : FormGroup;
 
@@ -30,6 +31,7 @@ export class InventoryItemReceivePage implements OnInit {
       this.itemId = this.router.getCurrentNavigation().extras.state.itemId;
     } 
     this.item$ = this.store.select(selectInventoryItem(this.itemId));
+    this.item$.subscribe(item => this.itemName = item.name)
 
     this.inventoryReceiveForm = this.formBuilder.group({
       count: [0, Validators.required],
@@ -61,6 +63,7 @@ export class InventoryItemReceivePage implements OnInit {
         id:'',
         transactionType: InventoryTransactionType.Receipt,
         itemId: this.itemId,
+        itemName: this.itemName,
         transactionOn: new Date(this.receivedOn.value),
         quantityIn: Number(this.count.value),
         quantityOut: 0,
