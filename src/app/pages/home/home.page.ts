@@ -91,6 +91,40 @@ export class HomePage implements OnInit {
   
   pushChartData(orders: Order[], period: string){
     
+    const chartDataByPaymentType = (order: Order, paymentType: string, dataLabel: string, chartData: any[]) =>{
+       if (paymentType == 'Total' || order.paymentType.code == paymentType){
+        let found = chartData.find(data => data.x === dataLabel);
+        if (found !== undefined) {
+          found.y += Number(order.totalSale);
+        }
+      }
+    }
+
+    const createChartDataSet = (label: string, color: string, backgroundColor: string, data: any[] ) =>{
+      return {
+        label: label,
+        fill: false,
+        lineTension: 0.5,
+        backgroundColor: backgroundColor ?? color,
+        borderColor: color,
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: color,
+        pointBackgroundColor: '#fff',
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: color,
+        pointHoverBorderColor: color,
+        pointHoverBorderWidth: 2,
+        pointRadius: 2,
+        pointHitRadius: 10,
+        spanGaps: true,
+        data: data
+      }
+    }
+
     let startDate: moment.Moment;
     let label = '';
     let formatLabel: string;
@@ -149,129 +183,32 @@ export class HomePage implements OnInit {
       })
       .forEach(order => {
         const thisLabel = moment(order.orderDate.toDate()).format(formatLabel);
-        let found = chartData.find(data => data.x === thisLabel);
-        if (found !== undefined) {
-          found.y += Number(order.totalSale);
-        }
 
-        // cash sales data
-        if (order.paymentType.code == 'CASH'){
-          found = cashSalesData.find(data => data.x === thisLabel);
-          if (found !== undefined) {
-            found.y += Number(order.totalSale);
-          }
-        }
+        chartDataByPaymentType(order, 'Total', thisLabel, chartData);
+        chartDataByPaymentType(order, 'CASH', thisLabel, cashSalesData);
+        chartDataByPaymentType(order, 'PANDA', thisLabel, foodPandaSalesData);
+        chartDataByPaymentType(order, 'GRAB', thisLabel, grabFoodSalesData);
         
-        // food panda sales data
-        if (order.paymentType.code == 'PANDA'){
-          found = foodPandaSalesData.find(data => data.x === thisLabel);
-          if (found !== undefined) {
-            found.y += Number(order.totalSale);
-          }
-        }
-        // grab food sales data
-        if (order.paymentType.code == 'GRAB'){
-          found = grabFoodSalesData.find(data => data.x === thisLabel);
-          if (found !== undefined) {
-            found.y += Number(order.totalSale);
-          }
-        }
     })
 
     this.chart.data.labels = [];
     this.chart.data.datasets = [];
     this.chart.update();
 
-    this.chart.data.datasets = [{
-      label: 'Total',
-      fill: false,
-      lineTension: 0.5,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(75,192,192,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(75,192,192,1)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 2,
-      pointHitRadius: 10,
-      spanGaps: true,
-      data: chartData
-    },
-    {
-      label: 'Cash',
-      fill: false,
-      lineTension: 0.5,
-      backgroundColor: 'rgba(103, 58, 183,1)',
-      borderColor: 'rgba(103, 58, 183, 1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(103, 58, 183, 1)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 2,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(103, 58, 183, 1)',
-      pointHoverBorderColor: 'rgba(103, 58, 183, 1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 2,
-      pointHitRadius: 10,
-      spanGaps: true,
-      data: cashSalesData
-    },
-    {
-      label: 'FoodPanda',
-      fill: false,
-      lineTension: 0.5,
-      backgroundColor: 'rgba(129, 199, 132,1)',
-      borderColor: 'rgba(129, 199, 132,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(129, 199, 132,1)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 2,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 2,
-      pointHitRadius: 10,
-      spanGaps: true,
-      data: foodPandaSalesData
-    },
-    {
-      label: 'GrabFood',
-      fill: false,
-      lineTension: 0.5,
-      backgroundColor: 'rgba(144, 164, 174,1)',
-      borderColor: 'rgba(144, 164, 174, 1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(144, 164, 174, 1)',
-      pointBackgroundColor: '#fff',
-      pointBorderWidth: 2,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 2,
-      pointHitRadius: 10,
-      spanGaps: true,
-      data: grabFoodSalesData
-    }
-  ];
-
+    this.chart.data.datasets.push(
+      createChartDataSet('Total', 'rgba(75,192,192,1)', 'rgba(75,192,192,.5)', chartData)
+    );
+    this.chart.data.datasets.push(
+      createChartDataSet('Cash', 'rgba(103, 58, 183,1)', 'rgba(103, 58, 183, .5)', cashSalesData )
+    );
+    this.chart.data.datasets.push(
+      createChartDataSet('FoodPanda', 'rgba(129, 199, 132,1)',  'rgba(129, 199, 132, .5)', foodPandaSalesData )
+    );
+    this.chart.data.datasets.push(
+      createChartDataSet('GrabFood', 'rgba(144, 164, 174, 1)', 'rgba(144, 164, 174, .5)', grabFoodSalesData )
+    );
+    
+    
     this.chart.update();
   }
 
