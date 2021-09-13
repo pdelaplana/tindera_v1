@@ -13,4 +13,6 @@ export interface InventoryTransaction extends Entity{
   reference: string;
   notes: string;
   adjustmentReason: InventoryAdjustmentReason;
+  unitCost: number,
+  supplier: string
 }

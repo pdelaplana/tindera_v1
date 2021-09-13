@@ -33,6 +33,8 @@ export class InventoryItemDetailsPage implements OnInit, OnDestroy {
   inventoryItemForm : FormGroup;
   inventoryCategories: InventoryCategory[];
 
+  averageUnitCost: number;
+
   uoms = UOMS;
   
   constructor(
@@ -59,7 +61,7 @@ export class InventoryItemDetailsPage implements OnInit, OnDestroy {
               this.inventoryItemForm = this.formBuilder.group({
                 name: [item.name, Validators.required],
                 description: [item.description],
-                category: [this.inventoryCategories.filter(c => c.code == item.category?.code)],
+                category: [this.inventoryCategories.find(c => c.code == item.category?.code) ?? null],
                 uom: [item.uom],
                 unitCost: [item.unitCost],
                 unitCostFormatted: [item.unitCost],

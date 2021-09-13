@@ -63,7 +63,9 @@ export class InventoryEffects{
         reorderLevel: action.item.reorderLevel,
         unitCost: action.item.unitCost,
         uom: action.item.uom,
-        notes: action.item.notes
+        notes: action.item.notes,
+        qtyReceivedToDate: 0,
+        costOfQtyReceivedToDate: 0
       }
       const result = await this.inventoryService.add(data)
       return inventoryActions.createItemSuccess({
@@ -188,11 +190,21 @@ export class InventoryEffects{
   receiveItem = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.receiveItem),
     switchMap(async (action) => {
+
       const data = <InventoryTransaction>{
         id:'',
-        ...action.transaction
+        transactionType: InventoryTransactionType.Receipt,
+        itemId: action.itemId,
+        itemName: action.itemName,
+        transactionOn: new Date(action.receivedOn),
+        quantityIn: Number(action.qtyReceived),
+        quantityOut: 0,
+        reference: action.reference,
+        notes: action.notes,
+        supplier: action.supplier,
+        unitCost: Number(action.unitCost)
       }
-      //this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
+
       const result = await this.inventoryTransactionService.add(data);
       return inventoryActions.receiveItemSuccess({
         transaction: result
@@ -207,6 +219,7 @@ export class InventoryEffects{
   receiveItemSuccess = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.receiveItemSuccess),
     map(async (action) => {
+      await this.inventoryService.updateAverageInventoryCostTotals(action.transaction.itemId, action.transaction.quantityIn, action.transaction.unitCost*action.transaction.quantityIn);
       const balance = await this.inventoryService.incrementBalanceOnHand(action.transaction.itemId, action.transaction.quantityIn)
       this.commonUiService.notify(`Inventory received successfully. New balance ${balance}`);
       return null;

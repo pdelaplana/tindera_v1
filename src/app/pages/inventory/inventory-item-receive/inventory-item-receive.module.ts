@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { InventoryItemReceivePageRoutingModule } from './inventory-item-receive-routing.module';
 
 import { InventoryItemReceivePage } from './inventory-item-receive.page';
+import { SharedComponentsModule } from '@app/components/shared-components.module';
 
 @NgModule({
   imports: [
@@ -14,6 +15,7 @@ import { InventoryItemReceivePage } from './inventory-item-receive.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
+    SharedComponentsModule,
     InventoryItemReceivePageRoutingModule
   ],
   declarations: [InventoryItemReceivePage]

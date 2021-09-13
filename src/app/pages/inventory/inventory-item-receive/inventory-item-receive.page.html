@@ -29,8 +29,22 @@
       </ion-item>
 
       <ion-item>
+        <ion-label position="stacked">Unit Cost  <ion-text color="danger">*</ion-text></ion-label>
+        <app-currency-input 
+            [amount]="unitCost.value" 
+            (amountChange)="amountChange($event)"
+            style="width:100%"
+        ></app-currency-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Supplier </ion-label>
+        <ion-input  type="text" formControlName="supplier" ></ion-input>   
+      </ion-item>
+
+      <ion-item>
         <ion-label position="stacked">Reference </ion-label>
-        <ion-input required type="text" formControlName="reference" ></ion-input>   
+        <ion-input  type="text" formControlName="reference" ></ion-input>   
       </ion-item>
 
       <ion-item>

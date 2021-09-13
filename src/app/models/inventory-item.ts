@@ -11,5 +11,7 @@ export interface InventoryItem extends Entity{
   currentCount: number;
   reorderLevel: number;
   notes: string;
+  qtyReceivedToDate: number,
+  costOfQtyReceivedToDate: number
 }
 
