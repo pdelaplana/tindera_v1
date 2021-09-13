@@ -52,7 +52,7 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
           this.productAddOns = product.productAddOns ?? [];
           this.imageUrl = product.imageUrl;
           
-          const category = this.productCategories.filter(c => c.code == product.productCategory?.code)
+          const category = this.productCategories.find(c => c.code == product.productCategory?.code)
           this.productForm = this.formBuilder.group({
             name: [product.name, Validators.required],
             description: [product.description],

@@ -67,7 +67,16 @@ export const inventoryActions = {
   ),
   receiveItem: createAction(
     '[Inventory] Receive item',
-    props<{ transaction: InventoryTransaction }>()
+    props<{ 
+      itemId: string, 
+      itemName: string, 
+      receivedOn: Date, 
+      qtyReceived: number, 
+      notes: string, 
+      reference: string,
+      unitCost: number,
+      supplier: string 
+    }>()
   ),
   receiveItemSuccess: createAction(
     '[Inventory] Receive item success',
