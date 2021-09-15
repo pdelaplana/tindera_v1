@@ -1,0 +1,79 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+     
+    <ion-title>Transaction Details</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+  
+    <ion-item>
+      <ion-label position="stacked">Transaction Type </ion-label>
+      <p>{{ transaction.transactionType | transactionType }}</p>   
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Date </ion-label>
+      <p>{{ transaction.transactionOn.toDate() | date:'medium'}}</p>   
+    </ion-item>
+
+    
+    <ng-container *ngIf="transaction.transactionType == 'receipt'">
+
+      <ion-item>
+        <ion-label position="stacked">Quantity Received </ion-label>
+        <p>{{ transaction.quantityIn }}</p>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Unit Cost </ion-label>
+        <p>{{ transaction.unitCost | shopCurrency }}</p>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Supplier </ion-label>
+        <p>{{ transaction.supplier }}</p>   
+      </ion-item>
+
+    </ng-container>
+
+    <ng-container *ngIf="transaction.transactionType == 'sale'">
+
+      <ion-item>
+        <ion-label position="stacked">Quantity Sold </ion-label>
+        <p>{{ transaction.quantityOut }}</p>   
+      </ion-item>
+
+    </ng-container>
+   
+    <ng-container *ngIf="transaction.transactionType == 'adjustment'">
+      
+      <ion-item>
+        <ion-label position="stacked">Quantity Adjusted </ion-label>
+        <p>{{ transaction.quantityIn - transaction.quantityOut }}</p>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Reason </ion-label>
+        <p>{{ transaction.adjustmentReason.description }}</p>   
+      </ion-item>
+
+    </ng-container>
+
+    <ion-item>
+      <ion-label position="stacked">Reference </ion-label>
+      <p>{{ transaction.reference }}</p>   
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Notes </ion-label>
+      <p>{{ transaction.notes}}</p>   
+    </ion-item>
+
+  </ion-list>
+
+</ion-content>

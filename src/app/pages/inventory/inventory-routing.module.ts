@@ -46,6 +46,11 @@ const routes: Routes = [
     path: 'adjust',
     loadChildren: () => import('./inventory-item-adjustment/inventory-item-adjustment.module').then( m => m.InventoryItemAdjustmentPageModule)
   },
+  {
+    path: 'transaction/details',
+    loadChildren: () => import('./inventory-item-transaction-details/inventory-item-transaction-details.module').then( m => m.InventoryItemTransactionDetailsPageModule)
+  },
+
  
   
 ];

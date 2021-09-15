@@ -86,9 +86,19 @@ export const selectInventoryItemTransactions = (itemId: string, fromDate: Date, 
           transaction.itemId == itemId 
           );
       }
-      
     }
   );
+
+export const selectInventoryTransaction = (transactionId: string) =>
+  createSelector(
+    selectInventoryTransactions(),
+    (transactions) => {
+      return transactions.find(transaction => 
+        transaction.id == transactionId 
+      );
+    }
+  );
+
 
 export const selectInventoryItem = ( id: string) => 
   createSelector(

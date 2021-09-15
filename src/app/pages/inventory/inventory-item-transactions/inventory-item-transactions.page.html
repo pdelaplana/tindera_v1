@@ -17,12 +17,12 @@
       <ion-note slot="end" class="ion-text-right" style="min-width:20px">&nbsp;</ion-note>
     </ion-item>
 
-    <ion-item *ngFor="let transaction of (transactions$ | async)">
+    <ion-item *ngFor="let transaction of (transactions$ | async)" button="true" (click)="navigateToItemTransactionDetails(transaction.id)">
       
       <ion-label >
-        <p>
+        <h2>
           {{ transaction.transactionType | transactionType }}
-        </p>
+        </h2>
         <p style="font-size:small">
           <ion-text color="medium">{{ transaction.transactionOn.toDate() | date  }}</ion-text>
         </p>

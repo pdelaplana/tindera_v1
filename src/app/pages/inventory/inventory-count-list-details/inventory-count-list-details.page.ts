@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { InventoryAdjustmentReason } from '@app/models/inventory-adjustment-reason';
 import { InventoryCount } from '@app/models/inventory-count';
 import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
-import { InventoryTransactionType } from '@app/models/types';
+import { inventoryAdjustmentReasons, InventoryTransactionType } from '@app/models/types';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
 import { inventoryActions } from '@app/state/inventory/inventory.actions';
@@ -27,6 +28,7 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
   count: InventoryCount;
   item: InventoryItem;
   inventoryCountForm: FormGroup;
+  inventoryAdjustmentReasons: InventoryAdjustmentReason[];
   
   constructor(
     private store: Store<AppState>,
@@ -36,6 +38,7 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
     private navController: NavController,
     private commonUIService: CommonUIService
   ) { 
+    this.store.select(state => state.shop).subscribe(shop => this.inventoryAdjustmentReasons = shop.inventoryAdjustmentReasons);
     if (this.router.getCurrentNavigation().extras.state) {
       const countId = this.router.getCurrentNavigation().extras.state.countId;
       this.store.select(selectInventoryCount(countId)).subscribe(count => {
@@ -44,7 +47,6 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
           this.item = item;
           this.diff = this.count.count - this.item.currentCount;
         });
-
       });
     }
 
@@ -143,9 +145,11 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
     this.commonUIService.confirmAction('Adjust Inventory', 'Continue and adjust inventory?').then(result => {
       if (result == 'continue') {
         if (this.diff != 0) {
+          const adjustmenReasonCode = (this.diff > 0) ? 'COUNTIN' : 'COUNTOUT';
+        
           const transaction = <InventoryTransaction>{
             id:'',
-            transactionType: InventoryTransactionType.CountAdjustment,
+            transactionType: InventoryTransactionType.Adjustment,
             itemId: this.item.id,
             itemName: this.item.name,
             transactionOn: new Date(),
@@ -153,6 +157,7 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
             quantityOut:  this.diff < 0 ? Math.abs(this.diff) : 0,
             reference: `count=${this.count.id}`,
             notes: '',
+            adjustmentReason: this.inventoryAdjustmentReasons.find(reason => reason.code == adjustmenReasonCode)
           }
           this.store.dispatch(inventoryActions.updateInventoryBalance({transaction}))
         }

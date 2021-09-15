@@ -110,6 +110,7 @@ export class InventoryItemAdjustmentPage implements OnInit, OnDestroy {
             quantityIn: qtyIn,
             quantityOut: qtyOut,
             notes: this.notes.value,
+            adjustmentReason: adjustmentReason
           }
         }))
 
