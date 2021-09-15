@@ -38,8 +38,8 @@ export class InventoryService extends RepositoryService<InventoryItem> {
   async updateAverageInventoryCostTotals(itemId: string, quantityReceived: number, costQuantityReceived: number){
     const item = await this.get(itemId);
 
-    item.qtyReceivedToDate =  (Number.isNaN(item.qtyReceivedToDate) ? 0 : item.qtyReceivedToDate) + Number(quantityReceived);
-    item.costOfQtyReceivedToDate = (Number.isNaN(item.costOfQtyReceivedToDate)  ? 0 : item.costOfQtyReceivedToDate) + Number(costQuantityReceived);
+    item.qtyReceivedToDate =  (item.qtyReceivedToDate == undefined || (Number.isNaN(item.qtyReceivedToDate)) ? 0 : item.qtyReceivedToDate) + Number(quantityReceived);
+    item.costOfQtyReceivedToDate = (item.costOfQtyReceivedToDate == undefined ||  (Number.isNaN(item.costOfQtyReceivedToDate))  ? 0 : item.costOfQtyReceivedToDate) + Number(costQuantityReceived);
     item.unitCost = item.costOfQtyReceivedToDate / item.qtyReceivedToDate;
     await this.update(item);
   }

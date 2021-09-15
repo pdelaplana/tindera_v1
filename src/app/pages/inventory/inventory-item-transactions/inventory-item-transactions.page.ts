@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { AppState } from '@app/state';
 import { inventoryActions } from '@app/state/inventory/inventory.actions';
 import { selectInventoryItemTransactions } from '@app/state/inventory/inventory.selectors';
+import { NavController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -23,7 +24,8 @@ export class InventoryItemTransactionsPage implements OnInit {
 
   constructor(
     private store: Store<AppState>,
-    private router: Router
+    private router: Router,
+    private navController: NavController
   ) { 
     if (this.router.getCurrentNavigation().extras.state) {
       this.itemId = this.router.getCurrentNavigation().extras.state.itemId;
@@ -42,6 +44,11 @@ export class InventoryItemTransactionsPage implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(inventoryActions.loadItemTransactions({ itemdId: this.itemId}));
+  }
+
+  navigateToItemTransactionDetails(transactionId: string){
+    const navigationExtras: NavigationExtras = { state: { transactionId } };
+    this.navController.navigateForward('inventory/transaction/details', navigationExtras);
   }
 
 }
