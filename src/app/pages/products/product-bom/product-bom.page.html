@@ -20,7 +20,10 @@
           [items]="inventoryItems"
           itemValueField="id"
           itemTextField="name"
-          [canSearch]="true">
+          [canSearch]="true"
+          [canAddItem]="true"
+          (onAddItem)="onAddInventoryItem($event)"
+          >
           <ng-template ionicSelectableHeaderTemplate>
             <ion-toolbar class="ion-no-border">    
             <ion-title>Select Item</ion-title>
@@ -29,8 +32,71 @@
                 <ion-icon name="close-outline"></ion-icon>
               </ion-button>
             </ion-buttons>
+            </ion-toolbar>
+          </ng-template>
+          <ng-template ionicSelectableAddItemTemplate >
+            <ion-content>
+              <form [formGroup]="addInventoryItemForm" >
+                <ion-list lines="full" >
+                  <ion-item>
+                    <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+                    <ion-input required type="text" formControlName="name" ></ion-input>   
+                  </ion-item>
+                  
+                  <ion-item>
+                    <ion-label position="stacked">Description</ion-label>
+                    <ion-input formControlName="description"></ion-input>   
+                  </ion-item>
             
-          </ion-toolbar>
+                  <ion-item>
+                    <ion-label position="stacked">Category <ion-text color="danger">*</ion-text></ion-label>
+                    <ion-select multiple="false" placeholder="" formControlName="category">
+                      <ion-select-option *ngFor="let category of categories" [value]="category">{{category.description}}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+            
+                  <ion-item>
+                    <ion-label position="stacked">Unit Of Measure <ion-text color="danger">*</ion-text></ion-label>
+                    <ion-select multiple="false" placeholder="" formControlName="uom">
+                      <ion-select-option *ngFor="let uom of uoms" value="{{uom.value}}">{{ uom.label }}</ion-select-option>    
+                    </ion-select>
+                  </ion-item>
+          
+                  <ion-item>
+                    <ion-label position="stacked">Reorder Level <ion-text color="danger">*</ion-text></ion-label>
+                    <ion-input inputmode="decimal" formControlName="reorderLevel" ></ion-input>
+                  </ion-item>
+            
+                  <ion-item>
+                    <ion-label position="stacked">Opening Balance <ion-text color="danger">*</ion-text></ion-label>
+                    <ion-input inputmode="decimal" formControlName="balance" ></ion-input>
+                  </ion-item>
+            
+                  <ion-item>
+                    <ion-label position="stacked">Notes </ion-label>
+                    <ion-textarea autoGrow="true" rows="3"></ion-textarea>
+                  </ion-item>
+                  
+                </ion-list>
+              </form>
+              
+            </ion-content>
+            <ion-footer>
+              <ion-toolbar>
+                <ion-row>
+                  <ion-col >
+                    <ion-button expand="full" (click)="inventoryItemLookup.hideAddItemTemplate()">
+                      Cancel
+                    </ion-button>
+                  </ion-col>
+                  <ion-col >
+                    <ion-button expand="full" (click)="addInventoryItem()">
+                      Add
+                    </ion-button>
+                  </ion-col>
+                </ion-row>
+              </ion-toolbar>
+            </ion-footer>
           </ng-template>
         </ionic-selectable>  
       </ion-item>

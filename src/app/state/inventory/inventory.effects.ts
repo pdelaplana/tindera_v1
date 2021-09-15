@@ -61,7 +61,7 @@ export class InventoryEffects{
         category: action.item.category,
         currentCount: action.item.currentCount,
         reorderLevel: action.item.reorderLevel,
-        unitCost: action.item.unitCost,
+        unitCost: 0,
         uom: action.item.uom,
         notes: action.item.notes,
         qtyReceivedToDate: 0,
