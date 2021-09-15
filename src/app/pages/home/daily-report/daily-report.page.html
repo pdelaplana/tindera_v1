@@ -70,9 +70,6 @@
               </h2>
               <ion-note color="medium">{{ order.servedBy ? 'Served by ' + order.servedBy.displayName : '' }}</ion-note>
             </ion-label>
-            <ion-label slot="start" class="ion-text-center">
-              <app-payment-type-badge [text]="order.paymentType.description" [color]="medium"></app-payment-type-badge>
-            </ion-label>
             <ion-label  class="ion-text-right" color="medium"><strong>{{ order.totalSale | shopCurrency }}</strong></ion-label>
             <ion-note slot="end" class="ion-text-right" style="min-width:5px">&nbsp;</ion-note>
           </ion-item>
