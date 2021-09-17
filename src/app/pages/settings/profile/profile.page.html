@@ -1,0 +1,29 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <form [formGroup]="profileForm">
+    <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    
+      <ion-item>
+        <ion-label position="stacked">Name <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input required type="text" formControlName="name" ></ion-input>   
+      </ion-item>
+      
+    </ion-list>
+  </form>  
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar >
+    <ion-button expand="block" color="primary" (click)="save()" >
+      Save
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

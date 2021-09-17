@@ -45,24 +45,19 @@ export class AuthenticationService {
     })
   }
 
-  signin(email, password){
+  signin(email: string, password: string){
     return this.fireauth.signInWithEmailAndPassword(email, password)
   }
 
-  registerUser(email, password, displayName) {
-    return this.fireauth.createUserWithEmailAndPassword(email, password)
-            .then(credential => {
-              credential.user.updateProfile({
-                displayName: displayName
-              });
-              return credential;
-            })
-            .then(credential =>{
-              this.userProfileService.add(credential.user.uid, <UserProfile>{
-                shopIds: []
-              })
-              return credential;
-            })
+  async registerUser(email: string, password: string, displayName: any) {
+    const credential = await this.fireauth.createUserWithEmailAndPassword(email, password);
+    credential.user.updateProfile({
+      displayName: displayName
+    });
+    this.userProfileService.add(credential.user.uid, <UserProfile>{
+      shopIds: []
+    });
+    return credential;
   }
 
   sendVerificationMail() {
@@ -72,18 +67,24 @@ export class AuthenticationService {
       })
   }
 
+  async updateProfile(displayName: string){
+    return this.fireauth.currentUser.then(user => user.updateProfile({
+      displayName: displayName
+    }))
+  }
+
   changePassword(){
     //return this.fireauth.sendPasswordResetEmail()
   }
 
   // Recover password
-  recoverPassword(passwordResetEmail) {
-    return this.fireauth.sendPasswordResetEmail(passwordResetEmail)
-    .then(() => {
+  async recoverPassword(passwordResetEmail: string) {
+    try {
+      await this.fireauth.sendPasswordResetEmail(passwordResetEmail);
       window.alert('Password reset email has been sent, please check your inbox.');
-    }).catch((error) => {
-      window.alert(error)
-    })
+    } catch (error) {
+      window.alert(error);
+    }
   }
 
   // Returns true when user is authenticated

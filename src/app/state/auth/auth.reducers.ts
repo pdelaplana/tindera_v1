@@ -46,7 +46,13 @@ const authReducer = createReducer(
   on(AuthActions.addShopIdSuccess, (state, { userId, shopId }) => ({
     ...state,
     shopIds: [...state.shopIds.filter(s=>s != shopId), shopId],
+  })),
+  on(AuthActions.updateProfileSuccess, (state, { displayName, photoUrl }) => ({
+    ...state,
+    displayName,
+    photoUrl
   }))
+
 
 );
 
