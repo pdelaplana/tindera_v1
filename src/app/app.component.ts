@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
     { title: 'Sales', url: '/sales/orders', icon: 'cash' },
     { title: 'Products', url: '/products/list', icon: 'pricetags' },
     { title: 'Inventory', url: '/inventory/balance', icon: 'cube' },
-    { title: 'Settings', url: '/folder/Archived', icon: 'cog' },
+    { title: 'Settings', url: '/settings', icon: 'cog' },
     { title: 'Log Out', url: 'logout', icon: 'log-out' },
   ];
 

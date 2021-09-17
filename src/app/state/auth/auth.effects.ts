@@ -84,4 +84,16 @@ export class AuthEffects {
       return caught;
     })
   ))
+
+  updateProfile = createEffect(() => this.actions.pipe(
+    ofType(AuthActions.updateProfile),
+    switchMap(async (action) =>{
+      await this.authenticationService.updateProfile(action.displayName)
+      return AuthActions.updateProfileSuccess({ displayName: action.displayName, photoUrl: '' });
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(AuthActions.updateProfileFail({error}));
+      return caught;
+    })
+  ))
 }

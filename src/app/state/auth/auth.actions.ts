@@ -85,6 +85,20 @@ export const AuthActions = {
     '[Auth] Send password reset'
   ),
 
+  updateProfile: createAction(
+    '[Auth] Update profile',
+    props<{ displayName: string, photoUrl: string}>()
+  ),
+  
+  updateProfileSuccess: createAction(
+    '[Auth] Update profile success',
+    props<{ displayName: string, photoUrl: string}>()
+  ),
+
+  updateProfileFail: createAction(
+    '[Auth] Update profile fail',
+    props<{ error: any }>()
+  ),
   
   
   
