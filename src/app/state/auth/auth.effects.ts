@@ -96,4 +96,16 @@ export class AuthEffects {
       return caught;
     })
   ))
+
+  changePassword = createEffect(() => this.actions.pipe(
+    ofType(AuthActions.changePassword),
+    switchMap(async (action) =>{
+      await this.authenticationService.changePassword(action.oldPassword, action.newPassword)
+      return AuthActions.changePasswordSuccess();
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(AuthActions.changePasswordFail({error}));
+      return caught;
+    })
+  ))
 }
