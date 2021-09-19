@@ -68,12 +68,11 @@ export const AuthActions = {
   
   changePassword: createAction(
     '[Auth] Change password',
-    props<{email: string, oldPassword: string, newPassword: string}>()
+    props<{oldPassword: string, newPassword: string}>()
   ),
   
   changePasswordSuccess: createAction(
-    '[Auth] Change password success',
-    props<{ expiresIn: string, expiresOn: Date }>()
+    '[Auth] Change password success'
   ),
   
   changePasswordFail: createAction(
@@ -99,6 +98,10 @@ export const AuthActions = {
     '[Auth] Update profile fail',
     props<{ error: any }>()
   ),
+
+  clearAuthActions: createAction(
+    '[Auth] Clear auth actions'
+  )
   
   
   

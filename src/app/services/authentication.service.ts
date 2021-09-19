@@ -1,5 +1,5 @@
 import { Injectable, NgZone } from '@angular/core';
-import { FirebaseApp } from '@angular/fire';
+import { } from '@angular/fire';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
@@ -9,6 +9,7 @@ import * as firebase from 'firebase/app';
 import { UserProfileService } from './firestore/user-profile.service';
 import { UserProfile } from '@app/models/user-profile';
 import { AuthState } from '@app/state/auth/auth.state';
+
 
 
 @Injectable({
@@ -73,8 +74,12 @@ export class AuthenticationService {
     }))
   }
 
-  changePassword(){
-    //return this.fireauth.sendPasswordResetEmail()
+  async changePassword(currentPassword: string, newPassword: string){
+    const user = await this.fireauth.currentUser;
+    const credentials = firebase.default.auth.EmailAuthProvider.credential(user.email, currentPassword);
+    return user.reauthenticateWithCredential(credentials).then(credential => {
+      credential.user.updatePassword(newPassword);
+    })
   }
 
   // Recover password

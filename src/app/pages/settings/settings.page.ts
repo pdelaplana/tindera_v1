@@ -21,4 +21,9 @@ export class SettingsPage implements OnInit {
     this.navController.navigateForward('settings/profile', navigationExtras);
   }
 
+  navigateToChangePassword(){
+    const navigationExtras: NavigationExtras = { state: {  } };
+    this.navController.navigateForward('settings/changepassword', navigationExtras);
+  }
+
 }
