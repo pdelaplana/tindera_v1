@@ -139,7 +139,9 @@ export class ProductDetailsPage implements OnInit, OnDestroy {
   }
 
 
-  async uploadFile(files: FileList){
+  async uploadFile(files:FileList){
+
+    //const files = (eventTarget as HTMLInputElement).files;
     const file = files.item(0);
     const fileName = file['name'];
 
