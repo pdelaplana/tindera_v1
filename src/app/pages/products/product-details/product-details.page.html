@@ -58,7 +58,7 @@
     </ion-item>
     <ion-item>
       <div class="ion-text-center" style=" margin:0 auto;">
-        <input class="ion-hide" type="file" #f accept="image/*" (change)="uploadFile($event.target.files)"/>
+        <input class="ion-hide" type="file" #f accept="image/*" (change)="uploadFile($any($event.target).files)"/>
         <ion-button (click)="f.click()">Upload</ion-button>
         <ion-button color="danger" *ngIf="imageUrl" (click)="removeFile()">Remove</ion-button>
       </div>

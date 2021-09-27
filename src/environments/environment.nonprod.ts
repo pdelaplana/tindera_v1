@@ -8,15 +8,18 @@ export const environment = {
     name: 'Tindera',
   },
   firebaseConfig: {
-    apiKey: 'AIzaSyBjynujgb_NiZNIeoMNz8fUdJziE71yK-M',
-    authDomain: 'tindera-dev.firebaseapp.com',
-    projectId: 'tindera-dev',
-    storageBucket: 'tindera-dev.appspot.com',
-    messagingSenderId: '791922224526',
-    appId: '1:791922224526:web:8015c4f8fcae1c48f1c8df',
-    measurementId: 'G-MM8W2TC526'
+    apiKey: 'AIzaSyBustFYJNVrXVLcbluoQ1DsiQ-VEgT-ynE',
+    authDomain: 'tindera-nonprod.firebaseapp.com',
+    projectId: 'tindera-nonprod',
+    storageBucket: 'tindera-nonprod.appspot.com',
+    messagingSenderId: '25024561704',
+    appId: '1:25024561704:web:be8931cf46679adc152b1d',
+    measurementId: 'G-BNRHTPF7EB'
   },
-
+  firebaseApiKey: 'AIzaSyBustFYJNVrXVLcbluoQ1DsiQ-VEgT-ynE',
+  authUrl:        'https://identitytoolkit.googleapis.com/v1/',
+  refreshUrl:     'https://securetoken.googleapis.com/v1/token',
+  baseUrl:        'https://localhost:44371/',
 };
 
 /*

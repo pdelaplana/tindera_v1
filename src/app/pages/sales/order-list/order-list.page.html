@@ -41,7 +41,7 @@
     
     <ion-item *ngFor="let order of (orders$|async)" lines="full"  button="true" detail="true" (click)="navigateToDetails(order.id)">
       <ion-avatar slot="start">
-        <app-payment-type-badge [text]="order.paymentType.description" [color]="primary"></app-payment-type-badge>
+        <app-payment-type-badge [text]="order.paymentType.description" color="primary"></app-payment-type-badge>
       </ion-avatar>
       <ion-label>
         

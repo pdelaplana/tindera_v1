@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "tindera-dev"
+    "default": "tindera-dev",
+    "nonprod": "tindera-nonprod"
   }
 }
