@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 
-export const ShopActions = {
+export const shopActions = {
   
   getShopOfUser: createAction(
     '[Shop] Get shop of user',

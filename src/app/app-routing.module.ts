@@ -22,7 +22,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/order/order.module').then( m => m.OrderPageModule),
     canActivate:[AuthGuard]
   },
-  
   {
     path: 'products',
     loadChildren: () => import('./pages/products/products.module').then( m => m.ProductsPageModule),
@@ -50,12 +49,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/signup/signup.module').then( m => m.SignupPageModule)
   },
   {
-    path: 'setup/store',
+    path: 'store/setup',
     loadChildren: () => import('./pages/store-setup/store-setup.module').then( m => m.StoreSetupPageModule),
-    canActivate:[AuthGuard]
-  },  {
+    //canActivate:[AuthGuard]
+  },
+  {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule),
+    //canActivate:[AuthGuard]
   },
   {
     path: 'settings',

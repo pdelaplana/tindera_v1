@@ -1,4 +1,3 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from '@angular/fire/firestore';
 import { Entity } from '@app/models/entity';
@@ -14,7 +13,7 @@ import { QueryParameter } from './query-parameters';
 })
 export class RepositoryService<T extends Entity> {
 
-  private uid: string;
+  protected uid: string;
   //private collection: AngularFirestoreCollection<T>;
 
   collectionName: string
@@ -37,11 +36,41 @@ export class RepositoryService<T extends Entity> {
     }
   }
 
-  
+ 
   query(queryParams: QueryParameter[]): Observable<T[]> {
     
     let query: AngularFirestoreCollection<T>;
     if (queryParams.length > 0) {
+   
+      query = this.firestore.collection<T>(this.collectionName, ref => {
+        let queryRef : firebase.default.firestore.CollectionReference | firebase.default.firestore.Query = ref;
+        queryParams.forEach((param) => {
+          queryRef = queryRef.where(param.name, param.operator, param.value);
+        })
+        return queryRef;
+      });
+    } else {
+      query = this.firestore.collection<T>(this.collectionName);
+    }
+    
+    const snapshotChanges = (query.snapshotChanges());
+    return snapshotChanges.pipe(
+      map(arr => {
+        return arr.map( doc => {
+          const data = doc.payload.doc.data();
+          return { id: doc.payload.doc.id, ...data} as T
+        })
+      }
+    ))
+  } 
+  
+
+  /*
+  query(queryParams: QueryParameter[]): Observable<T[]> {
+    
+    let query: AngularFirestoreCollection<T>;
+       if (queryParams.length > 0) {
+      
       query = this.firestore.collection<T>(this.collectionName, ref => {
         queryParams.forEach((param) => {
           ref.where(param.name, param.operator, param.value);
@@ -64,7 +93,7 @@ export class RepositoryService<T extends Entity> {
     ))
     
   } 
-
+  */
 
   async add(entity:T):Promise<T> {
     const audit =  {

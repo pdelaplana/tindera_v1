@@ -7,10 +7,11 @@ import { AuthenticationService } from '@app/services/authentication.service';
 
 import { AppState } from '@app/state';
 import { AuthActions } from '@app/state/auth/auth.actions';
-import { ThrowStmt } from '@angular/compiler';
 import { UserProfileService } from '@app/services/firestore/user-profile.service';
 import { UserProfile } from '@app/models/user-profile';
-import { ShopActions } from '../shop/shop.actions';
+import { shopActions } from '../shop/shop.actions';
+import { ShopService } from '@app/services/firestore/shop.service';
+import { Shop } from '@app/models/shop';
 
 
 @Injectable()
@@ -19,7 +20,8 @@ export class AuthEffects {
     private store: Store<AppState>,
     private actions: Actions,
     private authenticationService: AuthenticationService,
-    private userProfileService: UserProfileService 
+    private userProfileService: UserProfileService,
+    private shopService: ShopService 
   ) {}
 
   getAuthState = createEffect(() => this.actions.pipe(
@@ -41,20 +43,44 @@ export class AuthEffects {
     })
   ));
 
+  registerUser = createEffect(() => this.actions.pipe(
+    ofType(AuthActions.registerUser),
+    switchMap(async (action) => {
+      return await this.authenticationService.registerUser(action.email, action.password, action.displayName);
+    }),
+    map(result=>{
+      return AuthActions.registerUserSuccess({
+        uid: result.user.uid,
+        displayName: result.user.displayName,
+        email: result.user.email,
+      })
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(AuthActions.registerUserFail({error}));
+      return caught;
+    })
+  ));
+
   login = createEffect(() => this.actions.pipe(
     ofType(AuthActions.login),
     switchMap(async (action) => {
-      const credential = await this.authenticationService.signin(action.email, action.password);
-      const userProfile = await this.userProfileService.get(credential.user.uid);
+      return await this.authenticationService.signin(action.email, action.password);
+    }),
+    switchMap(credential=>{
+      return this.shopService.getShopsForUser(credential.user.uid).pipe( 
+        map(shops => ({shops, credential}))
+      ).pipe();
+    }),
+    map(result=>{
+      const shopIds = result.shops.map(shop => shop.id);
       return AuthActions.loginSuccess({
-        uid: credential.user.uid,
-        displayName: credential.user.displayName,
-        email: credential.user.email,
-        emailVerified: credential.user.emailVerified,
-        shopIds: userProfile.shopIds,
+        uid: result.credential.user.uid,
+        displayName: result.credential.user.displayName,
+        email: result.credential.user.email,
+        emailVerified: result.credential.user.emailVerified,
+        shopIds: shopIds,
         isAuthenticated: true,
       })
-      
     }),
     catchError((error, caught) => {
       this.store.dispatch(AuthActions.loginFailed({err: error}));

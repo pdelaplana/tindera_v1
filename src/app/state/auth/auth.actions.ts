@@ -6,6 +6,32 @@ export const AuthActions = {
     '[Auth] Get logged in user'
   ),
 
+  registerUser: createAction(
+    '[Auth] Register user',
+    props<{
+      displayName: string,
+      email: string,
+      password: string
+     }>()
+  ),
+
+  registerUserSuccess: createAction(
+    '[Auth] Register user succes',
+    props<{
+      uid: string,
+      displayName: string,
+      email: string,
+     }>()
+  ),
+
+  registerUserFail: createAction(
+    '[Auth] Register user fail',
+    props<{
+      error: any
+     }>()
+  ),
+
+
   userIsLoggedIn: createAction(
     '[Auth] User is logged in',
     props<{

@@ -1,7 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { ThrowStmt } from '@angular/compiler';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '@app/services/notification.service';
+import { AppState } from '@app/state';
+import { AuthActions } from '@app/state/auth/auth.actions';
 import { MenuController, NavController } from '@ionic/angular';
+import { ofType } from '@ngrx/effects';
+import { ActionsSubject, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { ErrorMessages } from 'src/app/services/error-messages';
 
@@ -10,9 +16,11 @@ import { ErrorMessages } from 'src/app/services/error-messages';
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
 })
-export class SignupPage implements OnInit {
+export class SignupPage implements OnInit, OnDestroy {
 
   signupForm: FormGroup;
+
+  subscription: Subscription = new Subscription();
 
   errorMessages = ErrorMessages.signup;
 
@@ -32,6 +40,8 @@ export class SignupPage implements OnInit {
   }
 
   constructor(
+    private store: Store<AppState>,
+    private actions: ActionsSubject,
     private formBuilder: FormBuilder,
     private menuController: MenuController,
     private navController: NavController,
@@ -66,8 +76,27 @@ export class SignupPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
+  ngOnInit() {
+    this.subscription
+      .add(
+        this.actions.pipe(
+          ofType(AuthActions.registerUserSuccess)
+        ).subscribe(action => {
+          this.store.dispatch(AuthActions.login({email: action.email, password: this.password.value }));
+        })
+      )
+      .add(
+        this.actions.pipe(
+          ofType(AuthActions.loginSuccess)
+        ).subscribe(action =>{
+          this.navController.navigateRoot('store/setup');
+          this.store.dispatch(AuthActions.clearAuthActions());
+        })
+      )
   }
 
   get displayName() { return this.signupForm.get('displayName'); }
@@ -76,33 +105,12 @@ export class SignupPage implements OnInit {
   get confirmPassword() { return this.signupForm.get('confirmPassword'); }
 
   async signup(){
-    try {
-      const result = await this.authenticationService.registerUser(this.email.value, this.password.value, this.displayName.value);
-      console.log(result);
-      this.navController.navigateRoot('store/setup');
-    }
-    catch (error){
-      console.log('SignupPage.signup(...)', error);
 
-      this.notificationService.notify(error);
-      throw error;
-    }     
+    this.store.dispatch(AuthActions.registerUser({
+      email: this.email.value,
+      password: this.password.value,
+      displayName: this.displayName.value
+    }));
+     
   }
-
-  /*
-  _signup() {
-    this.signupService.email = this.email.value;
-    this.signupService.password = this.password.value;
-    this.signupService.invoke().subscribe(result => {
-      console.log(result);
-      this.navController.navigateRoot('store/setup');
-    
-    });
-    this.signupService.invoke().subscribe(result => {
-      this.notificationService.notify('Sign up completed');
-      this.navController.navigateRoot('settings');
-    });
-    */
-  
-
 }
