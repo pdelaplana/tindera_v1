@@ -5,7 +5,7 @@ import { AppState } from './state';
 import { AuthActions } from './state/auth/auth.actions';
 import { MenuController, NavController } from '@ionic/angular';
 import { inventoryActions } from './state/inventory/inventory.actions';
-import { ShopActions } from './state/shop/shop.actions';
+import { shopActions } from './state/shop/shop.actions';
 import { productActions } from './state/product/product.actions';
 import { orderActions } from './state/orders/order.actions';
 
@@ -44,12 +44,11 @@ export class AppComponent implements OnInit {
     this.isEmailVerified = store.select(state => state.auth.emailVerified);
     this.isAuthenticated = store.select(state => state.auth.isAuthenticated);
     this.store.select(state => state.auth).subscribe((auth) =>{
-      console.log('auth',auth);
       if (auth.isAuthenticated){
         if (auth.shopIds.length==0){
-          this.navController.navigateRoot('setup/store');
+          this.navController.navigateRoot('store/setup');
         } else {
-          this.store.dispatch(ShopActions.loadShopState({ id: auth.shopIds[0] }));
+          this.store.dispatch(shopActions.loadShopState({ id: auth.shopIds[0] }));
           this.menuController.enable(auth.isAuthenticated);
           this.navController.navigateRoot('home');
         }
@@ -60,7 +59,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch(AuthActions.getAuthState());
-    this.isAuthenticated.subscribe(value => this.menuController.enable(value));
+    //this.isAuthenticated.subscribe(value => this.menuController.enable(value));
 
     this.store.select(state => state.shop.id).subscribe((shopid) => {
       if (shopid){

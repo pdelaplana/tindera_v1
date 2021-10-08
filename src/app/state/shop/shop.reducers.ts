@@ -4,7 +4,7 @@ import { PaymentType } from '@app/models/payment-type';
 import { ProductCategory } from '@app/models/product-category';
 import { inventoryAdjustmentReasons, InventoryAdjustmentType } from '@app/models/types';
 import { Action, createReducer, on } from '@ngrx/store';
-import { ShopActions } from './shop.actions';
+import { shopActions } from './shop.actions';
 import { ShopState } from './shop.state';
 
 const initialState: ShopState = {
@@ -44,22 +44,27 @@ const initialState: ShopState = {
 
 const reducer = createReducer(
   initialState,
-  on(ShopActions.createShopSuccess, (state, {id, name, description, location}) => ({
+  on(shopActions.createShopSuccess, (state, {id, name, description, location}) => ({
     ...state,
     id,
     name,
     description,
     location
   })),
-  on(ShopActions.createShopFailed, (state) => ({
+  on(shopActions.createShopFailed, (state) => ({
     ...state
   })),
-  on(ShopActions.loadShopStateSuccess, (state, {id, name, description, location}) => ({
+  on(shopActions.loadShopStateSuccess, (state, { shop }) => ({
     ...state,
-    id,
-    name,
-    description,
-    location
+    id: shop.id,
+    name: shop.name,
+    description: shop.description,
+    location: shop.location,
+    currencyCode: shop.currencyCode,
+    inventoryCategories: shop.inventoryCategories,
+    paymentTypes: shop.paymentTypes,
+    productCategories: shop.productCategories,
+    inventoryAdjustmentReasons: shop.inventoryAdjustmentReasons
   })),
   
 );

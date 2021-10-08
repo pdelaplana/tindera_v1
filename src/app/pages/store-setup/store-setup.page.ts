@@ -1,9 +1,8 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
-import { ShopActions } from '@app/state/shop/shop.actions';
+import { shopActions } from '@app/state/shop/shop.actions';
 import { MenuController, NavController } from '@ionic/angular';
 import { ofType } from '@ngrx/effects';
 import { ActionsSubject, Store } from '@ngrx/store';
@@ -27,8 +26,9 @@ export class StoreSetupPage implements OnInit, OnDestroy {
     private store: Store<AppState>,
     private actions: ActionsSubject,
     private formBuilder: FormBuilder,
+    private commonUIService: CommonUIService,
     private menuController: MenuController,
-    private commonUIService: CommonUIService 
+    private navController: NavController, 
   ) { 
     this.menuController.enable(false);
     this.storeSetupForm = this.formBuilder.group({
@@ -47,10 +47,11 @@ export class StoreSetupPage implements OnInit, OnDestroy {
     this.subscription
       .add(
         this.actions.pipe(
-          ofType(ShopActions.createShopSuccess)
+          ofType(shopActions.createShopSuccess)
         ).subscribe(action => {
-          
           this.commonUIService.notify('Your store has been created.');
+          this.menuController.enable(true);
+          this.navController.navigateRoot('home');
         })
       )
   }
@@ -60,7 +61,7 @@ export class StoreSetupPage implements OnInit, OnDestroy {
   get location() { return this.storeSetupForm.get('location'); }
 
   save() {
-    this.store.dispatch(ShopActions.createShop({
+    this.store.dispatch(shopActions.createShop({
       name: this.name.value,
       description: this.description.value,
       location: this.location.value

@@ -15,6 +15,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireFunctionsModule } from '@angular/fire/functions';
 import { META_REDUCERS, StoreModule } from '@ngrx/store';
 import { reducers, metaReducers } from './state';
 
@@ -53,6 +54,7 @@ import { NgxImageCompressService } from 'ngx-image-compress';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
+    AngularFireFunctionsModule,
     AngularFirestoreModule.enablePersistence(),
     AngularFireStorageModule,
     StoreModule.forRoot(reducers, {

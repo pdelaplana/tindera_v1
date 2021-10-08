@@ -9,6 +9,8 @@ import * as firebase from 'firebase/app';
 import { UserProfileService } from './firestore/user-profile.service';
 import { UserProfile } from '@app/models/user-profile';
 import { AuthState } from '@app/state/auth/auth.state';
+import { ShopService } from './firestore/shop.service';
+import { shopData } from '@app/data/shop.default';
 
 
 
@@ -22,23 +24,26 @@ export class AuthenticationService {
     private firestore: AngularFirestore,
     private fireauth: AngularFireAuth,
     private userProfileService: UserProfileService,
+    private shopService: ShopService,
     private router: Router,  
     private ngZone: NgZone 
   ) { 
     this.fireauth.authState.subscribe(async (user) => {
       if (user) {
-        const userProfile = await this.userProfileService.get(user.uid);
-        this.authState = <AuthState>{
-          uid: user.uid,
-          displayName: user.displayName,
-          email: user.email,
-          emailVerified: user.emailVerified,
-          photoURL: user.photoURL,
-          shopIds: userProfile.shopIds,
-          isAuthenticated: true
-        };
-        localStorage.setItem('authState', JSON.stringify(this.authState));
-        JSON.parse(localStorage.getItem('authState'));
+        this.shopService.getShopsForUser(user.uid).subscribe(shops => {
+          this.authState = <AuthState>{
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+            emailVerified: user.emailVerified,
+            photoURL: user.photoURL,
+            shopIds: shops.map(shop => shop.id),
+            isAuthenticated: true
+          };
+          localStorage.setItem('authState', JSON.stringify(this.authState));
+          JSON.parse(localStorage.getItem('authState'));
+        });
+        
       } else {
         localStorage.setItem('authState', null);
         JSON.parse(localStorage.getItem('authState'));
@@ -54,9 +59,6 @@ export class AuthenticationService {
     const credential = await this.fireauth.createUserWithEmailAndPassword(email, password);
     credential.user.updateProfile({
       displayName: displayName
-    });
-    this.userProfileService.add(credential.user.uid, <UserProfile>{
-      shopIds: []
     });
     return credential;
   }
