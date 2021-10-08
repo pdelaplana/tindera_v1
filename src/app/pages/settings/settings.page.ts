@@ -16,6 +16,11 @@ export class SettingsPage implements OnInit {
   ngOnInit() {
   }
 
+  navigateToShop(){
+    const navigationExtras: NavigationExtras = { state: {  } };
+    this.navController.navigateForward('settings/shop', navigationExtras);
+  }
+
   navigateToProfile(){
     const navigationExtras: NavigationExtras = { state: {  } };
     this.navController.navigateForward('settings/profile', navigationExtras);

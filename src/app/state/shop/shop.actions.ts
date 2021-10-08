@@ -1,3 +1,4 @@
+import { Shop } from '@app/models/shop';
 import { createAction, props } from '@ngrx/store';
 
 export const shopActions = {
@@ -21,7 +22,22 @@ export const shopActions = {
     '[Shop] Create shop success',
     props<{ id:string; name: string; description: string, location: string }>()
   ),
-  
+
+  setupShopData: createAction(
+    '[Shop] Setup shop data',
+    props<{ shopdId: string}>()
+  ),
+
+  setupShopDataSuccess: createAction(
+    '[Shop] Setup shop data success',
+    props<{ shopdId: string}>()
+  ),
+
+  setupShopDataFail: createAction(
+    '[Shop] Setup shop data fail',
+    props<{ error: any}>()
+  ),
+
   createShopFailed: createAction(
     '[Shop] Create shop failed',
     props<{err: any}>()
@@ -34,7 +50,7 @@ export const shopActions = {
   
   loadShopStateSuccess: createAction(
     '[Shop] Load shop state success',
-    props<{ id:string, name:string, description: string, location: string}>()
+    props<{ shop: Shop }>()
   ),
   
   loadShopStateFail: createAction(

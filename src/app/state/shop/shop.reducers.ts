@@ -54,12 +54,17 @@ const reducer = createReducer(
   on(shopActions.createShopFailed, (state) => ({
     ...state
   })),
-  on(shopActions.loadShopStateSuccess, (state, {id, name, description, location}) => ({
+  on(shopActions.loadShopStateSuccess, (state, { shop }) => ({
     ...state,
-    id,
-    name,
-    description,
-    location
+    id: shop.id,
+    name: shop.name,
+    description: shop.description,
+    location: shop.location,
+    currencyCode: shop.currencyCode,
+    inventoryCategories: shop.inventoryCategories,
+    paymentTypes: shop.paymentTypes,
+    productCategories: shop.productCategories,
+    inventoryAdjustmentReasons: shop.inventoryAdjustmentReasons
   })),
   
 );

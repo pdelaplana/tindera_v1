@@ -59,9 +59,9 @@ export class LoginPage implements OnInit, OnDestroy {
           // check if store has been setup
           if (data.shopIds.length > 0) {
             this.menuController.enable(true);
-            this.navController.navigateRoot('order');
+            this.navController.navigateRoot('');
           } else {
-            this.navController.navigateRoot('setup/store');
+            this.navController.navigateRoot('store/setup');
           }
           
         })

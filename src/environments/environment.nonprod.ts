@@ -15,11 +15,7 @@ export const environment = {
     messagingSenderId: '25024561704',
     appId: '1:25024561704:web:be8931cf46679adc152b1d',
     measurementId: 'G-BNRHTPF7EB'
-  },
-  firebaseApiKey: 'AIzaSyBustFYJNVrXVLcbluoQ1DsiQ-VEgT-ynE',
-  authUrl:        'https://identitytoolkit.googleapis.com/v1/',
-  refreshUrl:     'https://securetoken.googleapis.com/v1/token',
-  baseUrl:        'https://localhost:44371/',
+  }
 };
 
 /*
