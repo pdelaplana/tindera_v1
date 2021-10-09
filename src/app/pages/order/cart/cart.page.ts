@@ -23,7 +23,9 @@ export class CartPage implements OnInit {
   currencyCode: string;
   cartItems$: Observable<CartItem[]>;
 
+  totalCartItems: number;
   totalCartAmount: number;
+  itemUnavailable: boolean = false;  
 
   constructor(
     private store: Store<AppState>,
@@ -37,7 +39,9 @@ export class CartPage implements OnInit {
 
     this.cartItems$
       .subscribe((items) => {
-        this.totalCartAmount = items.map(item => item.amount).reduce((a,b)=> a + b, 0)
+        this.totalCartItems = items.length;
+        this.totalCartAmount = items.map(item => item.amount).reduce((a,b)=> a + b, 0);
+        this.itemUnavailable = items.some(item => item.available == false);
       });
   }
 
@@ -50,6 +54,11 @@ export class CartPage implements OnInit {
   }
 
   navigateToCheckout(){
+    if (this.itemUnavailable){
+      this.commonUIService.notify('Some items are out of stock.  Please remove out of stock items to continue.')
+      return;
+    } 
+
     this.navController.navigateForward('order/checkout');
   }
 

@@ -89,6 +89,7 @@ export class OrderProductPage implements OnInit {
       productId: this.product.id,
       product: this.product,
       quantity: this.quantity,
+      available: true,
       //amount: (this.product.price * this.quantity) ,
       amount: this.total,
       addons: this.cartItemAddons.filter(i => i.quantity > 0) 

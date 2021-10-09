@@ -10,7 +10,7 @@ const initialCartState: CartState =
 
 const reducer = createReducer(
   initialCartState,
-  on(cartActions.addToCart, (state, { cartItem }) => {
+  on(cartActions.addToCartSuccess, (state, { cartItem }) => {
     return {
       ...state,
       cartItems: cartItemAdapter.upsertOne(cartItem, state.cartItems)

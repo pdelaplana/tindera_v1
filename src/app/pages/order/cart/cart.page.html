@@ -25,6 +25,9 @@
           Addon: {{addon.name}} {{addon.quantity}}x
          </p>
         </ion-label>
+        <ion-badge color="warning" *ngIf="!item.available">
+          Out of Stock
+        </ion-badge>
         <ion-label slot="end" class="ion-text-right " >
           {{ item.amount | currency: currencyCode }}
         </ion-label>
@@ -50,8 +53,8 @@
   </ion-list>
 
   <ion-toolbar>
-    <ion-button color="primary" expand="full" class="ion-margin" (click)="navigateToCheckout()">Checkout</ion-button>
-    <ion-button color="danger" expand="full" class="ion-margin" (click)="clearCart()">Empty Cart</ion-button>
+    <ion-button color="primary" expand="full" class="ion-margin" (click)="navigateToCheckout()" [disabled]="totalCartItems < 1">Checkout</ion-button>
+    <ion-button color="danger" expand="full" class="ion-margin" (click)="clearCart()" [disabled]="totalCartItems < 1">Empty Cart</ion-button>
   </ion-toolbar>
   
 </ion-content>

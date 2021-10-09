@@ -10,9 +10,6 @@ import { UserProfileService } from './firestore/user-profile.service';
 import { UserProfile } from '@app/models/user-profile';
 import { AuthState } from '@app/state/auth/auth.state';
 import { ShopService } from './firestore/shop.service';
-import { shopData } from '@app/data/shop.default';
-
-
 
 @Injectable({
   providedIn: 'root'
