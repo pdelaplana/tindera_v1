@@ -9,11 +9,11 @@ export const cartActions = {
   ),
   addToCartSuccess: createAction(
     '[Cart] Add to Cart Success',
-    props<{ product: Product, quantity: number }>()
+    props<{ cartItem: CartItem }>()
   ),
   addToCartFail: createAction(
-    '[Cart] Add to Cart Success',
-    props<{ product: Product, quantity: number }>()
+    '[Cart] Add to Cart fail',
+    props<{ error: any}>()
   ),
   clearCart: createAction(
     '[Cart] Clear cart'
@@ -37,6 +37,16 @@ export const cartActions = {
   ),
   modifyItemInCart: createAction(
     '[Cart] Modify item in cart'
+  ),
+  checkoutCartItems: createAction(
+    '[Cart] Checkout cart items',
+  ),
+  checkoutCartItemsSuccess: createAction(
+    '[Cart] Checkout cart items success',
+  ),
+  checkoutCartItemsFail: createAction(
+    '[Cart] Checkout cart items fail',
+    props<{ error: any }>()
   ),
   completeOrder: createAction(
     '[Cart] Complete order'

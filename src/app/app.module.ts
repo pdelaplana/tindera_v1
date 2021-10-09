@@ -33,6 +33,7 @@ import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OrderEffects } from './state/orders/order.effects';
 import { NgxImageCompressService } from 'ngx-image-compress';
+import { CartEffects } from './state/cart/cart.effects';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { NgxImageCompressService } from 'ngx-image-compress';
       ShopEffects,
       InventoryEffects,
       ProductEffects,
-      OrderEffects
+      OrderEffects,
+      CartEffects
     ]),
     TagInputModule
   ],

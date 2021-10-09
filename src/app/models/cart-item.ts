@@ -7,4 +7,5 @@ export interface CartItem {
   quantity: number;
   amount: number;
   addons: CartItemAddon[];
+  available: boolean;
 }
