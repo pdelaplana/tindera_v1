@@ -133,6 +133,7 @@ export class CheckoutPage implements OnInit, OnDestroy {
             productName: item.product.name,
             productDescription: item.product.description,
             productUnitPrice: item.product.price,
+            productCategory: item.product.productCategory.description,
             quantity: item.quantity,
             addons: item.addons.map(addon => <OrderItemAddon>{
               itemId: addon.itemId,

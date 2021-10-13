@@ -1,0 +1,44 @@
+<ion-card class="ion-margin" >
+  <ion-card-header>
+    <ion-card-title size="small">
+      <ion-text size="small" class="ion-margin-left">Sales by Category </ion-text> 
+    </ion-card-title>
+    <ion-card-subtitle>
+      {{filterLabel}}
+    </ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content style="height:280px"> 
+    
+    <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+      <ion-item *ngFor="let productCategory of (salesByProductCategory)">
+        <ion-avatar slot="start">
+          <app-text-avatar [text]="productCategory.productCategory" textColor="white"></app-text-avatar>
+        </ion-avatar>
+        <ion-note slot="" color="medium" style="max-width:100px"><h2>{{ productCategory.productCategory }}</h2></ion-note>
+        <ion-label slot="end" class="ion-text-end" >
+          {{ productCategory.totalSale | shopCurrency}}
+        </ion-label>
+      </ion-item>    
+    </ion-list>
+
+  </ion-card-content>
+
+  <div class="ion-text-center ion-padding">
+    <ion-chip [color]="togglePeriodFilter('last7Days')" (click)="filterByPeriod('last7Days')">
+      <ion-label>1W</ion-label>
+    </ion-chip>
+    <ion-chip [color]="togglePeriodFilter('thisMonth')" (click)="filterByPeriod('thisMonth')">
+      <ion-label>1M</ion-label>
+    </ion-chip>
+    <ion-chip [color]="togglePeriodFilter('last3Months')" (click)="filterByPeriod('last3Months')">
+      <ion-label>3M</ion-label>
+    </ion-chip>
+    <ion-chip  [color]="togglePeriodFilter('last6Months')" (click)="filterByPeriod('last6Months')">
+      <ion-label>6M</ion-label>
+    </ion-chip>    
+    <ion-chip [color]="togglePeriodFilter('thisYear')" (click)="filterByPeriod('thisYear')">
+      <ion-label>1Y</ion-label>
+    </ion-chip>
+  </div>
+ 
+</ion-card>

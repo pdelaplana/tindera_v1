@@ -22,7 +22,6 @@ export class TextAvatarComponent implements OnInit {
   ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('changes', changes);
     const  text = changes.text ? changes.text.currentValue : null;
     const  color = changes.color ? changes.color.currentValue : null;
     const textColor = changes.textColor ? changes.textColor.currentValue : this.styles.color;

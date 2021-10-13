@@ -5,6 +5,7 @@ export interface OrderItem {
   productName: string;
   productDescription: string;
   productUnitPrice: number;
+  productCategory: string;
   quantity: number;
   addons: OrderItemAddon[];
 }

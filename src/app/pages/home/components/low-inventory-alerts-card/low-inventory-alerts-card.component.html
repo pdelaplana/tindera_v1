@@ -1,0 +1,23 @@
+<ion-card class="ion-margin" >
+  <ion-card-header>
+    <ion-card-title>Low Inventory Alerts</ion-card-title>
+  </ion-card-header>
+  <ion-card-content style="overflow: auto;">
+    <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+      <ion-item *ngFor="let item of (itemsForReorder)">
+        <ion-label slot="start" color="medium"><h2>{{ item.name }}</h2></ion-label>
+        <ion-label slot="end" class="ion-text-end">{{ item.currentCount  }}</ion-label>
+      </ion-item>    
+    </ion-list>
+
+    <ion-button class="ion-float-end" fill="clear" expand="block" color="primary" (click)="navigateToLowInventoryAlerts()">
+     
+      <ion-text class="ion-margin-left" slot="start">
+        See  All
+      </ion-text>
+      <ion-icon name="arrow-forward" slot="end"></ion-icon>
+    </ion-button>
+   
+  </ion-card-content>
+ 
+</ion-card>
