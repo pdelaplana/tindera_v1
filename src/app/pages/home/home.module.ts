@@ -8,6 +8,11 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { SharedComponentsModule } from '@app/components/shared-components.module';
+import { SalesTrendChartComponent } from './components/sales-trend-chart/sales-trend-chart.component';
+import { SalesByPaymentTypeCardComponent } from './components/sales-by-payment-type-card/sales-by-payment-type-card.component';
+import { TopSellingProductsCardComponent } from './components/top-selling-products-card/top-selling-products-card.component';
+import { LowInventoryAlertsCardComponent } from './components/low-inventory-alerts-card/low-inventory-alerts-card.component';
+import { SalesByProductCategoryCardComponent } from './components/sales-by-product-category-card/sales-by-product-category-card.component';
 
 @NgModule({
   imports: [
@@ -17,6 +22,13 @@ import { SharedComponentsModule } from '@app/components/shared-components.module
     SharedComponentsModule,
     HomePageRoutingModule
   ],
-  declarations: [HomePage]
+  declarations: [
+    SalesTrendChartComponent,
+    SalesByPaymentTypeCardComponent,
+    TopSellingProductsCardComponent,
+    LowInventoryAlertsCardComponent,
+    SalesByProductCategoryCardComponent,
+    HomePage
+  ]
 })
 export class HomePageModule {}
