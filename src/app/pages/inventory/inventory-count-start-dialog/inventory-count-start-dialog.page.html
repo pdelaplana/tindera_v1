@@ -1,0 +1,42 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Inventory Count</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="inventoryCountForm">
+    <ion-list lines="full" class="ion-no-padding" >
+
+      <ion-item>
+        <ion-label position="stacked">Type </ion-label>
+        <ion-select multiple="false" placeholder="" formControlName="type">
+          <ion-select-option *ngFor="let type of countTypes" [value]="type">{{type}}</ion-select-option>
+        </ion-select>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Notes </ion-label>
+        <ion-textarea autoGrow="true" formControlName="notes"></ion-textarea>
+      </ion-item>
+
+      </ion-list>
+  </form>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar >
+    <ion-button expand="block" color="primary" (click)="submit()" >
+      Start
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

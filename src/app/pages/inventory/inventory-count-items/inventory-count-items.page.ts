@@ -1,38 +1,31 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { InventoryAdjustmentReason } from '@app/models/inventory-adjustment-reason';
 import { InventoryCount } from '@app/models/inventory-count';
-import { InventoryItem } from '@app/models/inventory-item';
-import { InventoryTransaction } from '@app/models/inventory-transaction';
-import { inventoryAdjustmentReasons, InventoryTransactionType } from '@app/models/types';
+import { InventoryCountItem } from '@app/models/inventory-count-item';
 import { User } from '@app/models/user';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { AppState } from '@app/state';
 import { selectAuthUser } from '@app/state/auth/auth.selectors';
 import { inventoryActions } from '@app/state/inventory/inventory.actions';
-import { selectInventoryCount, selectInventoryItem } from '@app/state/inventory/inventory.selectors';
+import { selectInventoryCount } from '@app/state/inventory/inventory.selectors';
 import { ActionSheetController, NavController } from '@ionic/angular';
 import { ofType } from '@ngrx/effects';
 import { ActionsSubject, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-inventory-count-list-details',
-  templateUrl: './inventory-count-list-details.page.html',
-  styleUrls: ['./inventory-count-list-details.page.scss'],
+  selector: 'app-inventory-count-items',
+  templateUrl: './inventory-count-items.page.html',
+  styleUrls: ['./inventory-count-items.page.scss'],
 })
-export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
+export class InventoryCountItemsPage implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
   private user: User;
   
-  diff: number;
   count: InventoryCount;
-  item: InventoryItem;
   inventoryItemsFormArray: FormArray;
-  inventoryCountForm: FormGroup;
-  inventoryAdjustmentReasons: InventoryAdjustmentReason[];
   
   constructor(
     private store: Store<AppState>,
@@ -43,14 +36,15 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
     private navController: NavController,
     private commonUIService: CommonUIService
   ) { 
-    this.store.select(state => state.shop).subscribe(shop => this.inventoryAdjustmentReasons = shop.inventoryAdjustmentReasons);
     this.store.select(selectAuthUser()).subscribe(user => this.user = user);
     if (this.router.getCurrentNavigation().extras.state) {
       const countId = this.router.getCurrentNavigation().extras.state.countId;
       this.store.select(selectInventoryCount(countId)).subscribe(count => {
         this.count = count
         this.inventoryItemsFormArray = new FormArray([]);
-        this.count.countItems.forEach(item => {
+        this.count.countItems.slice().sort((a: InventoryCountItem, b: InventoryCountItem) => {
+          return a.itemName > b.itemName ? 1 : -1;
+        }).forEach(item => {
           this.inventoryItemsFormArray.push(this.formBuilder.group({
             itemId: [item.itemId],
             itemName: [item.itemName],
@@ -60,31 +54,15 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
             countedOn: [item.countedOn] 
           }))
         });
-
-        /*
-        this.store.select(selectInventoryItem(count.itemId)).subscribe(item => {
-          this.item = item;
-          this.diff = this.count.count - this.item.currentCount;
-        });
-        */
       });
     }
 
     this.subscription
       .add(
         this.actions.pipe(
-          ofType(inventoryActions.updateInventoryBalanceSuccess),
-        ).subscribe(action =>{
-          this.commonUIService.notify(`Balance for ${this.item.name} has been adjusted.  The new balance for this item ${this.item.currentCount + this.diff}`);
-          this.store.dispatch(inventoryActions.deleteCount({ id: this.count.id }));
-        })
-      )
-      .add(
-        this.actions.pipe(
           ofType(inventoryActions.deleteCountSuccess)
         ).subscribe(action =>{
           this.store.dispatch(inventoryActions.clearInventoryActions());
-          
           this.navController.navigateRoot('inventory/counts');
         })
       )
@@ -96,25 +74,15 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
           this.store.dispatch(inventoryActions.clearInventoryActions());
         })
       )
-      .add(
-        this.actions.pipe(
-          ofType(inventoryActions.updateInventoryBalanceFail),
-          ofType(inventoryActions.deleteCountFail)
-        ).subscribe(action =>{
-          this.commonUIService.notify('Oops. Something went wrong please contact your administration'); 
-        })
-      )
-
-      
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    
   }
 
   ngOnInit() {
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   async presentActionSheet() {
     
@@ -127,35 +95,6 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
    
       }
     });
-    if (this.diff > 0){
-      buttons.push({
-        text: 'Increase Balance',
-        icon: 'arrow-up',
-        handler: () => {
-          this.adjustBalance();
-        }
-      });
-      buttons.push()
-    }
-    if (this.diff < 0){
-      buttons.push({
-        text: 'Decrease Balance',
-        icon: 'arrow-down',
-        handler: () => {
-          this.adjustBalance();
-        }
-      });
-      buttons.push()
-    }
-    /*
-    buttons.push({
-      text: 'Archive',
-      icon: 'download',
-      handler: () => {
-        this.archive();
-      }
-    });
-    */
     buttons.push({
       text: 'Save',
       icon: 'save',
@@ -170,7 +109,6 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
         this.submit();
       }
     }),
-    
     buttons.push({
       text: 'Delete',
       icon: 'trash',
@@ -191,9 +129,14 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
   }
 
   submit(){
+    if (this.inventoryItemsFormArray.dirty){
+      this.commonUIService.notifyError('Please save changes before submitting.');
+      return;
+    }
+
     this.commonUIService.confirmAction('Submit Count', 'Continue and submit count?').then(result => {
       if (result == 'continue') {
-        this.update();
+       
         this.store.dispatch(inventoryActions.submitCount({ id: this.count.id }));    
       }
     });
@@ -209,34 +152,6 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
     this.store.dispatch(inventoryActions.updateInventoryCount({count: { ...this.count, countItems: countedItems }}));
   }
 
-  adjustBalance(){
-    this.commonUIService.confirmAction('Adjust Inventory', 'Continue and adjust inventory?').then(result => {
-      if (result == 'continue') {
-        if (this.diff != 0) {
-          const adjustmenReasonCode = (this.diff > 0) ? 'COUNTIN' : 'COUNTOUT';
-        
-          const transaction = <InventoryTransaction>{
-            id:'',
-            transactionType: InventoryTransactionType.Adjustment,
-            itemId: this.item.id,
-            itemName: this.item.name,
-            transactionOn: new Date(),
-            quantityIn: this.diff > 0 ? this.diff : 0 ,
-            quantityOut:  this.diff < 0 ? Math.abs(this.diff) : 0,
-            reference: `count=${this.count.id}`,
-            notes: '',
-            adjustmentReason: this.inventoryAdjustmentReasons.find(reason => reason.code == adjustmenReasonCode)
-          }
-          this.store.dispatch(inventoryActions.updateInventoryBalance({transaction}))
-        }
-      }
-    });
-  }
-
-  archive(){
-    this.store.dispatch(inventoryActions.archiveCount({ id: this.count.id }));
-  }
-
   delete(){
     this.commonUIService.confirmAction('Delete Count', 'Continue and delete count?').then(result => {
       if (result == 'continue') {
@@ -246,5 +161,4 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
   }
 
   
-
 }

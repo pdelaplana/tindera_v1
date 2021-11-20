@@ -17,16 +17,18 @@
   <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
     <ion-item>
       <ion-note slot="start" >Item</ion-note>
+      <ion-note slot="end" class="ion-text-right">On Hand</ion-note>
       <ion-note slot="end" class="ion-text-right">Counted</ion-note>
-      <ion-note slot="end" class="ion-text-right" >On Hand</ion-note>
+      <ion-note slot="end" style="width: 10px;">&nbsp;</ion-note>
     </ion-item>
-    <ion-item  *ngFor="let item of (inventoryItemsFormArray.controls)" >
-      <ng-container [formGroup]="item">
-        <ion-label slot="start" style="width: 400em;">{{item.get('itemName').value}}</ion-label>
-        <ion-input type="number" slot="end" placeholder="0" class="ion-text-left" formControlName="counted"  class="ion-text-right"></ion-input>
-        <ion-note slot="end" class="ion-text-right" style="width: 50px;">{{item.get('onHand').value}}</ion-note>
-        
-      </ng-container>
+    <ion-item button="true" detail="true" *ngFor="let item of (items)" (click)="navigateToItemCountAdjustment(count.id, item)">
+      <ion-label slot="start" style="width: 400em;">{{item.itemName}}</ion-label>
+      <ion-badge color="warning" *ngIf="item.adjustedOn != null">
+        Adjusted
+      </ion-badge>
+      <ion-note slot="end" class="ion-text-right" style="width: 50px;">{{item.onHand}}</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="width: 50px;">{{item.counted}}</ion-note>
+      <ion-note slot="end" style="width: 3px;">&nbsp;</ion-note>
     </ion-item>
   </ion-list>
   
@@ -35,7 +37,7 @@
 <ion-footer>
   <ion-toolbar >
     <ion-button expand="block" color="primary" (click)="presentActionSheet()" >
-      Action
+      Options...
     </ion-button>
     
   </ion-toolbar>

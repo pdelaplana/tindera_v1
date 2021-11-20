@@ -4,7 +4,13 @@
       <ion-menu-button  menu="mainMenu" autoHide="true"></ion-menu-button>
     </ion-buttons>
     <ion-title>Inventory Counts</ion-title>
-    
+    <ion-buttons slot="end">
+      <ion-button color="primary" fill="solid" (click)="openNewInventoryCountDialog()">
+        <ion-icon name="add-sharp"></ion-icon>
+        &nbsp;
+        Start Count
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -14,14 +20,25 @@
   <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">  
     
     <ion-item>
-      <ion-note slot="start">Item</ion-note>
-      <ion-note slot="end" class="ion-text-right" style="min-width:100px">Qty Counted</ion-note>
+      <ion-note slot="start">Open Counts</ion-note>
       <ion-note slot="end" class="ion-text-right" style="min-width:30px">&nbsp;</ion-note>
     </ion-item>
   
-    <ion-item  button="true" detail="true" *ngFor="let count of (inventoryCounts$ | async)" (click)="navigateToItemCountDetails(count.id)">
-      <ion-label slot="start">{{count.itemName}}</ion-label>
-      <ion-note slot="end" class="ion-text-right" style="min-width:100px">{{count.count}}</ion-note>
+    <ion-item  button="true" detail="true" *ngFor="let count of (openCounts)" (click)="navigateToItemCountItems(count.id)">
+      <ion-label slot="start">{{count.type}} - {{ count.countOn.toDate() | date: 'longDate'}}</ion-label>
+      <ion-note slot="end" class="ion-text-right" style="min-width:5px"></ion-note>
+    </ion-item>
+  </ion-list>
+  
+  <ion-list inset="true" lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right">  
+    
+    <ion-item>
+      <ion-note slot="start">Submitted Counts</ion-note>
+      <ion-note slot="end" class="ion-text-right" style="min-width:30px">&nbsp;</ion-note>
+    </ion-item>
+  
+    <ion-item  button="true" detail="true" *ngFor="let count of (submittedCounts)" (click)="navigateToItemCountDetails(count.id)">
+      <ion-label slot="start">{{count.type}} - {{ count.countOn.toDate() | date: 'longDate'}}</ion-label>
       <ion-note slot="end" class="ion-text-right" style="min-width:5px"></ion-note>
     </ion-item>
   </ion-list>

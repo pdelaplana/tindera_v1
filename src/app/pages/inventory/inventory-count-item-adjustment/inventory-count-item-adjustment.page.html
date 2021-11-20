@@ -1,0 +1,73 @@
+<ion-header class="gray-background ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="gray-background">
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    <ion-item>
+      <ion-label position="stacked">Item</ion-label>
+      <p>{{ item.itemName }}</p>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">On hand</ion-label>
+      <p>{{ item.onHand }}</p>
+    </ion-item>
+  </ion-list>
+  <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+    <ion-item>
+      <ion-label position="stacked">Qty Counted</ion-label>
+      <p>{{ item.counted }} ({{  item.counted - item.onHand }}) </p>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Counted On</ion-label>
+      <p>{{ count.countOn?.toDate() | date }}</p>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Counted By</ion-label>
+      <p>{{ item.countedBy.displayName }}</p>
+    </ion-item>
+  </ion-list>
+
+  <form [formGroup]="inventoryAdjustmentForm">
+    <ion-list lines="full" class="ion-margin ion-no-padding ion-padding-left ion-padding-right" >
+      
+      <ion-item>
+        <ion-label position="stacked">Adjusted On <ion-text color="danger">*</ion-text></ion-label>
+        <ion-datetime displayFormat="MMM DD YYYY" min="1994-03-14"  formControlName="adjustedOn"></ion-datetime>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Quantity Adjusted <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input inputmode="decimal" type="number" formControlName="adjustedQty" readonly="true"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Reason <ion-text color="danger">*</ion-text> </ion-label>
+        <ion-select multiple="false" placeholder="" formControlName="adjustmentReason">
+          <ion-select-option *ngFor="let reason of inventoryAdjustmentReasons" [value]="reason">{{reason.description}}</ion-select-option>
+        </ion-select>   
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Notes </ion-label>
+        <ion-textarea autoGrow="true" rows="3" formControlName="notes"></ion-textarea>
+      </ion-item>
+
+      </ion-list>
+  </form>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar >
+    <ion-button expand="block" color="primary" (click)="adjustBalance()" >
+      Apply
+    </ion-button>
+    
+  </ion-toolbar>
+</ion-footer>

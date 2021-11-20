@@ -93,6 +93,7 @@ export class InventoryCountPage implements OnInit, OnDestroy {
 
 
   submit(){
+    /*
     this.store.dispatch(inventoryActions.submitCount({
       count : <InventoryCount>{
         id:'',
@@ -105,6 +106,7 @@ export class InventoryCountPage implements OnInit, OnDestroy {
         notes: this.notes.value,
       }
     }))
+    */
   }
 
 }

@@ -61,10 +61,10 @@ const reducer = createReducer(
       counts: inventoryCountAdapter.setAll(counts, state.counts)
     } 
   }),
-  on(inventoryActions.submitCountSuccess, (state, { count }) => {
+  on(inventoryActions.submitCountSuccess, (state, { update }) => {
     return {
       ... state,
-      counts: inventoryCountAdapter.addOne(count, state.counts)
+      counts: inventoryCountAdapter.updateOne(update, state.counts)
     }
   }),
   on(inventoryActions.archiveCountSuccess, (state, { update }) => {
@@ -72,8 +72,19 @@ const reducer = createReducer(
       ... state,
       counts: inventoryCountAdapter.updateOne(update, state.counts)
     }
+  }),
+  on(inventoryActions.startInventoryCountSuccess, (state, { count }) => {
+    return {
+      ... state,
+      counts: inventoryCountAdapter.addOne(count, state.counts)
+    }
+  }),
+  on(inventoryActions.updateInventoryCountSuccess, (state, { update }) => {
+    return {
+      ... state,
+      counts: inventoryCountAdapter.updateOne(update, state.counts)
+    }
   })
-  
  
 );
 
