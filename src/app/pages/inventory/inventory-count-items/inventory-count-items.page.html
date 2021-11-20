@@ -25,7 +25,6 @@
         <ion-label slot="start" style="width: 400em;">{{item.get('itemName').value}}</ion-label>
         <ion-input type="number" slot="end" placeholder="0" class="ion-text-left" formControlName="counted"  class="ion-text-right"></ion-input>
         <ion-note slot="end" class="ion-text-right" style="width: 50px;">{{item.get('onHand').value}}</ion-note>
-        
       </ng-container>
     </ion-item>
   </ion-list>
@@ -35,8 +34,7 @@
 <ion-footer>
   <ion-toolbar >
     <ion-button expand="block" color="primary" (click)="presentActionSheet()" >
-      Action
+      Options...
     </ion-button>
-    
   </ion-toolbar>
 </ion-footer>

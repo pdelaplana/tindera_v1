@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { InventoryCount } from '@app/models/inventory-count';
+import { InventoryCountItem } from '@app/models/inventory-count-item';
 import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { InventoryTransactionType } from '@app/models/types';
@@ -10,9 +11,10 @@ import { InventoryService } from '@app/services/firestore/inventory.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
-import { catchError, concatMap, debounceTime, map, mergeMap, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { catchError, debounceTime, map, mergeMap, switchMap } from 'rxjs/operators';
 import { AppState } from '..';
 import { inventoryActions } from './inventory.actions';
+import { selectAllInventory } from './inventory.selectors';
 
 @Injectable()
 export class InventoryEffects{
@@ -88,13 +90,12 @@ export class InventoryEffects{
   createItemFail = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.createItemFail),
     map((action) => {
-      this.commonUiService.notify('Opps. We are aunable to create an invenotry item.  Please try again');
+      this.commonUiService.notify('Opps. We are unable to create an inventory item.  Please try again');
     })  
   ), { dispatch: false });
 
   updateItem = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.updateItem),
-    //withLatestFrom(this.store),
     debounceTime(500),
     switchMap(async (action, state) => {
      
@@ -279,7 +280,7 @@ export class InventoryEffects{
   loadCounts = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.loadCounts),
     switchMap(action => {
-      const result = this.inventoryCountService.query([{name: 'archivedOn', operator: '!=', value: true}]);
+      const result = this.inventoryCountService.query([{name: 'archivedOn', operator: '==', value: null}]);
       return result.pipe()
     }),
 
@@ -296,13 +297,17 @@ export class InventoryEffects{
   submitCount = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.submitCount),
     switchMap(async (action) => {
-      const data = <InventoryCount>{
-        id:'',
-        ...action.count
-      }
-      const result = await this.inventoryCountService.add(data);
+      const data = await this.inventoryCountService.get(action.id);
+      if (data == null) throw('Record not found');
+      data.submittedOn = new Date();
+      const item = await this.inventoryCountService.update(data);
       return inventoryActions.submitCountSuccess({
-        count: result
+        update: {
+          id: item.id,
+          changes: { 
+            submittedOn : item.submittedOn
+          }
+        } 
       })
     }),
     catchError((error, caught) => {
@@ -326,7 +331,6 @@ export class InventoryEffects{
       if (data == null) throw('Record not found');
       data.archivedOn = new Date();
       const item = await this.inventoryCountService.update(data);
-      
       return inventoryActions.archiveCountSuccess({
         update: {
           id: item.id,
@@ -352,6 +356,94 @@ export class InventoryEffects{
     }),
     catchError((error, caught) => {
       this.store.dispatch(inventoryActions.deleteCountFail({error}));
+      return caught;
+    })  
+  ));
+
+  startInventoryCount = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.startInventoryCount),
+    switchMap((action) => {
+      return this.store.select(state => selectAllInventory(state.inventory.items)).pipe(
+        map(items => items.map(item => 
+          <InventoryCountItem>{
+            itemId: item.id,
+            itemName: item.name,
+            category: item.category.description,
+            onHand: item.currentCount,
+            counted:0,
+            countedOn: null,
+            countedBy: null,
+            notes:'',
+            adjustedOn: null
+          }) 
+        ),
+        map(items =>{
+          return <InventoryCount>{
+            id:'',
+            ...action.count,
+            countItems: items
+          }
+        })
+      ).pipe();
+    }),
+    switchMap(async (count) =>{
+      const result = await this.inventoryCountService.add(count);
+          return inventoryActions.startInventoryCountSuccess({
+            count: result
+          })
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.startInventoryCountFail({error}));
+      return caught;
+    })  
+  ));
+
+  updateInventoryCount = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.updateInventoryCount),
+    switchMap(async (action) => {
+      let count = await this.inventoryCountService.get(action.count.id);
+      if (count == null) throw('Record not found');
+      count = { ...action.count };
+      count = await this.inventoryCountService.update(count);
+      return inventoryActions.updateInventoryCountSuccess({
+        update: {
+          id: count.id,
+          changes: count
+        } 
+      })
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.updateInventoryCountFail({error}));
+      return caught;
+    })  
+  ));
+
+  closeCountItem = createEffect(() => this.actions.pipe(
+    ofType(inventoryActions.closeCountItem),
+    switchMap(async (action) => {
+      let count = await this.inventoryCountService.get(action.countId);
+      if (count == null) throw('Record not found');      
+
+      count = { ...count, countItems: count.countItems.map((item, index) =>{
+        if (item.itemId == action.itemId){
+          return {
+            ...item,
+            adjustedOn: new Date()
+          }
+        }
+        return item;
+      })}
+      count = await this.inventoryCountService.update(count);
+      
+      return inventoryActions.closeCountItemSuccess({
+        update: {
+          id: count.id,
+          changes: count
+        } 
+      })
+    }),
+    catchError((error, caught) => {
+      this.store.dispatch(inventoryActions.closeCountItemFail({error}));
       return caught;
     })  
   ));

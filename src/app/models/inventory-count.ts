@@ -1,13 +1,13 @@
 import { Entity } from './entity';
+import { InventoryCountItem } from './inventory-count-item';
 import { User } from './user';
 
 export interface InventoryCount extends Entity{
-  itemId: string;
-  itemName: string;
-  countBy: User;
   countOn: Date | any;
-  count: number,
+  user: User;
   type: string,
   notes: string;
+  submittedOn: Date | any;
   archivedOn: Date | any;
+  countItems: InventoryCountItem[]; 
 }

@@ -112,11 +112,11 @@ export const inventoryActions = {
   ),
   submitCount: createAction(
     '[Inventory] Submit count',
-    props<{ count: InventoryCount }>()
+    props<{ id: string }>()
   ),
   submitCountSuccess: createAction(
     '[Inventory] Submit count success',
-    props<{ count: InventoryCount }>()
+    props<{ update: Update<InventoryCount> }>()
   ),
   submitCountFail: createAction(
     '[Inventory] Submit count success',
@@ -143,6 +143,42 @@ export const inventoryActions = {
   ),
   deleteCountFail: createAction(
     '[Inventory] Delete count fail',
+    props<{ error: any }>()
+  ),
+  startInventoryCount: createAction(
+    '[Inventory] Start inventory count',
+    props<{ count: InventoryCount }>()
+  ),
+  startInventoryCountSuccess: createAction(
+    '[Inventory] Start inventory count success',
+    props<{ count: InventoryCount }>()
+  ),
+  startInventoryCountFail: createAction(
+    '[Inventory] Start inventory count fail',
+    props<{ error: any }>()
+  ),
+  updateInventoryCount: createAction(
+    '[Inventory] Update inventory count',
+    props<{ count: InventoryCount }>()
+  ),
+  updateInventoryCountSuccess: createAction(
+    '[Inventory] Update inventory count success',
+    props<{ update: Update<InventoryCount> }>()
+  ),
+  updateInventoryCountFail: createAction(
+    '[Inventory] Update inventory count fail',
+    props<{ error:any }>()
+  ),
+  closeCountItem: createAction(
+    '[Inventory] Close count item',
+    props<{ countId: string; itemId: string }>()
+  ),
+  closeCountItemSuccess: createAction(
+    '[Inventory] Close count item success',
+    props<{ update: Update<InventoryCount> }>()
+  ),
+  closeCountItemFail: createAction(
+    '[Inventory] Close count item fail',
     props<{ error: any }>()
   ),
   clearInventoryActions: createAction(

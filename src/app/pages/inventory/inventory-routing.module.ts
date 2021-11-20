@@ -39,10 +39,6 @@ const routes: Routes = [
     loadChildren: () => import('./inventory-count/inventory-count.module').then( m => m.InventoryCountPageModule)
   },
   {
-    path: 'count/details',
-    loadChildren: () => import('./inventory-count-list-details/inventory-count-list-details.module').then( m => m.InventoryCountListDetailsPageModule)
-  },
-  {
     path: 'adjust',
     loadChildren: () => import('./inventory-item-adjustment/inventory-item-adjustment.module').then( m => m.InventoryItemAdjustmentPageModule)
   },
@@ -50,6 +46,25 @@ const routes: Routes = [
     path: 'transaction/details',
     loadChildren: () => import('./inventory-item-transaction-details/inventory-item-transaction-details.module').then( m => m.InventoryItemTransactionDetailsPageModule)
   },
+  {
+    path: 'inventory-count-start-dialog',
+    loadChildren: () => import('./inventory-count-start-dialog/inventory-count-start-dialog.module').then( m => m.InventoryCountStartDialogPageModule)
+  },
+  {
+    path: 'count/items',
+    loadChildren: () => import('./inventory-count-items/inventory-count-items.module').then( m => m.InventoryCountItemsPageModule)
+  },
+  {
+    path: 'count/details',
+    loadChildren: () => import('./inventory-count-details/inventory-count-details.module').then( m => m.InventoryCountDetailsPageModule)
+  },
+  {
+    path: 'count/adjustment',
+    loadChildren: () => import('./inventory-count-item-adjustment/inventory-count-item-adjustment.module').then( m => m.InventoryCountItemAdjustmentPageModule)
+  },
+
+
+
 
  
   
