@@ -225,7 +225,8 @@ export class InventoryCountListDetailsPage implements OnInit, OnDestroy {
             quantityOut:  this.diff < 0 ? Math.abs(this.diff) : 0,
             reference: `count=${this.count.id}`,
             notes: '',
-            adjustmentReason: this.inventoryAdjustmentReasons.find(reason => reason.code == adjustmenReasonCode)
+            adjustmentReason: this.inventoryAdjustmentReasons.find(reason => reason.code == adjustmenReasonCode),
+            unitCost: this.item.costOfQtyReceivedToDate
           }
           this.store.dispatch(inventoryActions.updateInventoryBalance({transaction}))
         }

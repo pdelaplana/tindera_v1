@@ -38,6 +38,14 @@ export class InventoryCountItemAdjustmentPage implements OnInit,OnDestroy {
     private navController: NavController,
     private commonUIService: CommonUIService
   ) { 
+    
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  ngOnInit() {
     this.store.select(state => state.shop).subscribe(shop => this.inventoryAdjustmentReasons = shop.inventoryAdjustmentReasons);
 
     if (this.router.getCurrentNavigation().extras.state) {
@@ -77,13 +85,6 @@ export class InventoryCountItemAdjustmentPage implements OnInit,OnDestroy {
       )
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  ngOnInit() {
-  }
-
   get adjustedQty() { return this.inventoryAdjustmentForm.get('adjustedQty'); }
   set adjustedQty(value: any) { this.inventoryAdjustmentForm.get('adjustedQty').setValue(value); }
 
@@ -103,7 +104,6 @@ export class InventoryCountItemAdjustmentPage implements OnInit,OnDestroy {
         const diff = this.item.counted - this.item.onHand ;
         if (diff != 0) {
           //const adjustmenReasonCode = (diff > 0) ? 'COUNTIN' : 'COUNTOUT';
-        
           const transaction = <InventoryTransaction>{
             id:'',
             transactionType: InventoryTransactionType.Adjustment,
@@ -114,7 +114,7 @@ export class InventoryCountItemAdjustmentPage implements OnInit,OnDestroy {
             quantityOut:  diff < 0 ? Math.abs(diff) : 0,
             reference: `count=${this.count.id}`,
             notes: '',
-            adjustmentReason: this.adjustmentReason.value
+            adjustmentReason: this.adjustmentReason.value,
           }
           this.store.dispatch(inventoryActions.updateInventoryBalance({transaction}))
         }
