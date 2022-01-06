@@ -4,8 +4,8 @@ import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { Order } from '@app/models/order';
 import { AppState } from '@app/state';
 import { inventoryActions } from '@app/state/inventory/inventory.actions';
-import { selectInventoryTransactions, selectInventoryTransactionsByPeriod } from '@app/state/inventory/inventory.selectors';
-import { selectOrdersBetweenDates, selectOrdersByPeriod } from '@app/state/orders/order.selectors';
+import { selectInventoryTransactionsByDateRange } from '@app/state/inventory/inventory.selectors';
+import { selectOrdersByDateRange } from '@app/state/orders/order.selectors';
 import { NavController } from '@ionic/angular';
 import { ofType } from '@ngrx/effects';
 import { ActionsSubject, Store } from '@ngrx/store';
@@ -65,7 +65,7 @@ export class DailyReportPage implements OnInit {
         this.actions.pipe(
           ofType(inventoryActions.loadTransactionsSuccess),
         ).subscribe(action =>{
-          this.store.select(selectInventoryTransactionsByPeriod(this.fromDate, this.toDate)).subscribe(transactions => {
+          this.store.select(selectInventoryTransactionsByDateRange(this.fromDate, this.toDate)).subscribe(transactions => {
             this.transactions = this.groupTransactionsByItem(transactions);
           })
         })
@@ -78,7 +78,7 @@ export class DailyReportPage implements OnInit {
     this.toDate = moment(this.currentDate).endOf('day').toDate();
 
     this.store.dispatch(inventoryActions.loadTransactions({ fromDate: this.fromDate, toDate: this.toDate }));
-    this.store.select(selectOrdersBetweenDates(this.fromDate, this.toDate)).subscribe(orders => {
+    this.store.select(selectOrdersByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
       this.orders = orders;
       this.totalSales = orders
         .reduce((sum,current) => sum + Number(current.totalSale), 0 );

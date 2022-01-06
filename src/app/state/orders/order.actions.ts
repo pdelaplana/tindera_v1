@@ -7,6 +7,10 @@ export const orderActions = {
     '[Order] Load orders',
     props<{ shopid: string }>()
   ),
+  loadOrdersByDate: createAction(
+    '[Order] Load orders by date',
+    props<{ fromDate: Date, toDate: Date}>()
+  ),
   loadOrdersSuccess: createAction(
     '[Order] Load orders success',
     props<{ orders: Order[] }>()

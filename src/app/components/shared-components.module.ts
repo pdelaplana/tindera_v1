@@ -9,6 +9,7 @@ import { ShopCurrencyPipe } from './pipes/shop-currency.pipe';
 import { CurrencyInputComponent } from './currency-input/currency-input.component';
 import { PaymentTypeBadgeComponent } from './payment-type-badge/payment-type-badge.component';
 import { TextAvatarComponent } from './text-avatar/text-avatar.component';
+import { IconAvatarComponent } from './icon-avatar/icon-avatar.component';
 
 
 
@@ -20,7 +21,8 @@ import { TextAvatarComponent } from './text-avatar/text-avatar.component';
     UomLabelPipe,
     TransactionTypePipe,
     ShopCurrencyPipe,
-    TextAvatarComponent
+    TextAvatarComponent,
+    IconAvatarComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { TextAvatarComponent } from './text-avatar/text-avatar.component';
     UomLabelPipe,
     TransactionTypePipe,
     ShopCurrencyPipe,
-    TextAvatarComponent
+    TextAvatarComponent,
+    IconAvatarComponent
   ]
 })
 export class SharedComponentsModule { }

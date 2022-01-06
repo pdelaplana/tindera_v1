@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { DailyHighlightsCardComponent } from './daily-highlights-card.component';
+import { IconAvatarComponent } from './icon-avatar.component';
 
-describe('DailyHighlightsCardComponent', () => {
-  let component: DailyHighlightsCardComponent;
-  let fixture: ComponentFixture<DailyHighlightsCardComponent>;
+describe('IconAvatarComponent', () => {
+  let component: IconAvatarComponent;
+  let fixture: ComponentFixture<IconAvatarComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DailyHighlightsCardComponent ],
+      declarations: [ IconAvatarComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DailyHighlightsCardComponent);
+    fixture = TestBed.createComponent(IconAvatarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

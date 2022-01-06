@@ -80,6 +80,17 @@ export const selectOrdersByPeriod = (period: string) =>
     }
   );
 
+export const selectOrdersByDateRange = (fromDate: Date, toDate: Date) => 
+  createSelector(
+    selectAllOrders(),
+    (orders: Order[]) => {
+      const start = moment(fromDate).startOf('day');
+      const end = moment(toDate).endOf('day');      
+      return orders.filter(order => moment(order.orderDate.toDate()).isBetween(start, end));
+    }
+  );
+
+
 export const selectOrdersBetweenDates = (toDate: Date, fromDate: Date) => 
   createSelector(
     selectAllOrders(),

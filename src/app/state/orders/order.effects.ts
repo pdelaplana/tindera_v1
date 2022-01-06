@@ -7,7 +7,7 @@ import { CommonUIService } from '@app/services/common-ui.service';
 import { OrderService } from '@app/services/firestore/order.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { AppState } from '..';
 import { selectAuthUser } from '../auth/auth.selectors';
 import { inventoryActions } from '../inventory/inventory.actions';
@@ -40,6 +40,24 @@ export class OrderEffects{
       return caught;
     })   
   ));
+
+  loadOrdersByDate = createEffect(() => this.actions.pipe(
+    ofType(orderActions.loadOrdersByDate),
+    mergeMap(action => {
+      const result = this.orderService.getOrdersByDate(action.fromDate, action.toDate);
+      return result.pipe()
+    }),
+
+    map( arr => {
+      return orderActions.loadOrdersSuccess({orders: arr})
+    }),
+
+    catchError((error, caught) => {
+      this.store.dispatch(orderActions.loadOrdersFail({error}));
+      return caught;
+    })
+  ));
+
 
   createOrder = createEffect(() => this.actions.pipe(
     ofType(orderActions.createOrder),

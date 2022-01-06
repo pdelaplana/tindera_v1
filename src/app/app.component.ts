@@ -59,18 +59,19 @@ export class AppComponent implements OnInit {
       }
     });
 
-    this.store.dispatch(AuthActions.getAuthState());
-    //this.isAuthenticated.subscribe(value => this.menuController.enable(value));
-
     this.store.select(state => state.shop.id).subscribe((shopid) => {
       if (shopid){
         this.store.dispatch(inventoryActions.loadInventory({shopid}));  
         this.store.dispatch(productActions.loadProducts({ shopid }));
-        this.store.dispatch(orderActions.loadOrders({ shopid }));
+        //this.store.dispatch(orderActions.loadOrders({ shopid }));
         this.store.dispatch(inventoryActions.loadCounts({ shopid })); 
       }
       
     })
+    
+    
+    this.store.dispatch(AuthActions.getAuthState());
+    
     
 
   }
