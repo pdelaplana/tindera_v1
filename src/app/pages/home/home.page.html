@@ -11,33 +11,13 @@
 <ion-content class="gray-background">
 
   <ion-grid>
+    
     <ion-row>
       <ion-col>
-        <ion-card>
-         
-          <ion-card-content>
-           
-            <div class="ion-text-center  ion-padding ion-margin">
-              <h1>Good day, <br/> <ion-text color="secondary">{{ name }}</ion-text> !</h1>
-              <h1 style="margin-top:25px">Yesterday, you sold {{ productsSoldYesterday }} products and made {{ amountProductsSoldYesteday | shopCurrency}} in sales.</h1>
-            </div>
-            
-            <div >
-              <ion-button  fill="solid" expand="block" color="primary" (click)="navigateToDailyReport()">
-             
-                <ion-text class="ion-margin-left" slot="start">
-                Open Your Daily Report
-                </ion-text>
-
-              </ion-button>
-            </div>
-          </ion-card-content>
-        </ion-card>
+        <app-sales-activity-card #salesActivityCard></app-sales-activity-card>  
       </ion-col>
     </ion-row>
-
-    
-    
+      
     <ion-row color="primary">
       <ion-col>
         <app-sales-trend-chart #salesTrendChart></app-sales-trend-chart>  

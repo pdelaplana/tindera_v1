@@ -1,3 +1,4 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { InventoryTransactionType } from '@app/models/types';
@@ -6,10 +7,11 @@ import { CommonUIService } from '@app/services/common-ui.service';
 import { OrderService } from '@app/services/firestore/order.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { AppState } from '..';
 import { selectAuthUser } from '../auth/auth.selectors';
 import { inventoryActions } from '../inventory/inventory.actions';
+import { selectInventoryItem } from '../inventory/inventory.selectors';
 import { selectProduct } from '../product/product.selectors';
 import { orderActions } from './order.actions';
 
@@ -39,6 +41,24 @@ export class OrderEffects{
     })   
   ));
 
+  loadOrdersByDate = createEffect(() => this.actions.pipe(
+    ofType(orderActions.loadOrdersByDate),
+    mergeMap(action => {
+      const result = this.orderService.getOrdersByDate(action.fromDate, action.toDate);
+      return result.pipe()
+    }),
+
+    map( arr => {
+      return orderActions.loadOrdersSuccess({orders: arr})
+    }),
+
+    catchError((error, caught) => {
+      this.store.dispatch(orderActions.loadOrdersFail({error}));
+      return caught;
+    })
+  ));
+
+
   createOrder = createEffect(() => this.actions.pipe(
     ofType(orderActions.createOrder),
     switchMap(async (action) => {
@@ -59,45 +79,49 @@ export class OrderEffects{
       let transactions = [];
       const orderdId = action.order.id;
       
-      action.order.orderItems.forEach(item => {
-        const quantity = item.quantity;
-        this.store.select(selectProduct(item.productId))
+      action.order.orderItems.forEach(orderItem => {
+        const quantity = orderItem.quantity;
+        this.store.select(selectProduct(orderItem.productId))
           .subscribe(product => {
             
-            product.productItems.forEach(item => {
+            product.productItems.forEach(productItem => {
               transactions.push(<InventoryTransaction>{
                 id:'',
                 transactionType: InventoryTransactionType.Sale,
-                itemId: item.itemId,
-                itemName: item.itemName,
+                itemId: productItem.itemId,
+                itemName: productItem.itemName,
                 transactionOn: new Date(),
                 quantityIn: 0,
-                quantityOut:  Number(item.quantity)*quantity,
+                quantityOut:  Number(productItem.quantity)*quantity,
                 reference: `order=${action.order.id}`,
                 notes: '',
-              })       
+                //unitCost: Number(inventoryItem.unitCost),
+              }) 
             })
 
-            item.addons.forEach(a =>
+            orderItem.addons.forEach(addon =>
               transactions.push(<InventoryTransaction>{
                 id:'',
                 transactionType: InventoryTransactionType.Sale,
-                itemId: a.itemId,
-                itemName: a.name,
+                itemId: addon.itemId,
+                itemName: addon.name,
                 transactionOn: new Date(),
                 quantityIn: 0,
-                quantityOut:  Number(a.quantity)*quantity,
+                quantityOut:  Number(addon.quantity)*quantity,
                 reference: `order=${action.order.id}`,
                 notes: '',
-              }) 
+                //unitCost: Number(inventoryItem.unitCost)
+              })
+  
             )
         
           })
       });
       
       transactions.forEach(transaction => {
-        this.store.dispatch(inventoryActions.updateInventoryBalance({transaction}))  
+        this.store.dispatch(inventoryActions.updateInventoryBalance({transaction}))  ;
       })
+      this.store.dispatch(inventoryActions.clearInventoryActions());
       this.commonUiService.notify(`Order has been completed. You can browse this under Completed Orders under Sales. `)      
     }),
     catchError((error, caught) => {

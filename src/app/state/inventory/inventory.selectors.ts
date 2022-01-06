@@ -65,11 +65,13 @@ export const selectInventoryTransactionsOfItem = (id: string ) =>
     }
   );
 
-export const selectInventoryTransactionsByPeriod = (fromDate: Date, toDate: Date) =>
+export const selectInventoryTransactionsByDateRange = (fromDate: Date, toDate: Date) =>
   createSelector(
     selectInventoryTransactions(),
     (transactions) => {
-      return transactions.filter(transaction => moment(transaction.transactionOn.toDate()).isBetween(moment(fromDate),moment(toDate)));
+      const start = moment(fromDate).startOf('day');
+      const end = moment(toDate).endOf('day');
+      return transactions.filter(transaction => moment(transaction.transactionOn.toDate()).isBetween(start,end));
     }
   );
 

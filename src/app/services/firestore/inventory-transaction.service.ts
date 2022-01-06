@@ -1,4 +1,3 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { InventoryItem } from '@app/models/inventory-item';
@@ -18,12 +17,10 @@ export class InventoryTransactionService extends RepositoryService<InventoryTran
   ) { 
     super(store,firestore);
     this.store.select(state => state.shop.id).subscribe(
-      shopId => this.collectionName = `shops/${shopId}/inventoryTransactions`
+      (shopId) => {
+        if (shopId !== '')  this.collectionName = `shops/${shopId}/inventoryTransactions`;
+      } 
     );
-  }
-
-  setCollection(shopId: string, itemId: string){
-    //this.collectionName = `shops/${shopId}/inventory/${itemId}/transactions`;
   }
 
   getTransactions(itemId:string){

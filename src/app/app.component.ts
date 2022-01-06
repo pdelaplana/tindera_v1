@@ -39,10 +39,14 @@ export class AppComponent implements OnInit {
     private menuController: MenuController,
     private navController: NavController
   ) {
-    this.name = store.pipe(select(state => state.auth.displayName));
-    this.email = store.select(state => state.auth.email);
-    this.isEmailVerified = store.select(state => state.auth.emailVerified);
-    this.isAuthenticated = store.select(state => state.auth.isAuthenticated);
+    
+  }
+
+  ngOnInit(): void {
+    this.name = this.store.pipe(select(state => state.auth.displayName));
+    this.email = this.store.select(state => state.auth.email);
+    this.isEmailVerified = this.store.select(state => state.auth.emailVerified);
+    this.isAuthenticated = this.store.select(state => state.auth.isAuthenticated);
     this.store.select(state => state.auth).subscribe((auth) =>{
       if (auth.isAuthenticated){
         if (auth.shopIds.length==0){
@@ -53,23 +57,22 @@ export class AppComponent implements OnInit {
           this.navController.navigateRoot('home');
         }
       }
-    
     });
-  }
-
-  ngOnInit(): void {
-    this.store.dispatch(AuthActions.getAuthState());
-    //this.isAuthenticated.subscribe(value => this.menuController.enable(value));
 
     this.store.select(state => state.shop.id).subscribe((shopid) => {
       if (shopid){
         this.store.dispatch(inventoryActions.loadInventory({shopid}));  
         this.store.dispatch(productActions.loadProducts({ shopid }));
-        this.store.dispatch(orderActions.loadOrders({ shopid }));
+        //this.store.dispatch(orderActions.loadOrders({ shopid }));
         this.store.dispatch(inventoryActions.loadCounts({ shopid })); 
       }
       
     })
+    
+    
+    this.store.dispatch(AuthActions.getAuthState());
+    
+    
 
   }
 }

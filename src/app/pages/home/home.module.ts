@@ -13,6 +13,7 @@ import { SalesByPaymentTypeCardComponent } from './components/sales-by-payment-t
 import { TopSellingProductsCardComponent } from './components/top-selling-products-card/top-selling-products-card.component';
 import { LowInventoryAlertsCardComponent } from './components/low-inventory-alerts-card/low-inventory-alerts-card.component';
 import { SalesByProductCategoryCardComponent } from './components/sales-by-product-category-card/sales-by-product-category-card.component';
+import { SalesActivityCardComponent } from './components/sales-activity-card/sales-activity-card.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { SalesByProductCategoryCardComponent } from './components/sales-by-produ
     TopSellingProductsCardComponent,
     LowInventoryAlertsCardComponent,
     SalesByProductCategoryCardComponent,
+    SalesActivityCardComponent,
     HomePage
   ]
 })

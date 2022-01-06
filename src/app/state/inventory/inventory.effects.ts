@@ -8,13 +8,13 @@ import { CommonUIService } from '@app/services/common-ui.service';
 import { InventoryCountService } from '@app/services/firestore/inventory-count.service';
 import { InventoryTransactionService } from '@app/services/firestore/inventory-transaction.service';
 import { InventoryService } from '@app/services/firestore/inventory.service';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import {  Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-
-import { catchError, debounceTime, map, mergeMap, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { catchError, debounceTime, filter, flatMap, map, mergeMap, switchMap,  withLatestFrom } from 'rxjs/operators';
 import { AppState } from '..';
 import { inventoryActions } from './inventory.actions';
-import { selectAllInventory } from './inventory.selectors';
+import { selectAllInventory, selectInventoryItem } from './inventory.selectors';
 
 @Injectable()
 export class InventoryEffects{
@@ -38,7 +38,7 @@ export class InventoryEffects{
 
   loadInventory = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.loadInventory),
-    switchMap(action => {
+    switchMap(() => {
       const result = this.inventoryService.query([]);
       return result.pipe()
     }),
@@ -82,14 +82,14 @@ export class InventoryEffects{
 
   createItemSuccess = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.createItemSuccess),
-    map((action) => {
+    map(() => {
       this.commonUiService.notify('New inventory item created');
     })
   ), { dispatch: false });
 
   createItemFail = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.createItemFail),
-    map((action) => {
+    map(() => {
       this.commonUiService.notify('Opps. We are unable to create an inventory item.  Please try again');
     })  
   ), { dispatch: false });
@@ -97,7 +97,7 @@ export class InventoryEffects{
   updateItem = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.updateItem),
     debounceTime(500),
-    switchMap(async (action, state) => {
+    switchMap(async (action) => {
      
       const data = <InventoryItem>{
         id:action.item.id,
@@ -138,7 +138,7 @@ export class InventoryEffects{
 
   updateItemSuccess = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.updateItemSuccess),
-    map((action) => {
+    map(() => {
       this.commonUiService.notify('Inventory item updated');
     })
   ),
@@ -147,7 +147,7 @@ export class InventoryEffects{
 
   updateItemFail = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.updateItemFail),
-    map((action) => {
+    map(() => {
       this.commonUiService.notify('Oops. We are aunable to update the  item.  Please try again');
       return null;
     })  
@@ -155,7 +155,7 @@ export class InventoryEffects{
 
   loadTransactions = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.loadTransactions),
-    switchMap(action => {
+    mergeMap(action => {
       const result = this.inventoryTransactionService.getTransactionsByDate(action.fromDate, action.toDate);
       return result.pipe()
     }),
@@ -229,41 +229,46 @@ export class InventoryEffects{
 
   updateInventoryBalance = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.updateInventoryBalance),
-    mergeMap(async (action) => {
-      const data = <InventoryTransaction>{
-        id:'',
-        ...action.transaction
-      }
-      //this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
-      const result = await this.inventoryTransactionService.add(data);
-
-      let balance = 0;
-      switch(result.transactionType){
-        case InventoryTransactionType.Receipt:
-          balance = await this.inventoryService.incrementBalanceOnHand(result.itemId, result.quantityIn)
-          this.commonUiService.notify(`Inventory received successfully. New balance ${balance}`);    
-          break;
-        case InventoryTransactionType.Issue:
-        case InventoryTransactionType.Sale:
-          balance = await this.inventoryService.decrementBalanceOnHand(result.itemId, result.quantityOut)
-          console.log(`${result.itemId} Balance decremented by ${result.quantityOut}`)
-          break;
-        case InventoryTransactionType.Adjustment:  
-        case InventoryTransactionType.CountAdjustment:
-          if (result.quantityIn > 0){
-            balance = await this.inventoryService.incrementBalanceOnHand(result.itemId, result.quantityIn)
-            console.log(`${result.itemId} Balance incremented by ${result.quantityIn}`);
-          } else if (result.quantityOut > 0)  {
-            balance = await this.inventoryService.decrementBalanceOnHand(result.itemId, result.quantityOut)
-            console.log(`${result.itemId} Balance decremented by ${result.quantityOut}`);
+    switchMap((action) =>
+      of(action).pipe(
+        withLatestFrom(
+          this.store.select(selectInventoryItem(action.transaction.itemId))
+        ),
+        switchMap(async([action, item]) => {
+          const data = <InventoryTransaction>{
+            id:'',
+            ...action.transaction,
+            unitCost: isNaN(item.unitCost) ? 0 :  Number(item.unitCost),
           }
-          break;
-      }
-
-      return inventoryActions.updateInventoryBalanceSuccess({
-        transaction: result
-      })
-    }),
+           //this.inventoryTransactionService.setCollection(this.shopid, action.transaction.itemId);
+          const result = await  this.inventoryTransactionService.add(data);
+          let balance = 0;
+          switch(result.transactionType){
+            case InventoryTransactionType.Receipt:
+              balance = await this.inventoryService.incrementBalanceOnHand(result.itemId, result.quantityIn)
+              this.commonUiService.notify(`Inventory received successfully. New balance ${balance}`);    
+              break;
+            case InventoryTransactionType.Issue:
+            case InventoryTransactionType.Sale:
+              balance = await this.inventoryService.decrementBalanceOnHand(result.itemId, result.quantityOut)
+              console.log(`${result.itemId} Balance decremented by ${result.quantityOut}`)
+              break;
+            case InventoryTransactionType.Adjustment:  
+            case InventoryTransactionType.CountAdjustment:
+              if (result.quantityIn > 0){
+                balance = await this.inventoryService.incrementBalanceOnHand(result.itemId, result.quantityIn)
+                console.log(`${result.itemId} Balance incremented by ${result.quantityIn}`);
+              } else if (result.quantityOut > 0)  {
+                balance = await this.inventoryService.decrementBalanceOnHand(result.itemId, result.quantityOut)
+                console.log(`${result.itemId} Balance decremented by ${result.quantityOut}`);
+              }
+              break;
+          }
+    
+          return inventoryActions.updateInventoryBalanceSuccess({ transaction: result });
+        })
+      )
+    ),
     catchError((error, caught) => {
       this.store.dispatch(inventoryActions.updateInventoryBalanceFail({error}));
       return caught;
@@ -272,14 +277,14 @@ export class InventoryEffects{
 
   updateInventoryBalanceSuccess = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.updateInventoryBalanceSuccess),
-    mergeMap(async (action) => {
+    mergeMap(async () => {
       return null;
     })
   ),{ dispatch: false });
 
   loadCounts = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.loadCounts),
-    switchMap(action => {
+    switchMap(() => {
       const result = this.inventoryCountService.query([{name: 'archivedOn', operator: '==', value: null}]);
       return result.pipe()
     }),
@@ -318,7 +323,7 @@ export class InventoryEffects{
 
   submitCountSuccess = createEffect(() => this.actions.pipe(
     ofType(inventoryActions.submitCountSuccess),
-    map(async (action) => {
+    map(async () => {
       this.commonUiService.notify(`Inventory count submitted`);
       return null;
     })
@@ -424,7 +429,7 @@ export class InventoryEffects{
       let count = await this.inventoryCountService.get(action.countId);
       if (count == null) throw('Record not found');      
 
-      count = { ...count, countItems: count.countItems.map((item, index) =>{
+      count = { ...count, countItems: count.countItems.map((item) =>{
         if (item.itemId == action.itemId){
           return {
             ...item,

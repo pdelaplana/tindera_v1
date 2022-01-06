@@ -53,7 +53,7 @@ export class HomePage implements OnInit {
     this.store.select(state => state.shop)
       .subscribe((shop) => {
         this.currencyCode = shop.currencyCode;
-        this.paymentTypes = shop.paymentTypes;
+        this.paymentTypes = shop.paymentTypes; 
       })
     
     this.store.select(selectOrdersByPeriod('yesterday')).subscribe(orders => {

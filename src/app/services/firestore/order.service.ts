@@ -19,4 +19,11 @@ export class OrderService extends RepositoryService<Order> {
       shopId => this.collectionName = `shops/${shopId}/orders`
     );
   }
+
+  getOrdersByDate(fromDate: Date, toDate: Date){
+    return this.query([
+      {name: 'orderDate', operator: '>=', value: fromDate}, 
+      {name: 'orderDate', operator: '<=', value: toDate}
+    ]);
+  }
 }
