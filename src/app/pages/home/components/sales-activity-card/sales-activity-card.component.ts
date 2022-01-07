@@ -71,8 +71,7 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
             this.totalOrders = orders.length;
             this.totalSalesAmount = orders.reduce((sum, current) => sum + current.totalSale, 0);
             this.totalRevenue = this.totalSalesAmount - this.totalProductCost;
-          })
-                            
+          })                   
         })
       )
 

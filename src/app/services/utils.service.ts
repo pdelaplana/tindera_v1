@@ -33,6 +33,11 @@ export class UtilsService {
         start = moment().startOf(uot);
         end = moment().endOf(uot);
         break;
+      case 'thisQuarter':
+        uot = 'quarter';
+        start = moment().startOf(uot);
+        end = moment().endOf(uot);
+        break;
       case 'thisYear':
         uot = 'year';
         start = moment().startOf(uot);
@@ -43,7 +48,6 @@ export class UtilsService {
         start = moment().add(1, 'day').subtract(7, 'day').startOf(uot);
         end = moment().endOf(uot);
         break;
-          
       case 'lastMonth':
         uot = 'month';
         start = moment().add(-1, 'month').startOf(uot);

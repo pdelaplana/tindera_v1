@@ -1,11 +1,15 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Order } from '@app/models/order';
 import { PaymentType } from '@app/models/payment-type';
+import { UtilsService } from '@app/services/utils.service';
 import { AppState } from '@app/state';
-import { selectOrdersByPeriod } from '@app/state/orders/order.selectors';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { selectOrdersByDateRange, selectOrdersByPeriod } from '@app/state/orders/order.selectors';
+import { ActionsSubject, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import * as moment from 'moment';
+import { orderActions } from '@app/state/orders/order.actions';
+import { ofType } from '@ngrx/effects';
+
 
 @Component({
   selector: 'app-sales-by-payment-type-card',
@@ -14,15 +18,17 @@ import { Observable } from 'rxjs';
 })
 export class SalesByPaymentTypeCardComponent implements OnInit {
 
-  currencyCode: string;
-  paymentTypes: PaymentType[];
+  private subscription: Subscription = new Subscription();
 
-  orders$: Observable<Order[]>;
+  toDate: Date;
+  fromDate: Date;
+
+  paymentTypes: PaymentType[];
 
   salesByPaymentType: any;
 
-  filterLabel = 'This week';
-  filterPeriod = 'last7Days';
+  filterLabel = 'Today';
+  filterPeriod = 'today';
 
   private getSalesByPaymentType(orders:Order[]): { paymentType: string,  totalSale: number, orders: Order[]}[] {
     const paymentTypes = [];
@@ -44,15 +50,28 @@ export class SalesByPaymentTypeCardComponent implements OnInit {
   
   constructor(
     private store: Store<AppState>,
-    private currencyPipe: CurrencyPipe,
+    private actions: ActionsSubject,
+    private utils: UtilsService
   ) { }
 
   ngOnInit() {
     this.store.select(state => state.shop)
       .subscribe((shop) => {
-        this.currencyCode = shop.currencyCode;
         this.paymentTypes = shop.paymentTypes;
       })
+
+    this.subscription
+      .add(
+        this.actions.pipe(
+          ofType(orderActions.loadOrdersSuccess),
+        ).subscribe(action =>{
+          this.store.select(selectOrdersByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
+            this.salesByPaymentType = this.getSalesByPaymentType(orders);
+          })
+        })
+      )
+
+      this.filterByPeriod('today');
   }
 
   togglePeriodFilter(period: string){
@@ -62,15 +81,21 @@ export class SalesByPaymentTypeCardComponent implements OnInit {
       return '';
   }
 
-  filterByPeriod(period: string){
+  filterByPeriod(period:string){
     this.filterPeriod = period;
 
     switch (period){
-      case 'last7Days':
+      case 'today':
+        this.filterLabel = 'Today'
+        break;
+      case 'thisWeek':
         this.filterLabel = 'This week'
         break;
       case 'thisMonth':
         this.filterLabel = 'This month'
+        break;
+      case 'thisQuarter':
+        this.filterLabel = 'This quarter'
         break;
       case 'last3Months':
         this.filterLabel = 'Last 3 months';
@@ -83,13 +108,22 @@ export class SalesByPaymentTypeCardComponent implements OnInit {
         break;
     }
 
-    this.orders$ = this.store.select(selectOrdersByPeriod(period)); 
-    
-    this.orders$.subscribe(orders => {
-      this.salesByPaymentType = this.getSalesByPaymentType(orders);
-      
-    });
+    const [start, end] = this.utils.getDatesfromPeriod(period);
+    this.getData(start,end);
  
+  }
+
+  getData(fromDate: Date, toDate: Date){
+    this.fromDate = moment(fromDate).startOf('day').toDate();
+    this.toDate = moment(toDate).endOf('day').toDate();
+
+     // load transactions but ensure shop data is loaded in state store
+     this.store.select(state => state.shop).subscribe(shop => {
+      if (shop) {
+        this.store.dispatch(orderActions.loadOrdersByDate({ fromDate: this.fromDate, toDate: this.toDate }))
+      }
+    })
+   
   }
 
 
