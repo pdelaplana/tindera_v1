@@ -14,6 +14,7 @@ import { CurrencyPipe } from '@angular/common';
 import { PaymentType } from '@app/models/payment-type';
 import { NavController } from '@ionic/angular';
 import { NavigationExtras } from '@angular/router';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-home',
@@ -65,10 +66,10 @@ export class HomePage implements OnInit {
 
   ionViewDidEnter() {
     this.salesTrendChart.initChart();
-    this.salesTrendChart.filterByPeriod('last7Days');
-    this.salesByPaymentTypeCard.filterByPeriod('last7Days');
+    this.salesTrendChart.filterByPeriod('thisWeek');
+    this.salesByPaymentTypeCard.filterByPeriod('thisWeek');
     //this.topSellingProductsCard.filterByPeriod('last7Days');
-    this.salesByProductCategoryCard.filterByPeriod('last7Days')
+    this.salesByProductCategoryCard.filterByPeriod('thisWeek')
   }
 
   
