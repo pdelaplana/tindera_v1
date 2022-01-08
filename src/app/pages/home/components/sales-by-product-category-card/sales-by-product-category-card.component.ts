@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Order } from '@app/models/order';
 import { OrderItem } from '@app/models/order-item';
 import { ProductCategory } from '@app/models/product-category';
+import { UtilsService } from '@app/services/utils.service';
 import { AppState } from '@app/state';
-import { selectOrdersByPeriod } from '@app/state/orders/order.selectors';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { orderActions } from '@app/state/orders/order.actions';
+import { selectOrdersByDateRange, selectOrdersByPeriod } from '@app/state/orders/order.selectors';
+import { ofType } from '@ngrx/effects';
+import { ActionsSubject, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-sales-by-product-category-card',
@@ -14,7 +18,11 @@ import { Observable } from 'rxjs';
 })
 export class SalesByProductCategoryCardComponent implements OnInit {
   
-  currencyCode: string;
+  private subscription: Subscription = new Subscription();
+
+  toDate: Date;
+  fromDate: Date;
+
   productCategories: ProductCategory[];
 
   orders$: Observable<Order[]>;
@@ -22,7 +30,7 @@ export class SalesByProductCategoryCardComponent implements OnInit {
   salesByProductCategory: any;
 
   filterLabel = 'This week';
-  filterPeriod = 'last7Days';
+  filterPeriod = 'thisWeek';
 
   private getSaleByProductCategory(orders: Order[]){
     const items = orders.map(p =>p.orderItems);
@@ -51,14 +59,27 @@ export class SalesByProductCategoryCardComponent implements OnInit {
   
   constructor(
     private store: Store<AppState>,
+    private actions: ActionsSubject,
+    private utils: UtilsService
   ) { }
 
   ngOnInit() {
     this.store.select(state => state.shop)
       .subscribe((shop) => {
-        this.currencyCode = shop.currencyCode;
         this.productCategories = shop.productCategories;
       })
+
+    this.subscription
+      .add(
+        this.actions.pipe(
+          ofType(orderActions.loadOrdersSuccess),
+        ).subscribe(action =>{
+          this.store.select(selectOrdersByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
+            this.salesByProductCategory = this.getSaleByProductCategory(orders);
+          })
+        })
+      )
+
   }
 
   togglePeriodFilter(period: string){
@@ -89,13 +110,24 @@ export class SalesByProductCategoryCardComponent implements OnInit {
         break;
     }
 
-    this.orders$ = this.store.select(selectOrdersByPeriod(period)); 
-    
-    this.orders$.subscribe(orders => {
-      this.salesByProductCategory = this.getSaleByProductCategory(orders);
-    });
- 
+    const [start, end] = this.utils.getDatesfromPeriod(period);
+    this.getData(start,end);
+
   }
+
+  getData(fromDate: Date, toDate: Date){
+    this.fromDate = moment(fromDate).startOf('day').toDate();
+    this.toDate = moment(toDate).endOf('day').toDate();
+
+     // load transactions but ensure shop data is loaded in state store
+     this.store.select(state => state.shop).subscribe(shop => {
+      if (shop) {
+        this.store.dispatch(orderActions.loadOrdersByDate({ fromDate: this.fromDate, toDate: this.toDate }))
+      }
+    })
+   
+  }
+
 
 
 }
