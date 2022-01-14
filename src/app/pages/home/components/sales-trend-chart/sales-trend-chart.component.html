@@ -17,21 +17,19 @@
   </ion-card-content>
 
   <div class="ion-text-center ion-padding">
-    <ion-chip [color]="togglePeriodFilter('last7Days')" (click)="filterByPeriod('last7Days')">
+    <ion-chip [color]="togglePeriodFilter('thisWeek')" (click)="filterByPeriod('thisWeek')">
       <ion-label>1W</ion-label>
     </ion-chip>
     <ion-chip [color]="togglePeriodFilter('thisMonth')" (click)="filterByPeriod('thisMonth')">
       <ion-label>1M</ion-label>
     </ion-chip>
-    <ion-chip [color]="togglePeriodFilter('last3Months')" (click)="filterByPeriod('last3Months')">
-      <ion-label>3M</ion-label>
+    <ion-chip [color]="togglePeriodFilter('thisQuarter')" (click)="filterByPeriod('thisQuarter')">
+      <ion-label>1Q</ion-label>
     </ion-chip>
-    <ion-chip  [color]="togglePeriodFilter('last6Months')" (click)="filterByPeriod('last6Months')">
-      <ion-label>6M</ion-label>
-    </ion-chip>    
     <ion-chip [color]="togglePeriodFilter('thisYear')" (click)="filterByPeriod('thisYear')">
       <ion-label>1Y</ion-label>
     </ion-chip>
   </div>
+ 
 </ion-card>
   
