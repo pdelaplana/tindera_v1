@@ -29,7 +29,8 @@ export class HomePage implements OnInit {
   //@ViewChild('topSellingProductsCard') topSellingProductsCard;
   @ViewChild('lowInventoryAlertsCard') lowInventoryAlertsCard;
   @ViewChild('salesByProductCategoryCard') salesByProductCategoryCard;
-
+  @ViewChild('onhandInventoryLevelsChart') onhandInventoryLevelsChart;
+  
   currencyCode: string;
   paymentTypes: PaymentType[];
 
@@ -67,9 +68,11 @@ export class HomePage implements OnInit {
   ionViewDidEnter() {
     this.salesTrendChart.initChart();
     this.salesTrendChart.filterByPeriod('thisWeek');
+    this.onhandInventoryLevelsChart.initChart();
+    this.onhandInventoryLevelsChart.filterByPeriod('thisWeek');
     this.salesByPaymentTypeCard.filterByPeriod('thisWeek');
     //this.topSellingProductsCard.filterByPeriod('last7Days');
-    this.salesByProductCategoryCard.filterByPeriod('thisWeek')
+    this.salesByProductCategoryCard.filterByPeriod('thisWeek');
   }
 
   

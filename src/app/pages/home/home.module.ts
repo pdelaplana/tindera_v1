@@ -14,6 +14,7 @@ import { TopSellingProductsCardComponent } from './components/top-selling-produc
 import { LowInventoryAlertsCardComponent } from './components/low-inventory-alerts-card/low-inventory-alerts-card.component';
 import { SalesByProductCategoryCardComponent } from './components/sales-by-product-category-card/sales-by-product-category-card.component';
 import { SalesActivityCardComponent } from './components/sales-activity-card/sales-activity-card.component';
+import { OnhandInventoryLevelsCardComponent } from './components/onhand-inventory-levels-card/onhand-inventory-levels-card.component';
 
 @NgModule({
   imports: [
@@ -30,6 +31,7 @@ import { SalesActivityCardComponent } from './components/sales-activity-card/sal
     LowInventoryAlertsCardComponent,
     SalesByProductCategoryCardComponent,
     SalesActivityCardComponent,
+    OnhandInventoryLevelsCardComponent,
     HomePage
   ]
 })
