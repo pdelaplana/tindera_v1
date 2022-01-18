@@ -34,10 +34,29 @@ const groupByCategory = (array:InventoryItem[]): { category: string, inventoryIt
 }
 
 
+export const selectInventoryState = (state: AppState) => state.inventory;
 
 export const selectAllInventory = selectAll;
 
-export const selectInventoryState = (state: AppState) => state.inventory;
+export const selectInventory = (searchTerm:string|null) =>
+  createSelector(
+    selectInventoryState,
+    state => {
+      let items = Object.entries(state.items.entities).map(([id, item]) => item);
+      if (searchTerm)
+        items = items.filter(item => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 )
+      return items;
+    }
+  )
+
+export const selectInventoryItems = () =>
+  createSelector(
+    selectInventoryState,
+    state => {
+      return  Object.entries(state.items.entities).map(([id, item]) => item);
+    }
+  )
+
 
 export const selectAllAndGroupInventory = (searchTerm: string) =>
   createSelector(

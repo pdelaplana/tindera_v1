@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras } from '@angular/router';
-import { InventoryItem } from '@app/models/inventory-item';
 import { AppState } from '@app/state';
-import { inventoryActions } from '@app/state/inventory/inventory.actions';
-import { selectAllAndGroupInventory, selectAllInventory } from '@app/state/inventory/inventory.selectors';
-import { InventoryState } from '@app/state/inventory/inventory.state';
+import { selectAllAndGroupInventory } from '@app/state/inventory/inventory.selectors';
 import { ModalController, NavController } from '@ionic/angular';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { AddInventoryItemPage } from '../add-inventory-item/add-inventory-item.page';
 
 @Component({
