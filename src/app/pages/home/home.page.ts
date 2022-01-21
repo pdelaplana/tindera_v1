@@ -1,20 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { InventoryItem } from '@app/models/inventory-item';
 import { Order } from '@app/models/order';
-import { OrderItem } from '@app/models/order-item';
 import { AppState } from '@app/state';
-import { selectInventoryForReorder } from '@app/state/inventory/inventory.selectors';
 import { selectOrdersByPeriod } from '@app/state/orders/order.selectors';
 import { Store } from '@ngrx/store';
-import { Chart, registerables } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { Observable } from 'rxjs';
-import * as moment from 'moment';
 import { CurrencyPipe } from '@angular/common';
 import { PaymentType } from '@app/models/payment-type';
 import { NavController } from '@ionic/angular';
 import { NavigationExtras } from '@angular/router';
-import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-home',
@@ -30,6 +24,8 @@ export class HomePage implements OnInit {
   @ViewChild('lowInventoryAlertsCard') lowInventoryAlertsCard;
   @ViewChild('salesByProductCategoryCard') salesByProductCategoryCard;
   @ViewChild('onhandInventoryLevelsChart') onhandInventoryLevelsChart;
+  @ViewChild('inventoryMovementChart') inventoryMovementChart;
+
   
   currencyCode: string;
   paymentTypes: PaymentType[];
@@ -37,8 +33,6 @@ export class HomePage implements OnInit {
   name: string;
   productsSoldYesterday: number;
   amountProductsSoldYesteday: number;
-
-  
 
   orders$: Observable<Order[]>;
 
@@ -70,6 +64,9 @@ export class HomePage implements OnInit {
     this.salesTrendChart.filterByPeriod('thisWeek');
     this.onhandInventoryLevelsChart.initChart();
     this.onhandInventoryLevelsChart.filterByPeriod('thisWeek');
+    this.inventoryMovementChart.initChart();
+    this.inventoryMovementChart.filterByPeriod('thisWeek');
+
     this.salesByPaymentTypeCard.filterByPeriod('thisWeek');
     //this.topSellingProductsCard.filterByPeriod('last7Days');
     this.salesByProductCategoryCard.filterByPeriod('thisWeek');
