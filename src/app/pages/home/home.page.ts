@@ -25,6 +25,7 @@ export class HomePage implements OnInit {
   @ViewChild('salesByProductCategoryCard') salesByProductCategoryCard;
   @ViewChild('onhandInventoryLevelsChart') onhandInventoryLevelsChart;
   @ViewChild('inventoryMovementChart') inventoryMovementChart;
+  @ViewChild('onhandInventoryChart') onhandInventoryChart;
 
   
   currencyCode: string;
@@ -66,6 +67,7 @@ export class HomePage implements OnInit {
     this.onhandInventoryLevelsChart.filterByPeriod('thisWeek');
     this.inventoryMovementChart.initChart();
     this.inventoryMovementChart.filterByPeriod('thisWeek');
+    this.onhandInventoryChart.initChart();
 
     this.salesByPaymentTypeCard.filterByPeriod('thisWeek');
     //this.topSellingProductsCard.filterByPeriod('last7Days');
