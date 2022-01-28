@@ -1,0 +1,67 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>
+      <ion-row>
+        <ion-col> 
+          Onhand Inventory  
+        </ion-col>
+      </ion-row>
+      
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col sizeXl="7" sizeLg="6" sizeMd="6" sizeXs="12">
+          <div class="chart-container ion-text-center">
+            <canvas #onhandInventoryChart></canvas>
+          </div>
+          
+        </ion-col>
+        <ion-col sizeXl="5" sizeLg="6" sizeMd="6" sizeXs="12">
+          <ion-grid>
+
+            <ion-row>
+              <ion-col >
+                <ion-text>Total Items</ion-text>
+                <h1 color="tertiary">{{ totalItems }}</h1>
+              </ion-col>
+              <ion-col >
+                <ion-text>Total Value</ion-text>
+                <h1 color="tertiary">{{ totalValue | shopCurrency }}</h1>
+              </ion-col>
+            </ion-row>
+
+            <ion-list class="ion-border-top" >
+              <ng-container *ngFor="let category of (inventoryCategories)">
+              <ion-item-divider lines="full" (click)="selectedCategory != category.description ? selectedCategory = category.description : selectedCategory = '' ">
+                <ion-avatar slot="start">
+                  <app-text-avatar [text]="category.description" textColor="white"></app-text-avatar>
+                </ion-avatar>
+                <ion-label>
+                  <h2>{{ category.description }}</h2>
+                </ion-label>
+                <ion-label slot="end">{{ category.onhandQty }}</ion-label>
+              </ion-item-divider>
+          
+              <ng-container *ngIf="selectedCategory == category.description">
+                <ion-item class="sublist-item" *ngFor="let item of category.inventoryItems" lines="none">
+                  <ion-label ><h5> {{item.name}}</h5></ion-label>
+                  <ion-note slot="end">{{item.currentCount}} </ion-note>
+                </ion-item>
+              </ng-container>
+              
+            </ng-container>
+            </ion-list>
+                        
+          </ion-grid>
+          
+          
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    
+  </ion-card-content>
+  
+  
+</ion-card>

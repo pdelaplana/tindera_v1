@@ -1,9 +1,7 @@
 import { InventoryItem } from '@app/models/inventory-item';
-import {  createSelector, select } from '@ngrx/store';
-import { startWith } from 'rxjs/operators';
+import {  createSelector } from '@ngrx/store';
 import { AppState } from '..';
-import { inventoryItemAdapter, inventoryTransactionAdapter } from './inventory.adapter';
-import { InventoryState } from './inventory.state';
+import { inventoryItemAdapter } from './inventory.adapter';
 import * as moment from 'moment';
 
 const adapter = inventoryItemAdapter;
@@ -15,19 +13,20 @@ const {
   selectTotal
 } = adapter.getSelectors();
 
-const groupByCategory = (array:InventoryItem[]): { category: string, inventoryItems: InventoryItem[]}[] => {
+const groupByCategory = (array:InventoryItem[]): { description: string, onhandQty: number, inventoryItems: InventoryItem[]}[] => {
   return array
     .sort((a: InventoryItem, b: InventoryItem) => {
       return a.category?.sequence > b.category?.sequence ? 1 : -1;
     })
-    .reduce((groups: { category: string, inventoryItems: InventoryItem[]}[], thisItem:  InventoryItem) => {
+    .reduce((groups: { description: string, onhandQty: number, inventoryItems: InventoryItem[]}[], thisItem:  InventoryItem) => {
       let thisCategory = thisItem.category.description;
       if (thisCategory == null) thisCategory = 'None';
-      let found = groups.find(group => group.category === thisCategory);
+      let found = groups.find(group => group.description === thisCategory);
       if (found === undefined) {
-        found = { category: thisCategory,inventoryItems: [] };
+        found = { description: thisCategory,  onhandQty: 0, inventoryItems: [] };
         groups.push(found);
       }
+      found.onhandQty += Number(thisItem.currentCount);
       found.inventoryItems.push(thisItem);
       return groups;
     }, [])
