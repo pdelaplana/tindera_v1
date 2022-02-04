@@ -18,6 +18,8 @@ import { NavigationExtras } from '@angular/router';
 })
 export class HomePage implements OnInit {
 
+  @ViewChild('salesActivityCard') salesActivityCard;
+  
   @ViewChild('salesTrendChart') salesTrendChart;
   @ViewChild('salesByPaymentTypeCard') salesByPaymentTypeCard;
   //@ViewChild('topSellingProductsCard') topSellingProductsCard;
@@ -61,6 +63,7 @@ export class HomePage implements OnInit {
   }
 
   ionViewDidEnter() {
+    this.salesActivityCard.initChart();
     this.salesTrendChart.initChart();
     this.salesTrendChart.filterByPeriod('thisWeek');
     this.onhandInventoryLevelsChart.initChart();

@@ -4,7 +4,6 @@
       <ion-row>
         <ion-col> 
           Sales Activity
-          
         </ion-col>
         <ion-col >
           <ion-select class="ion-float-right ion-text-small" interface="popover"  [(ngModel)]="filterPeriod" (ionChange)="filterByPeriod()">
@@ -17,49 +16,71 @@
           </ion-select>
         </ion-col>
       </ion-row>
-      
     </ion-card-title>
   </ion-card-header>
   <ion-card-content>
     <ion-grid>
       <ion-row>
-        <ion-col class="ion-text-left" sizeXl="3" sizeLg="6" sizeMd="6" sizeXs="12">
-          <ion-avatar class="ion-float-left">
-            <app-icon-avatar iconName="storefront-outline" iconColor="#fff"></app-icon-avatar>
-          </ion-avatar>
-          <ion-text>
-            Total Orders
-            <h1>{{ totalOrders }}</h1>
-          </ion-text>
+        <ion-col sizeXl="6" sizeLg="6" sizeMd="12" sizeXs="12">
+          <ion-grid>
+            <ion-row>
+              <ion-col class="ion-text-left" sizeXl="6" sizeLg="12" sizeMd="12" sizeXs="12">
+                <ion-avatar class="ion-float-left">
+                  <app-icon-avatar iconName="storefront-outline" iconColor="#fff"></app-icon-avatar>
+                </ion-avatar>
+                <ion-text>
+                  Total Orders
+                  <h1>{{ totalOrders }}</h1>
+                </ion-text>
+              </ion-col>
+              <ion-col class="ion-text-left" sizeXl="6"  sizeLg="12" sizeMd="12" sizeXs="12">
+                <ion-avatar class="ion-float-left">
+                  <app-icon-avatar iconName="cash-outline" iconColor="#fff"></app-icon-avatar>
+                </ion-avatar>
+                <ion-text>Total Sales</ion-text>
+                <h1>{{ totalSalesAmount | shopCurrency}}</h1>
+              </ion-col>
+              <ion-col class="ion-text-left" sizeXl="6"  sizeLg="12" sizeMd="12" sizeXs="12">
+                <ion-avatar class="ion-float-left">
+                  <app-icon-avatar iconName="hammer-outline" iconColor="#fff"></app-icon-avatar>
+                </ion-avatar>
+                
+                <ion-text>Cost of Sales</ion-text>
+                <h1>{{ totalProductCost | shopCurrency}}</h1>
+              </ion-col>
+              <ion-col class="ion-text-left" sizeXl="6" sizeLg="12" sizeMd="12" sizeXs="12">
+                <ion-avatar class="ion-float-left">
+                  <app-icon-avatar iconName="rocket-outline" iconColor="#fff"></app-icon-avatar>
+                </ion-avatar>
+                
+                <ion-text>Total Revenue</ion-text>
+                <h1>{{ totalRevenue | shopCurrency}}</h1>
+              </ion-col>
+              
+            </ion-row>
+          </ion-grid>
+      
         </ion-col>
-        <ion-col class="ion-text-left" sizeXl="3"  sizeLg="6" sizeMd="6" sizeXs="12">
-          <ion-avatar class="ion-float-left">
-            <app-icon-avatar iconName="cash-outline" iconColor="#fff"></app-icon-avatar>
-          </ion-avatar>
-          <ion-text>Total Sales</ion-text>
-          <h1>{{ totalSalesAmount | shopCurrency}}</h1>
-        </ion-col>
-        <ion-col class="ion-text-left" sizeXl="3"  sizeLg="6" sizeMd="6" sizeXs="12">
-          <ion-avatar class="ion-float-left">
-            <app-icon-avatar iconName="hammer-outline" iconColor="#fff"></app-icon-avatar>
-          </ion-avatar>
+        <ion-col class="ion-text-center" sizeXl="6" sizeLg="6" sizeMd="12" sizeXs="12">
+          <ion-segment (ionChange)="chartKindChange($event)" value="categories">
+            <ion-segment-button value="categories">
+              <ion-label>Categories</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="payment">
+              <ion-label>Payment</ion-label>
+            </ion-segment-button>
+          </ion-segment>
           
-          <ion-text>Cost of Sales</ion-text>
-          <h1>{{ totalProductCost | shopCurrency}}</h1>
+          <div class="chart-container" >
+            <div class="no-data" *ngIf="!hasChartData" >
+              <b>No data available</b>
+            </div>
+            <canvas #salesActivityChart ></canvas>
+          </div>
         </ion-col>
-        <ion-col class="ion-text-left" sizeXl="3" sizeLg="6" sizeMd="6" sizeXs="12">
-          <ion-avatar class="ion-float-left">
-            <app-icon-avatar iconName="rocket-outline" iconColor="#fff"></app-icon-avatar>
-          </ion-avatar>
-          
-          <ion-text>Total Revenue</ion-text>
-          <h1>{{ totalRevenue | shopCurrency}}</h1>
-        </ion-col>
-        
+       
       </ion-row>
-    </ion-grid>
-
+    </ion-grid>  
   </ion-card-content>
-  
   
 </ion-card>
