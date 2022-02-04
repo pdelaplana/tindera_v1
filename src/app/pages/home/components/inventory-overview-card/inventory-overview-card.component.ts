@@ -1,4 +1,3 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ColorGenerator } from '@app/components/text-avatar/color-generator';
 import { InventoryItem } from '@app/models/inventory-item';
@@ -109,8 +108,5 @@ export class InventoryOverviewCardComponent implements OnInit, OnDestroy {
     
     this.chart.update();
   }
-
-
-
 
 }

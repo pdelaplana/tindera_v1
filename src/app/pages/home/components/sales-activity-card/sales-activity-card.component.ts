@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AppState } from '@app/state';
 import { inventoryActions } from '@app/state/inventory/inventory.actions';
 import { orderActions } from '@app/state/orders/order.actions';
@@ -7,8 +7,14 @@ import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { ofType } from '@ngrx/effects';
 import { selectInventoryTransactionsByDateRange } from '@app/state/inventory/inventory.selectors';
-import { selectOrdersByDateRange } from '@app/state/orders/order.selectors';
+import { groupOrdersByPaymentType, groupOrdersByProductCategory, selectOrdersByDateRange } from '@app/state/orders/order.selectors';
 import { UtilsService } from '@app/services/utils.service';
+import { Chart, registerables } from 'chart.js';
+import { ColorGenerator } from '@app/components/text-avatar/color-generator';
+import { OrderItem } from '@app/models/order-item';
+import { CurrencyPipe } from '@angular/common';
+import { Order } from '@app/models/order';
+
 
 @Component({
   selector: 'app-sales-activity-card',
@@ -19,10 +25,16 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
 
+  @ViewChild('salesActivityChart') viewChart;
+
   toDate: Date;
   fromDate: Date;
 
+  chart: any;
+  chartKind: string = 'categories';
+
   currencyCode: string;
+  orders: Order[];
   totalOrders: number;
   totalSalesAmount: number;
   totalProductCost: number;
@@ -33,12 +45,17 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
   filterLabel = 'Today';
   filterPeriod = 'today';
 
+  hasChartData: boolean= false;
   
   constructor(
     private store: Store<AppState>,
     private actions: ActionsSubject,
-    private utils: UtilsService
-  ) { }
+    private utils: UtilsService,
+    private colorGenerator: ColorGenerator,
+    private currencyPipe: CurrencyPipe,
+  ) { 
+    Chart.register(...registerables);
+  }
 
 
   ngOnDestroy(): void {
@@ -46,6 +63,11 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.store.select(state => state.shop)
+      .subscribe((shop) => {
+        this.currencyCode = shop.currencyCode;
+      })
+  
     this.subscription
       .add(
         this.actions.pipe(
@@ -68,13 +90,17 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
           ofType(orderActions.loadOrdersSuccess),
         ).subscribe(action =>{
           this.store.select(selectOrdersByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
+            this.orders = orders;
             this.totalOrders = orders.length;
             this.totalSalesAmount = orders.reduce((sum, current) => sum + current.totalSale, 0);
             this.totalRevenue = this.totalSalesAmount - this.totalProductCost;
+            this.refreshChart();
+            
           })                   
         })
       )
 
+      
       this.filterPeriod = 'today';
       this.filterByPeriod();
 
@@ -130,9 +156,110 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
         this.store.dispatch(orderActions.loadOrdersByDate({ fromDate: this.fromDate, toDate: this.toDate }))
       }
     })
-   
   }
 
+  initChart() {
+    this.createChart();
+  }
+
+
+  createChart() {    
+    this.chart = new Chart(this.viewChart.nativeElement, {
+      type: 'doughnut',
+      data: {
+        labels: [],
+        datasets: []
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio:false,
+        plugins: {
+          tooltip:{
+            callbacks: {
+              label: (context) => {
+                let label = context.label ?? '';
+                if (context.parsed !== null) {
+                      label += `: ${this.currencyPipe.transform (context.parsed, this.currencyCode)}`;
+                }
+                 return label;
+              }
+            }
+          },    
+          legend: {
+            position: 'right',
+          },
+          title: {
+            display: false,
+            text: 'Sales by Category'
+          },
+          
+        },
+        animation:{
+          onProgress: (animation) =>{
+            this.hasChartData = true;
+          },
+          onComplete: (animation)=>{
+            this.hasChartData = (animation.chart.data.datasets.length > 0)  && (animation.chart.data.datasets[0].data.length >0);
+          }
+        }
+      },
+    
+    });
+  }
+
+  pushChartData(datasets: { description: string, value: number }[]){
+    
+    const createChartDataSet = (label: string, slices: string[], data: any[] ) =>{
+      return {
+        label: label,
+        backgroundColor: slices.map(slice => this.colorGenerator.getColor(slice)),
+        data: data
+      }
+    }
+
+    this.chart.data.labels = [];
+    this.chart.data.datasets = [];
+    this.chart.update();
+
+    const chartData = [];
+    
+    datasets.forEach(group => {
+      this.chart.data.labels.push(group.description);
+      chartData.push(group.value);
+    })
+
+    this.chart.data.datasets.push(
+      createChartDataSet('Sales', this.chart.data.labels, chartData)
+    )
+  
+    this.chart.update();
+
+  }
+
+  refreshChart(){
+    if  (this.chartKind == 'categories'){
+      this.pushChartData(
+        groupOrdersByProductCategory(this.orders).map(group => {
+          return { description: group.productCategory, value: group.totalSale }
+        })
+      );
+      
+    }
+    else if (this.chartKind == 'payment'){
+      this.pushChartData(
+        groupOrdersByPaymentType(this.orders).map(group => { 
+          return { description: group.paymentType, value: group.totalSale } 
+        })
+      );
+      
+    }
+  }
+
+ 
+  chartKindChange(event:any){
+    this.chartKind = event.detail.value;    
+    this.refreshChart();
+  }
 
 
 }
