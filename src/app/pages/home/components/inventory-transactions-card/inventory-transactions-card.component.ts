@@ -1,27 +1,26 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ColorGenerator } from '@app/components/text-avatar/color-generator';
-import { InventoryItem } from '@app/models/inventory-item';
-import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { UtilsService } from '@app/services/utils.service';
 import { AppState } from '@app/state';
-import { inventoryActions } from '@app/state/inventory/inventory.actions';
-import { selectInventoryItems, selectInventoryTransactionsByDateRange } from '@app/state/inventory/inventory.selectors';
-import { ofType } from '@ngrx/effects';
 import { ActionsSubject, Store } from '@ngrx/store';
 import { Chart, registerables } from 'chart.js';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
+import { inventoryActions } from '@app/state/inventory/inventory.actions';
+import { InventoryTransaction } from '@app/models/inventory-transaction';
+import { ofType } from '@ngrx/effects';
+import { selectInventoryTransactionsByDateRange } from '@app/state/inventory/inventory.selectors';
 
 @Component({
-  selector: 'app-inventory-movement-card',
-  templateUrl: './inventory-movement-card.component.html',
-  styleUrls: ['./inventory-movement-card.component.scss'],
+  selector: 'app-inventory-transactions-card',
+  templateUrl: './inventory-transactions-card.component.html',
+  styleUrls: ['./inventory-transactions-card.component.scss'],
 })
-export class InventoryMovementCardComponent implements OnInit, OnDestroy {
+export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
 
   private subscription: Subscription = new Subscription();
 
-  @ViewChild('inventoryMovementChart') viewChart;
+  @ViewChild('inventoryTransactionsChart') viewChart;
 
   itemsToShow: number = 10;
 
@@ -29,23 +28,29 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
   fromDate: Date;
   chart: any;
   chartData: any[];
-  items: any[];
+  transactionGroups: { transactionType:string, quantityIn: number, quantityOut: number }[];
   
-  filterLabel = `This week`;
+  filterLabel = `Transactions this week`;
   filterPeriod = 'thisWeek';
 
-  private sumupTransactionsByItem(transactions: InventoryTransaction[], items: InventoryItem[]){
+  private sumupTransactionsByType(transactions: InventoryTransaction[]): { transactionType:string, quantityIn: number, quantityOut: number }[]{
     return transactions
-        .reduce((groups: { itemId: string, itemName: string, quantityIn: number, quantityOut: number, quantityOnhand: number}[], 
+        .reduce((groups: { transactionType: string, quantityIn: number, quantityOut: number}[], 
             thisInventoryTransaction: InventoryTransaction) => {
-          let found = groups.find(group => group.itemId === thisInventoryTransaction.itemId);
+          let transactionType = '';
+          if (thisInventoryTransaction.transactionType === 'adjustment'){
+              transactionType = `${thisInventoryTransaction.adjustmentReason.description} (Adjustment)`; 
+          } else {
+              transactionType = thisInventoryTransaction.transactionType
+              transactionType = transactionType[0].toUpperCase() + transactionType.slice(1).toLowerCase();
+          }
+              
+          let found = groups.find(group => group.transactionType === transactionType);
           if (found === undefined) {
             found = { 
-              itemId: thisInventoryTransaction.itemId, 
-              itemName: thisInventoryTransaction.itemName, 
-              quantityIn: thisInventoryTransaction.quantityIn,
-              quantityOut: thisInventoryTransaction.quantityOut,
-              quantityOnhand: items.find(inventory => inventory.id == thisInventoryTransaction.itemId).currentCount 
+              transactionType: transactionType,
+              quantityIn: 0,
+              quantityOut: 0,
             };
             groups.push(found);
           }
@@ -55,6 +60,7 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
         }, [])
         .slice(0, this.itemsToShow)
   }
+
 
   constructor(
     private store: Store<AppState>,
@@ -71,23 +77,21 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription
-      .add(
-        this.actions.pipe(
-          ofType(inventoryActions.loadTransactionsSuccess),
-        ).subscribe(action => {
+    .add(
+      this.actions.pipe(
+        ofType(inventoryActions.loadTransactionsSuccess),
+      ).subscribe(action => {
 
-          this.store.select(selectInventoryTransactionsByDateRange(this.fromDate, this.toDate)).subscribe(transactions => {
+        this.store.select(selectInventoryTransactionsByDateRange(this.fromDate, this.toDate)).subscribe(transactions => {
 
-            this.store.select(selectInventoryItems()).subscribe(items => {
-              this.items = this.sumupTransactionsByItem(transactions, items)
-                .sort((a,b)=>a.quantityOnhand >= b.quantityOnhand ? 1 : -1);
-              this.pushChartData(this.items);
-            })
-            
-          })
-                      
+          this.transactionGroups = this.sumupTransactionsByType(transactions);
+          this.pushChartData(this.transactionGroups);
+          
         })
-      ) 
+                    
+      })
+    )
+ 
   }
 
   initChart() {
@@ -103,7 +107,7 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
       options:{
         indexAxis: 'y',
         responsive:true,
-        maintainAspectRatio:true,
+        maintainAspectRatio:false,
         plugins:{
           title:{
             display:false,
@@ -143,48 +147,9 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  pushChartData(items:any){
+  pushChartData(transactionGroups: { transactionType:string, quantityIn: number, quantityOut: number  }[]){
     
-    const addOnHandBalance = (item: any, chartData: any[]) =>{
-      let found = chartData.find(data => data.y === item.itemName);
-      if (found !== undefined) {
-        found.x += Number(item.quantityOnhand);
-      }
-      else {
-        chartData.push({
-          y : item.itemName,
-          x : item.quantityOnhand
-        })
-      }
-  
-    }
-
-    const addQuantityIn = (item: any, chartData: any[]) =>{
-      let found = chartData.find(data => data.y === item.itemName);
-      if (found !== undefined) {
-        found.x += Number(item.quantityIn);
-      }
-      else {
-        chartData.push({
-          y : item.itemName,
-          x : item.quantityIn
-        })
-      }
-    }
-
-    const addQuantityOut = (item: any, chartData: any[]) =>{
-      let found = chartData.find(data => data.y === item.itemName);
-      if (found !== undefined) {
-        found.x -= Number(item.quantityOut);
-      }
-      else {
-        chartData.push({
-          y : item.itemName,
-          x : -item.quantityOut
-        })
-      }
-    }
-
+    
 
     const createChartDataSet = (label: string, color: string, backgroundColor: string, data: any[] ) =>{
       return {
@@ -210,30 +175,28 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
         data: data
       }
     }
-
-    const quantityOnhandData = [];
-    const quantityInData = [];
-    const quantityOutData = [];
-
-    items
-      .forEach(item => {
-        ///addOnHandBalance(item, quantityOnhandData);
-        addQuantityIn(item, quantityInData);
-        addQuantityOut(item, quantityOutData);
-    })
-
+    
     this.chart.data.labels = [];
     this.chart.data.datasets = [];
     this.chart.update();
 
-    this.chart.data.datasets.push(
-      createChartDataSet('In', this.colorGenerator.getColor('QuantityIn'), this.colorGenerator.getColor('QuantityIn'), quantityInData)
-    );
-    
-    this.chart.data.datasets.push(
-      createChartDataSet('Out', this.colorGenerator.getColor('QuantityOut'), this.colorGenerator.getColor('QuantityOut'), quantityOutData)
-    );
-    
+    transactionGroups
+      .forEach(transactionGroup => {
+      
+        this.chart.data.datasets.push(
+          createChartDataSet(
+            transactionGroup.transactionType, 
+            this.colorGenerator.getColor(transactionGroup.transactionType), 
+            this.colorGenerator.getColor(transactionGroup.transactionType),
+            [{
+              y : transactionGroup.transactionType,
+              x : transactionGroup.quantityIn+transactionGroup.quantityOut
+            }]
+          )
+        );
+        
+      })
+
     this.chart.update();
   }
 
@@ -258,7 +221,7 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
 
   filterByPeriod(period: string){
     this.filterPeriod = period;
-    this.filterLabel = `Top ${this.itemsToShow} items moved`;
+    this.filterLabel = `Transactions`;
     switch (period){
       case 'thisWeek':
         this.filterLabel = `${this.filterLabel} this week`
@@ -278,7 +241,6 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
     this.getData(start,end);
 
   }
-
 
 
 

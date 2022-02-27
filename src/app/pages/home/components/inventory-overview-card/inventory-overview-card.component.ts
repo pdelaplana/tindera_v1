@@ -67,6 +67,7 @@ export class InventoryOverviewCardComponent implements OnInit, OnDestroy {
       },
       options: {
         responsive: true,
+        maintainAspectRatio:false,
         plugins: {
           legend: {
             position: 'top',
