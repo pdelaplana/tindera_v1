@@ -17,6 +17,7 @@ import { SalesActivityCardComponent } from './components/sales-activity-card/sal
 import { OnhandInventoryLevelsCardComponent } from './components/onhand-inventory-levels-card/onhand-inventory-levels-card.component';
 import { InventoryMovementCardComponent } from './components/inventory-movement-card/inventory-movement-card.component';
 import { InventoryOverviewCardComponent } from './components/inventory-overview-card/inventory-overview-card.component';
+import { InventoryTransactionsCardComponent } from './components/inventory-transactions-card/inventory-transactions-card.component';
 
 @NgModule({
   imports: [
@@ -36,6 +37,7 @@ import { InventoryOverviewCardComponent } from './components/inventory-overview-
     OnhandInventoryLevelsCardComponent,
     InventoryMovementCardComponent,
     InventoryOverviewCardComponent,
+    InventoryTransactionsCardComponent,
     HomePage
   ]
 })

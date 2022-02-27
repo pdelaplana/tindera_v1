@@ -12,49 +12,54 @@
 
   <ion-grid>
     
-    <ion-row>
+    <ion-row *ngIf="enabledCharts.includes('salesActivityCard')">
       <ion-col>
         <app-sales-activity-card #salesActivityCard></app-sales-activity-card>  
       </ion-col>
     </ion-row>
       
-    <ion-row color="primary">
+    <ion-row *ngIf="enabledCharts.includes('salesTrendChart')">
       <ion-col>
         <app-sales-trend-chart #salesTrendChart></app-sales-trend-chart>  
       </ion-col>
     </ion-row>
 
     <ion-row>
-      <ion-col sizeLg="6" sizeMd="12" sizeXs="12">
+      <ion-col sizeLg="6" sizeMd="12" sizeXs="12" *ngIf="enabledCharts.includes('salesByPaymentTypeCard')">
         <app-sales-by-payment-type-card #salesByPaymentTypeCard></app-sales-by-payment-type-card>
       </ion-col>
 
-      <ion-col sizeLg="6" sizeMd="12" sizeXs="12">
+      <ion-col sizeLg="6" sizeMd="12" sizeXs="12" *ngIf="enabledCharts.includes('salesByProductCategoryCard')">
         <app-sales-by-product-category-card #salesByProductCategoryCard></app-sales-by-product-category-card>
       </ion-col>
     </ion-row>
 
-    <ion-row>
-      <ion-col>
+    <ion-row *ngIf="enabledCharts.includes('onhandInventoryChart')">
+      <ion-col >
         <app-inventory-overview-card #onhandInventoryChart></app-inventory-overview-card>  
       </ion-col>
     </ion-row>
     
+    <ion-row *ngIf="enabledCharts.includes('inventoryTransactionsCard')">
+      <ion-col>
+        <app-inventory-transactions-card #inventoryTransactionsCard></app-inventory-transactions-card>  
+      </ion-col>
+    </ion-row>
 
     <ion-row>
       
-      <ion-col sizeLg="6" sizeMd="12" sizeXs="12">
+      <ion-col sizeLg="6" sizeMd="12" sizeXs="12" *ngIf="enabledCharts.includes('onhandInventoryLevelsChart')">
         <app-onhand-inventory-levels-card #onhandInventoryLevelsChart></app-onhand-inventory-levels-card>
       </ion-col>
       
-      <ion-col sizeLg="6" sizeMd="12" sizeXs="12">
+      <ion-col sizeLg="6" sizeMd="12" sizeXs="12" *ngIf="enabledCharts.includes('inventoryMovementChart')">
         <app-inventory-movement-card #inventoryMovementChart ></app-inventory-movement-card>
       </ion-col>
       
     </ion-row>
 
 
-    <ion-row>
+    <ion-row *ngIf="enabledCharts.includes('lowInventoryAlertsCard')">
       <ion-col>
         <app-low-inventory-alerts-card #lowInventoryAlertsCard></app-low-inventory-alerts-card>
       </ion-col>
