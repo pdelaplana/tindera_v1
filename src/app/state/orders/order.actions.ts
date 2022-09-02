@@ -9,7 +9,7 @@ export const orderActions = {
   ),
   loadOrdersByDate: createAction(
     '[Order] Load orders by date',
-    props<{ fromDate: Date, toDate: Date}>()
+    props<{ fromDate: Date; toDate: Date}>()
   ),
   loadOrdersSuccess: createAction(
     '[Order] Load orders success',
@@ -31,4 +31,4 @@ export const orderActions = {
     '[Order] Create order fail',
     props<{ error: any }>()
   ),
-}
+};

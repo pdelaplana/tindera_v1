@@ -31,7 +31,7 @@ export const inventoryActions = {
   ),
   updateItem: createAction(
     '[Inventory] Update inventory item',
-    props<{ item:InventoryItem }>()
+    props<{ item: InventoryItem }>()
   ),
   updateItemSuccess: createAction(
     '[Inventory] Update inventory item success',
@@ -43,7 +43,11 @@ export const inventoryActions = {
   ),
   loadTransactions: createAction(
     '[Inventory] Load transactions',
-    props<{ fromDate: Date, toDate: Date}>()
+    props<{ shopid: string }>()
+  ),
+  loadTransactionsByDate: createAction(
+    '[Inventory] Load transactions by Date',
+    props<{ fromDate: Date; toDate: Date}>()
   ),
   loadTransactionsSuccess: createAction(
     '[Inventory] Load transactions success',
@@ -67,15 +71,15 @@ export const inventoryActions = {
   ),
   receiveItem: createAction(
     '[Inventory] Receive item',
-    props<{ 
-      itemId: string, 
-      itemName: string, 
-      receivedOn: Date, 
-      qtyReceived: number, 
-      notes: string, 
-      reference: string,
-      unitCost: number,
-      supplier: string 
+    props<{
+      itemId: string;
+      itemName: string;
+      receivedOn: Date;
+      qtyReceived: number;
+      notes: string;
+      reference: string;
+      unitCost: number;
+      supplier: string;
     }>()
   ),
   receiveItemSuccess: createAction(
@@ -85,7 +89,7 @@ export const inventoryActions = {
   receiveItemFail: createAction(
     '[Inventory] Receive item fail',
     props<{ error: any }>()
-  ), 
+  ),
   updateInventoryBalance: createAction(
     '[Inventory] Update inventory balance',
     props<{ transaction: InventoryTransaction }>()
@@ -97,7 +101,7 @@ export const inventoryActions = {
   updateInventoryBalanceFail: createAction(
     '[Inventory] Update inventory balance fail',
     props<{ error: any }>()
-  ), 
+  ),
   loadCounts: createAction(
     '[Inventory] Load inventory counts',
     props<{ shopid: string }>()
@@ -167,7 +171,7 @@ export const inventoryActions = {
   ),
   updateInventoryCountFail: createAction(
     '[Inventory] Update inventory count fail',
-    props<{ error:any }>()
+    props<{ error: any }>()
   ),
   closeCountItem: createAction(
     '[Inventory] Close count item',
@@ -184,4 +188,4 @@ export const inventoryActions = {
   clearInventoryActions: createAction(
     '[Inventory] Clear action'
   )
-}
+};

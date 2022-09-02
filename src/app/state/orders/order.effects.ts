@@ -1,17 +1,14 @@
-import { ThrowStmt } from '@angular/compiler';
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Injectable } from '@angular/core';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { InventoryTransactionType } from '@app/models/types';
-import { User } from '@app/models/user';
 import { CommonUIService } from '@app/services/common-ui.service';
 import { OrderService } from '@app/services/firestore/order.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { catchError, map, mergeMap, switchMap } from 'rxjs/operators';
 import { AppState } from '..';
-import { selectAuthUser } from '../auth/auth.selectors';
 import { inventoryActions } from '../inventory/inventory.actions';
-import { selectInventoryItem } from '../inventory/inventory.selectors';
 import { selectProduct } from '../product/product.selectors';
 import { orderActions } from './order.actions';
 
@@ -22,9 +19,7 @@ export class OrderEffects{
     private actions: Actions,
     private commonUiService: CommonUIService,
     private orderService: OrderService
-  ) {
-   
-  }
+  ) { }
 
   loadOrders = createEffect(() => this.actions.pipe(
     ofType(orderActions.loadOrders),
@@ -32,25 +27,21 @@ export class OrderEffects{
       const result = this.orderService.query([]);
       return result.pipe();
     }),
-    map( arr => {
-      return orderActions.loadOrdersSuccess({orders: arr})
-    }),
+    map( arr => orderActions.loadOrdersSuccess({orders: arr})),
     catchError((error, caught) => {
       this.store.dispatch(orderActions.loadOrdersFail({error}));
       return caught;
-    })   
+    })
   ));
 
   loadOrdersByDate = createEffect(() => this.actions.pipe(
     ofType(orderActions.loadOrdersByDate),
     mergeMap(action => {
       const result = this.orderService.getOrdersByDate(action.fromDate, action.toDate);
-      return result.pipe()
+      return result.pipe();
     }),
 
-    map( arr => {
-      return orderActions.loadOrdersSuccess({orders: arr})
-    }),
+    map( arr => orderActions.loadOrdersSuccess({orders: arr})),
 
     catchError((error, caught) => {
       this.store.dispatch(orderActions.loadOrdersFail({error}));
@@ -62,10 +53,10 @@ export class OrderEffects{
   createOrder = createEffect(() => this.actions.pipe(
     ofType(orderActions.createOrder),
     switchMap(async (action) => {
-     const result = await this.orderService.add(action.order)
+     const result = await this.orderService.add(action.order);
       return orderActions.createOrderSuccess({
         order: result
-      })
+      });
     }),
     catchError((error, caught) => {
       this.store.dispatch(orderActions.createOrderFail({error}));
@@ -76,14 +67,14 @@ export class OrderEffects{
   createOrderSuccess = createEffect(() => this.actions.pipe(
     ofType(orderActions.createOrderSuccess),
     switchMap(async (action) => {
-      let transactions = [];
+      const transactions = [];
       const orderdId = action.order.id;
-      
+
       action.order.orderItems.forEach(orderItem => {
         const quantity = orderItem.quantity;
         this.store.select(selectProduct(orderItem.productId))
           .subscribe(product => {
-            
+
             product.productItems.forEach(productItem => {
               transactions.push(<InventoryTransaction>{
                 id:'',
@@ -96,8 +87,8 @@ export class OrderEffects{
                 reference: `order=${action.order.id}`,
                 notes: '',
                 //unitCost: Number(inventoryItem.unitCost),
-              }) 
-            })
+              });
+            });
 
             orderItem.addons.forEach(addon =>
               transactions.push(<InventoryTransaction>{
@@ -112,17 +103,17 @@ export class OrderEffects{
                 notes: '',
                 //unitCost: Number(inventoryItem.unitCost)
               })
-  
-            )
-        
-          })
+
+            );
+
+          });
       });
-      
+
       transactions.forEach(transaction => {
         this.store.dispatch(inventoryActions.updateInventoryBalance({transaction}))  ;
-      })
+      });
       this.store.dispatch(inventoryActions.clearInventoryActions());
-      this.commonUiService.notify(`Order has been completed. You can browse this under Completed Orders under Sales. `)      
+      this.commonUiService.notify(`Order has been completed. You can browse this under Completed Orders under Sales. `);
     }),
     catchError((error, caught) => {
       this.store.dispatch(inventoryActions.updateInventoryBalanceFail({error}));

@@ -36,13 +36,11 @@ export interface AppState {
 }
 
 export function loggerFactory(logger: NGXLogger): MetaReducer<AppState> {
-  return (reducer: ActionReducer<AppState, Action>) => {
-    return (state, action) => {
+  return (reducer: ActionReducer<AppState, Action>) => (state, action) => {
       logger.info('action', action);
       logger.debug('state', state);
       return reducer(state, action);
     };
-  };
 }
 
 

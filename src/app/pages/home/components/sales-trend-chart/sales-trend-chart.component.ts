@@ -21,12 +21,10 @@ export class SalesTrendChartComponent implements OnInit {
 
   @ViewChild('salesTrendChart') viewChart;
 
-  private subscription: Subscription = new Subscription();
-
   toDate: Date;
   fromDate: Date;
 
-  chart:any;
+  chart: any;
   filterLabel = 'This week';
   filterPeriod = 'last7Days';
 
@@ -35,24 +33,27 @@ export class SalesTrendChartComponent implements OnInit {
   currencyCode: string;
   paymentTypes: PaymentType[];
 
+  private subscription: Subscription = new Subscription();
+
+
   constructor(
     private store: Store<AppState>,
     private currencyPipe: CurrencyPipe,
     private actions: ActionsSubject,
     private utils: UtilsService
 
-  ) { 
+  ) {
     Chart.register(...registerables);
   }
 
   ngOnInit() {
-   
+
     this.store.select(state => state.shop)
       .subscribe((shop) => {
         this.currencyCode = shop.currencyCode;
         this.paymentTypes = shop.paymentTypes;
-      })
-    
+      });
+
     this.subscription
       .add(
         this.actions.pipe(
@@ -60,9 +61,9 @@ export class SalesTrendChartComponent implements OnInit {
         ).subscribe(action =>{
           this.store.select(selectOrdersByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
             this.pushChartData(orders, this.filterPeriod);
-          })
+          });
         })
-      )
+      );
   }
 
   initChart() {
@@ -70,19 +71,18 @@ export class SalesTrendChartComponent implements OnInit {
   }
 
   pushChartData(orders: Order[], period: string){
-    
-    const chartDataByPaymentType = (order: Order, paymentType: string, dataLabel: string, chartData: any[]) =>{
-       if (paymentType == 'Total' || order.paymentType.code == paymentType){
-        let found = chartData.find(data => data.x === dataLabel);
+
+    const chartDataByPaymentType = (order: Order, paymentType: string, dataLabel: string, currentChartData: any[]) =>{
+       if (paymentType === 'Total' || order.paymentType.code === paymentType){
+        const found = currentChartData.find(data => data.x === dataLabel);
         if (found !== undefined) {
           found.y += Number(order.totalSale);
         }
       }
-    }
+    };
 
-    const createChartDataSet = (label: string, color: string, backgroundColor: string, data: any[] ) =>{
-      return {
-        label: label,
+    const createChartDataSet = (currentLabel: string, color: string, backgroundColor: string, data: any[] ) =>({
+        label: currentLabel,
         fill: false,
         lineTension: 0.5,
         backgroundColor: backgroundColor ?? color,
@@ -101,22 +101,21 @@ export class SalesTrendChartComponent implements OnInit {
         pointRadius: 2,
         pointHitRadius: 10,
         spanGaps: true,
-        data: data
-      }
-    }
+        data
+      });
 
-    let startDate = moment(this.fromDate);
+    const startDate = moment(this.fromDate);
     let label = '';
     let formatLabel: string;
 
     switch (period){
       case 'thisWeek':
         formatLabel = 'dd';
-        label = 'This week'
+        label = 'This week';
         break;
       case 'thisMonth':
         formatLabel = 'DD MMM';
-        label = 'This month'
+        label = 'This month';
         break;
       case 'thisQuarter':
         formatLabel = 'DD MMM';
@@ -132,18 +131,18 @@ export class SalesTrendChartComponent implements OnInit {
     const cashSalesData = [];
     const foodPandaSalesData = [];
     const grabFoodSalesData = [];
-    
+
     const endDate = moment(this.toDate);
 
-    let currentDate = startDate;
-    
+    const currentDate = startDate;
+
     while (currentDate <= endDate){
       chartData.push({x: moment(currentDate).format(formatLabel), y:0 });
       cashSalesData.push({x: moment(currentDate).format(formatLabel), y:0 });
       foodPandaSalesData.push({x: moment(currentDate).format(formatLabel), y:0 });
       grabFoodSalesData.push({x: moment(currentDate).format(formatLabel), y:0 });
-      
-      currentDate.add(1, 'day')
+
+      currentDate.add(1, 'day');
     }
 
     orders
@@ -159,8 +158,8 @@ export class SalesTrendChartComponent implements OnInit {
         chartDataByPaymentType(order, 'CASH', thisLabel, cashSalesData);
         chartDataByPaymentType(order, 'PANDA', thisLabel, foodPandaSalesData);
         chartDataByPaymentType(order, 'GRAB', thisLabel, grabFoodSalesData);
-        
-    })
+
+    });
 
     this.chart.data.labels = [];
     this.chart.data.datasets = [];
@@ -178,13 +177,12 @@ export class SalesTrendChartComponent implements OnInit {
     this.chart.data.datasets.push(
       createChartDataSet('GrabFood', 'rgba(144, 164, 174, 1)', 'rgba(144, 164, 174, .5)', grabFoodSalesData )
     );
-    
-    
+
     this.chart.update();
   }
 
-  
-  createSalesTrendChart() {    
+
+  createSalesTrendChart() {
     this.chart = new Chart(this.viewChart.nativeElement, {
       type: 'bar',
       data: {
@@ -204,7 +202,7 @@ export class SalesTrendChartComponent implements OnInit {
           tooltip:{
             callbacks:{
               label: (context) =>{
-                var label = context.dataset.label || '';
+                let label = context.dataset.label || '';
                 if (label) {
                     label += ': ';
                 }
@@ -219,23 +217,21 @@ export class SalesTrendChartComponent implements OnInit {
         scales:{
           yAxes: {
             ticks:{
-              callback: (value, index, values) => {
-                return this.currencyPipe.transform(value, this.currencyCode);
-              }
+              callback: (value, index, values) => this.currencyPipe.transform(value, this.currencyCode)
             }
           }
-        } 
+        }
       }
-     
+
     });
   }
 
 
   togglePeriodFilter(period: string){
-    if (this.filterPeriod == period)
-      return 'primary';
+    if (this.filterPeriod === period)
+      {return 'primary';}
     else
-      return '';
+      {return '';}
   }
 
   filterByPeriod(period: string){
@@ -243,16 +239,16 @@ export class SalesTrendChartComponent implements OnInit {
 
     switch (period){
       case 'today':
-        this.filterLabel = 'Today'
+        this.filterLabel = 'Today';
         break;
       case 'thisWeek':
-        this.filterLabel = 'This week'
+        this.filterLabel = 'This week';
         break;
       case 'thisMonth':
-        this.filterLabel = 'This month'
+        this.filterLabel = 'This month';
         break;
       case 'thisQuarter':
-        this.filterLabel = 'This quarter'
+        this.filterLabel = 'This quarter';
         break;
       case 'last3Months':
         this.filterLabel = 'Last 3 months';
@@ -274,13 +270,10 @@ export class SalesTrendChartComponent implements OnInit {
     this.fromDate = moment(fromDate).startOf('day').toDate();
     this.toDate = moment(toDate).endOf('day').toDate();
 
-     // load transactions but ensure shop data is loaded in state store
-     this.store.select(state => state.shop).subscribe(shop => {
-      if (shop) {
-        this.store.dispatch(orderActions.loadOrdersByDate({ fromDate: this.fromDate, toDate: this.toDate }))
-      }
-    })
-   
+    this.store.select(selectOrdersByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
+      this.pushChartData(orders, this.filterPeriod);
+    });
+
   }
 
 

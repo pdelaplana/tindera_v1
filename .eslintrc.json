@@ -35,6 +35,20 @@
             "prefix": "app",
             "style": "camelCase"
           }
+        ],
+        "@typescript-eslint/consistent-type-assertions": [
+          "error",
+          {
+            "assertionStyle": "angle-bracket"
+          }
+        ],
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": [
+          "off",
+          {
+            "ignoreFunctionTypeParameterNameValueShadow": true,
+            "ignoreTypeValueShadow": true
+          }
         ]
       }
     },

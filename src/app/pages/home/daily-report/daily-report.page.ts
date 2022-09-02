@@ -19,37 +19,18 @@ import { Subscription } from 'rxjs';
 })
 export class DailyReportPage implements OnInit {
 
-  private subscription: Subscription = new Subscription();
-  
   currentDate: Date;
   toDate: Date;
-  fromDate: Date
+  fromDate: Date;
   orders: Order[];
-  totalSales : number;
+  totalSales: number;
   totalCashSales: number;
   totalOnlineSales: number;
 
-  transactions:{ itemId: string, itemName: string, quantityIn: number, quantityOut:number }[];
+  transactions: { itemId: string; itemName: string; quantityIn: number; quantityOut: number }[];
 
-  private groupTransactionsByItem(transactions: InventoryTransaction[]):{ itemId: string, itemName: string, quantityIn: number, quantityOut:number }[] {
-    return transactions
-      .sort((a: InventoryTransaction, b: InventoryTransaction) => {
-        return a.itemId > b.itemId ? 1 : -1;
-      })
-      .reduce((groups: { itemId: string, itemName: string, quantityIn: number, quantityOut:number }[], thisTransaction : InventoryTransaction) => {
-        let thisItemId = thisTransaction.itemId;
-        if (thisItemId == null) thisItemId = 'Unknown';
-        let found = groups.find(group => group.itemId === thisItemId);
-        if (found === undefined) {
-          found = {itemId: thisItemId, itemName: thisTransaction.itemName, quantityIn: 0, quantityOut: 0 };
-          groups.push(found);
-        }
-        found.quantityIn += Number(thisTransaction.quantityIn);
-        found.quantityOut += Number(thisTransaction.quantityOut);
-        return groups;
-      }, [])
-     
-  }
+  private subscription: Subscription = new Subscription();
+
 
   constructor(
     private store: Store<AppState>,
@@ -58,7 +39,7 @@ export class DailyReportPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    
+
     this.loadData(moment().subtract(1, 'day').toDate());
     this.subscription
       .add(
@@ -67,9 +48,9 @@ export class DailyReportPage implements OnInit {
         ).subscribe(action =>{
           this.store.select(selectInventoryTransactionsByDateRange(this.fromDate, this.toDate)).subscribe(transactions => {
             this.transactions = this.groupTransactionsByItem(transactions);
-          })
+          });
         })
-      )
+      );
   }
 
   loadData(currentDate: Date){
@@ -77,18 +58,23 @@ export class DailyReportPage implements OnInit {
     this.fromDate = moment(this.currentDate).startOf('day').toDate();
     this.toDate = moment(this.currentDate).endOf('day').toDate();
 
-    this.store.dispatch(inventoryActions.loadTransactions({ fromDate: this.fromDate, toDate: this.toDate }));
+    //this.store.dispatch(inventoryActions.loadTransactions({ fromDate: this.fromDate, toDate: this.toDate }));
+
+    this.store.select(selectInventoryTransactionsByDateRange(this.fromDate, this.toDate)).subscribe(transactions => {
+      this.transactions = this.groupTransactionsByItem(transactions);
+    });
+
     this.store.select(selectOrdersByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
       this.orders = orders;
       this.totalSales = orders
         .reduce((sum,current) => sum + Number(current.totalSale), 0 );
       this.totalCashSales = orders
-        .filter(orders => orders.paymentType.code == 'CASH')
+        .filter(orders => orders.paymentType.code === 'CASH')
         .reduce((sum,current) => sum + Number(current.totalSale), 0 );
       this.totalOnlineSales = orders
-        .filter(orders => orders.paymentType.code != 'CASH')
-        .reduce((sum,current) => sum + Number(current.totalSale), 0 )
-    })
+        .filter(orders => orders.paymentType.code !== 'CASH')
+        .reduce((sum,current) => sum + Number(current.totalSale), 0 );
+    });
   }
 
   dateChanged(date) {
@@ -104,5 +90,31 @@ export class DailyReportPage implements OnInit {
     const navigationExtras: NavigationExtras = { state: { itemId, fromDate: this.fromDate, toDate: this.toDate } };
     this.navController.navigateForward('inventory/transactions', navigationExtras);
   }
+
+  private groupTransactionsByItem(transactions: InventoryTransaction[]): {
+    itemId: string; itemName: string; quantityIn: number; quantityOut: number;
+  }[] {
+    return transactions
+      .sort((a: InventoryTransaction, b: InventoryTransaction) => a.itemId > b.itemId ? 1 : -1)
+      .reduce((groups: {
+        itemId: string;
+        itemName: string;
+        quantityIn: number;
+        quantityOut: number;
+      }[], thisTransaction: InventoryTransaction) => {
+        let thisItemId = thisTransaction.itemId;
+        if (thisItemId == null) {thisItemId = 'Unknown';}
+        let found = groups.find(group => group.itemId === thisItemId);
+        if (found === undefined) {
+          found = {itemId: thisItemId, itemName: thisTransaction.itemName, quantityIn: 0, quantityOut: 0 };
+          groups.push(found);
+        }
+        found.quantityIn += Number(thisTransaction.quantityIn);
+        found.quantityOut += Number(thisTransaction.quantityOut);
+        return groups;
+      }, []);
+
+  }
+
 
 }
