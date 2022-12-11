@@ -10,8 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "deploy-dev":"firebase use default && ng build --configuration=dev && firebase deploy",
-    "deploy-nonprod":"firebase use nonprod && ng build --configuration=nonprod && firebase deploy"
+    "deploy-dev": "firebase use default && ng build --configuration=dev && firebase deploy",
+    "deploy-nonprod": "firebase use nonprod && ng build --configuration=nonprod && firebase deploy"
   },
   "private": true,
   "dependencies": {
@@ -40,6 +40,7 @@
     "ionic-tags-input": "^0.1.2",
     "moment": "^2.29.1",
     "ng2-img-max": "^2.2.4",
+    "ng2-material-dropdown": "^1.0.0",
     "ngx-chips": "^2.2.2",
     "ngx-image-compress": "^11.0.3",
     "ngx-logger": "^4.2.1",

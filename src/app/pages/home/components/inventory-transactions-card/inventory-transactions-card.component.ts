@@ -6,9 +6,7 @@ import { ActionsSubject, Store } from '@ngrx/store';
 import { Chart, registerables } from 'chart.js';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
-import { inventoryActions } from '@app/state/inventory/inventory.actions';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
-import { ofType } from '@ngrx/effects';
 import { selectInventoryTransactionsByDateRange } from '@app/state/inventory/inventory.selectors';
 
 @Component({
@@ -18,56 +16,28 @@ import { selectInventoryTransactionsByDateRange } from '@app/state/inventory/inv
 })
 export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
 
-  private subscription: Subscription = new Subscription();
 
   @ViewChild('inventoryTransactionsChart') viewChart;
 
-  itemsToShow: number = 10;
+  itemsToShow = 10;
 
   toDate: Date;
   fromDate: Date;
   chart: any;
   chartData: any[];
-  transactionGroups: { transactionType:string, quantityIn: number, quantityOut: number }[];
-  
-  filterLabel = `Transactions this week`;
+  transactionGroups: { transactionType: string; quantityIn: number; quantityOut: number }[];
+
+  filterLabel = 'Transactions this week';
   filterPeriod = 'thisWeek';
 
-  private sumupTransactionsByType(transactions: InventoryTransaction[]): { transactionType:string, quantityIn: number, quantityOut: number }[]{
-    return transactions
-        .reduce((groups: { transactionType: string, quantityIn: number, quantityOut: number}[], 
-            thisInventoryTransaction: InventoryTransaction) => {
-          let transactionType = '';
-          if (thisInventoryTransaction.transactionType === 'adjustment'){
-              transactionType = `${thisInventoryTransaction.adjustmentReason.description} (Adjustment)`; 
-          } else {
-              transactionType = thisInventoryTransaction.transactionType
-              transactionType = transactionType[0].toUpperCase() + transactionType.slice(1).toLowerCase();
-          }
-              
-          let found = groups.find(group => group.transactionType === transactionType);
-          if (found === undefined) {
-            found = { 
-              transactionType: transactionType,
-              quantityIn: 0,
-              quantityOut: 0,
-            };
-            groups.push(found);
-          }
-          found.quantityIn += thisInventoryTransaction.quantityIn;
-          found.quantityOut += thisInventoryTransaction.quantityOut;
-          return groups;
-        }, [])
-        .slice(0, this.itemsToShow)
-  }
-
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private store: Store<AppState>,
     private actions: ActionsSubject,
     private utils: UtilsService,
     private colorGenerator: ColorGenerator
-  ) { 
+  ) {
     Chart.register(...registerables);
   }
 
@@ -76,6 +46,7 @@ export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    /*
     this.subscription
     .add(
       this.actions.pipe(
@@ -86,19 +57,19 @@ export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
 
           this.transactionGroups = this.sumupTransactionsByType(transactions);
           this.pushChartData(this.transactionGroups);
-          
-        })
-                    
+
+        });
+
       })
-    )
- 
+    );
+    */
   }
 
   initChart() {
     this.createChart();
   }
 
-  createChart() {    
+  createChart() {
     this.chart = new Chart(this.viewChart.nativeElement, {
       type: 'bar',
       data: {
@@ -134,26 +105,23 @@ export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
               autoSkip: false,
               stepSize:2,
               align:'start',
-              callback: function(value,index) {
+              callback(value,index) {
                 const label = this.getLabelForValue(value);
                 return label.length>12 ? label.substring(0,12) +'...' : label;
               },
-              
+
             }
           }
-        } 
+        }
       }
-     
+
     });
   }
 
-  pushChartData(transactionGroups: { transactionType:string, quantityIn: number, quantityOut: number  }[]){
-    
-    
+  pushChartData(transactionGroups: { transactionType: string; quantityIn: number; quantityOut: number  }[]){
 
-    const createChartDataSet = (label: string, color: string, backgroundColor: string, data: any[] ) =>{
-      return {
-        label: label,
+    const createChartDataSet = (label: string, color: string, backgroundColor: string, data: any[] ) =>({
+        label,
         fill: false,
         lineTension: 0.5,
         backgroundColor: backgroundColor ?? color,
@@ -172,21 +140,20 @@ export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
         pointRadius: 2,
         pointHitRadius: 10,
         spanGaps: true,
-        data: data
-      }
-    }
-    
+        data
+      });
+
     this.chart.data.labels = [];
     this.chart.data.datasets = [];
     this.chart.update();
 
     transactionGroups
       .forEach(transactionGroup => {
-      
+
         this.chart.data.datasets.push(
           createChartDataSet(
-            transactionGroup.transactionType, 
-            this.colorGenerator.getColor(transactionGroup.transactionType), 
+            transactionGroup.transactionType,
+            this.colorGenerator.getColor(transactionGroup.transactionType),
             this.colorGenerator.getColor(transactionGroup.transactionType),
             [{
               y : transactionGroup.transactionType,
@@ -194,8 +161,8 @@ export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
             }]
           )
         );
-        
-      })
+
+      });
 
     this.chart.update();
   }
@@ -204,19 +171,17 @@ export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
   getData(fromDate: Date, toDate: Date){
     this.fromDate = moment(fromDate).startOf('day').toDate();
     this.toDate = moment(toDate).endOf('day').toDate();
-    this.store.select(state => state.shop).subscribe(shop => {
-      if (shop) {
-        this.store.dispatch(inventoryActions.loadTransactions({ fromDate: this.fromDate, toDate: this.toDate }));
-        
-      }
-    })
+    this.store.select(selectInventoryTransactionsByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
+      this.pushChartData(orders);
+    });
+
   }
 
   togglePeriodFilter(period: string){
-    if (this.filterPeriod == period)
-      return 'primary';
+    if (this.filterPeriod === period)
+      {return 'primary';}
     else
-      return '';
+      {return '';}
   }
 
   filterByPeriod(period: string){
@@ -224,13 +189,13 @@ export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
     this.filterLabel = `Transactions`;
     switch (period){
       case 'thisWeek':
-        this.filterLabel = `${this.filterLabel} this week`
+        this.filterLabel = `${this.filterLabel} this week`;
         break;
       case 'thisMonth':
-        this.filterLabel = `${this.filterLabel} this month`
+        this.filterLabel = `${this.filterLabel} this month`;
         break;
       case 'thisQuarter':
-        this.filterLabel = `${this.filterLabel} this quarter`
+        this.filterLabel = `${this.filterLabel} this quarter`;
         break;
       case 'thisYear':
         this.filterLabel = `${this.filterLabel} this year`;
@@ -241,6 +206,38 @@ export class InventoryTransactionsCardComponent implements OnInit, OnDestroy {
     this.getData(start,end);
 
   }
+
+  private sumupTransactionsByType(transactions: InventoryTransaction[]): {
+    transactionType: string; quantityIn: number; quantityOut: number;
+  }[]{
+    return transactions
+        .reduce((groups: { transactionType: string; quantityIn: number; quantityOut: number}[],
+            thisInventoryTransaction: InventoryTransaction) => {
+          let transactionType = '';
+          if (thisInventoryTransaction.transactionType === 'adjustment'){
+              transactionType = `${thisInventoryTransaction.adjustmentReason.description} (Adjustment)`;
+          } else {
+              transactionType = thisInventoryTransaction.transactionType;
+              transactionType = transactionType[0].toUpperCase() + transactionType.slice(1).toLowerCase();
+          }
+
+          let found = groups.find(group => group.transactionType === transactionType);
+          if (found === undefined) {
+            found = {
+              transactionType,
+              quantityIn: 0,
+              quantityOut: 0,
+            };
+            groups.push(found);
+          }
+          found.quantityIn += thisInventoryTransaction.quantityIn;
+          found.quantityOut += thisInventoryTransaction.quantityOut;
+          return groups;
+        }, [])
+        .slice(0, this.itemsToShow);
+  }
+
+
 
 
 

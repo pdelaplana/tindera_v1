@@ -19,49 +19,28 @@ import * as moment from 'moment';
 })
 export class InventoryMovementCardComponent implements OnInit, OnDestroy {
 
-  private subscription: Subscription = new Subscription();
-
   @ViewChild('inventoryMovementChart') viewChart;
 
-  itemsToShow: number = 10;
+  itemsToShow = 10;
 
   toDate: Date;
   fromDate: Date;
   chart: any;
   chartData: any[];
   items: any[];
-  
+
   filterLabel = `This week`;
   filterPeriod = 'thisWeek';
 
-  private sumupTransactionsByItem(transactions: InventoryTransaction[], items: InventoryItem[]){
-    return transactions
-        .reduce((groups: { itemId: string, itemName: string, quantityIn: number, quantityOut: number, quantityOnhand: number}[], 
-            thisInventoryTransaction: InventoryTransaction) => {
-          let found = groups.find(group => group.itemId === thisInventoryTransaction.itemId);
-          if (found === undefined) {
-            found = { 
-              itemId: thisInventoryTransaction.itemId, 
-              itemName: thisInventoryTransaction.itemName, 
-              quantityIn: thisInventoryTransaction.quantityIn,
-              quantityOut: thisInventoryTransaction.quantityOut,
-              quantityOnhand: items.find(inventory => inventory.id == thisInventoryTransaction.itemId).currentCount 
-            };
-            groups.push(found);
-          }
-          found.quantityIn += thisInventoryTransaction.quantityIn;
-          found.quantityOut += thisInventoryTransaction.quantityOut;
-          return groups;
-        }, [])
-        .slice(0, this.itemsToShow)
-  }
+  private subscription: Subscription = new Subscription();
+
 
   constructor(
     private store: Store<AppState>,
     private actions: ActionsSubject,
     private utils: UtilsService,
     private colorGenerator: ColorGenerator
-  ) { 
+  ) {
     Chart.register(...registerables);
   }
 
@@ -82,19 +61,19 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
               this.items = this.sumupTransactionsByItem(transactions, items)
                 .sort((a,b)=>a.quantityOnhand >= b.quantityOnhand ? 1 : -1);
               this.pushChartData(this.items);
-            })
-            
-          })
-                      
+            });
+
+          });
+
         })
-      ) 
+      );
   }
 
   initChart() {
     this.createChart();
   }
 
-  createChart() {    
+  createChart() {
     this.chart = new Chart(this.viewChart.nativeElement, {
       type: 'bar',
       data: {
@@ -130,23 +109,23 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
               autoSkip: false,
               stepSize:2,
               align:'start',
-              callback: function(value,index) {
+              callback(value,index) {
                 const label = this.getLabelForValue(value);
                 return label.length>12 ? label.substring(0,12) +'...' : label;
               },
-              
+
             }
           }
-        } 
+        }
       }
-     
+
     });
   }
 
-  pushChartData(items:any){
-    
+  pushChartData(items: any){
+
     const addOnHandBalance = (item: any, chartData: any[]) =>{
-      let found = chartData.find(data => data.y === item.itemName);
+      const found = chartData.find(data => data.y === item.itemName);
       if (found !== undefined) {
         found.x += Number(item.quantityOnhand);
       }
@@ -154,13 +133,13 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
         chartData.push({
           y : item.itemName,
           x : item.quantityOnhand
-        })
+        });
       }
-  
-    }
+
+    };
 
     const addQuantityIn = (item: any, chartData: any[]) =>{
-      let found = chartData.find(data => data.y === item.itemName);
+      const found = chartData.find(data => data.y === item.itemName);
       if (found !== undefined) {
         found.x += Number(item.quantityIn);
       }
@@ -168,12 +147,12 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
         chartData.push({
           y : item.itemName,
           x : item.quantityIn
-        })
+        });
       }
-    }
+    };
 
     const addQuantityOut = (item: any, chartData: any[]) =>{
-      let found = chartData.find(data => data.y === item.itemName);
+      const found = chartData.find(data => data.y === item.itemName);
       if (found !== undefined) {
         found.x -= Number(item.quantityOut);
       }
@@ -181,14 +160,13 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
         chartData.push({
           y : item.itemName,
           x : -item.quantityOut
-        })
+        });
       }
-    }
+    };
 
 
-    const createChartDataSet = (label: string, color: string, backgroundColor: string, data: any[] ) =>{
-      return {
-        label: label,
+    const createChartDataSet = (label: string, color: string, backgroundColor: string, data: any[] ) =>({
+        label,
         fill: false,
         lineTension: 0.5,
         backgroundColor: backgroundColor ?? color,
@@ -207,9 +185,8 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
         pointRadius: 2,
         pointHitRadius: 10,
         spanGaps: true,
-        data: data
-      }
-    }
+        data
+      });
 
     const quantityOnhandData = [];
     const quantityInData = [];
@@ -220,7 +197,7 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
         ///addOnHandBalance(item, quantityOnhandData);
         addQuantityIn(item, quantityInData);
         addQuantityOut(item, quantityOutData);
-    })
+    });
 
     this.chart.data.labels = [];
     this.chart.data.datasets = [];
@@ -229,11 +206,11 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
     this.chart.data.datasets.push(
       createChartDataSet('In', this.colorGenerator.getColor('QuantityIn'), this.colorGenerator.getColor('QuantityIn'), quantityInData)
     );
-    
+
     this.chart.data.datasets.push(
       createChartDataSet('Out', this.colorGenerator.getColor('QuantityOut'), this.colorGenerator.getColor('QuantityOut'), quantityOutData)
     );
-    
+
     this.chart.update();
   }
 
@@ -241,19 +218,18 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
   getData(fromDate: Date, toDate: Date){
     this.fromDate = moment(fromDate).startOf('day').toDate();
     this.toDate = moment(toDate).endOf('day').toDate();
-    this.store.select(state => state.shop).subscribe(shop => {
-      if (shop) {
-        this.store.dispatch(inventoryActions.loadTransactions({ fromDate: this.fromDate, toDate: this.toDate }));
-        
-      }
-    })
+
+    this.store.select(selectInventoryTransactionsByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
+      this.pushChartData(orders);
+    });
+
   }
 
   togglePeriodFilter(period: string){
-    if (this.filterPeriod == period)
-      return 'primary';
+    if (this.filterPeriod === period)
+      {return 'primary';}
     else
-      return '';
+      {return '';}
   }
 
   filterByPeriod(period: string){
@@ -261,13 +237,13 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
     this.filterLabel = `Top ${this.itemsToShow} items moved`;
     switch (period){
       case 'thisWeek':
-        this.filterLabel = `${this.filterLabel} this week`
+        this.filterLabel = `${this.filterLabel} this week`;
         break;
       case 'thisMonth':
-        this.filterLabel = `${this.filterLabel} this month`
+        this.filterLabel = `${this.filterLabel} this month`;
         break;
       case 'thisQuarter':
-        this.filterLabel = `${this.filterLabel} this quarter`
+        this.filterLabel = `${this.filterLabel} this quarter`;
         break;
       case 'thisYear':
         this.filterLabel = `${this.filterLabel} this year`;
@@ -279,7 +255,27 @@ export class InventoryMovementCardComponent implements OnInit, OnDestroy {
 
   }
 
-
+  private sumupTransactionsByItem(transactions: InventoryTransaction[], items: InventoryItem[]){
+    return transactions
+        .reduce((groups: { itemId: string; itemName: string; quantityIn: number; quantityOut: number; quantityOnhand: number}[],
+            thisInventoryTransaction: InventoryTransaction) => {
+          let found = groups.find(group => group.itemId === thisInventoryTransaction.itemId);
+          if (found === undefined) {
+            found = {
+              itemId: thisInventoryTransaction.itemId,
+              itemName: thisInventoryTransaction.itemName,
+              quantityIn: thisInventoryTransaction.quantityIn,
+              quantityOut: thisInventoryTransaction.quantityOut,
+              quantityOnhand: items.find(inventory => inventory.id === thisInventoryTransaction.itemId).currentCount
+            };
+            groups.push(found);
+          }
+          found.quantityIn += thisInventoryTransaction.quantityIn;
+          found.quantityOut += thisInventoryTransaction.quantityOut;
+          return groups;
+        }, [])
+        .slice(0, this.itemsToShow);
+  }
 
 
 }

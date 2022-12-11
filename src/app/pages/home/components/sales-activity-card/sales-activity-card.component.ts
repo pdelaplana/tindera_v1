@@ -11,7 +11,6 @@ import { groupOrdersByPaymentType, groupOrdersByProductCategory, selectOrdersByD
 import { UtilsService } from '@app/services/utils.service';
 import { Chart, registerables } from 'chart.js';
 import { ColorGenerator } from '@app/components/text-avatar/color-generator';
-import { OrderItem } from '@app/models/order-item';
 import { CurrencyPipe } from '@angular/common';
 import { Order } from '@app/models/order';
 
@@ -23,15 +22,13 @@ import { Order } from '@app/models/order';
 })
 export class SalesActivityCardComponent implements OnInit, OnDestroy {
 
-  private subscription: Subscription = new Subscription();
-
   @ViewChild('salesActivityChart') viewChart;
 
   toDate: Date;
   fromDate: Date;
 
   chart: any;
-  chartKind: string = 'categories';
+  chartKind = 'categories';
 
   currencyCode: string;
   orders: Order[];
@@ -45,15 +42,18 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
   filterLabel = 'Today';
   filterPeriod = 'today';
 
-  hasChartData: boolean= false;
-  
+  hasChartData= false;
+
+  private subscription: Subscription = new Subscription();
+
+
   constructor(
     private store: Store<AppState>,
     private actions: ActionsSubject,
     private utils: UtilsService,
     private colorGenerator: ColorGenerator,
     private currencyPipe: CurrencyPipe,
-  ) { 
+  ) {
     Chart.register(...registerables);
   }
 
@@ -66,23 +66,23 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
     this.store.select(state => state.shop)
       .subscribe((shop) => {
         this.currencyCode = shop.currencyCode;
-      })
-  
+      });
+
     this.subscription
       .add(
         this.actions.pipe(
           ofType(inventoryActions.loadTransactionsSuccess),
         ).subscribe(action =>{
           this.store.select(selectInventoryTransactionsByDateRange(this.fromDate, this.toDate)).subscribe(transactions => {
-            this.totalProductCost = transactions.filter(transaction => transaction.transactionType == 'sale')
-              .reduce((sum, current) => sum + current.unitCost, 0 )
+            this.totalProductCost = transactions.filter(transaction => transaction.transactionType === 'sale')
+              .reduce((sum, current) => sum + current.unitCost, 0 );
             this.totalRevenue = this.totalSalesAmount - this.totalProductCost;
 
             this.totalSpoilage = transactions
-              .filter(transaction => transaction.transactionType == 'adjustment' && transaction.adjustmentReason.code == 'SPOILAGE')
-              .reduce((sum, current) => sum + current.unitCost, 0 )
+              .filter(transaction => transaction.transactionType === 'adjustment' && transaction.adjustmentReason.code === 'SPOILAGE')
+              .reduce((sum, current) => sum + current.unitCost, 0 );
 
-          })            
+          });
         })
       )
       .add(
@@ -95,22 +95,22 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
             this.totalSalesAmount = orders.reduce((sum, current) => sum + current.totalSale, 0);
             this.totalRevenue = this.totalSalesAmount - this.totalProductCost;
             this.refreshChart();
-            
-          })                   
-        })
-      )
 
-      
+          });
+        })
+      );
+
+
       this.filterPeriod = 'today';
       this.filterByPeriod();
 
   }
 
   togglePeriodFilter(period: string){
-    if (this.filterPeriod == period)
-      return 'primary';
+    if (this.filterPeriod === period)
+      {return 'primary';}
     else
-      return '';
+      {return '';}
   }
 
   filterByPeriod(){
@@ -118,16 +118,16 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
 
     switch (period){
       case 'yesterday':
-        this.filterLabel = 'Yesterday'
+        this.filterLabel = 'Yesterday';
         break;
       case 'today':
-        this.filterLabel = 'Today'
+        this.filterLabel = 'Today';
         break;
       case 'thisWeek':
-        this.filterLabel = 'This week'
+        this.filterLabel = 'This week';
         break;
       case 'thisMonth':
-        this.filterLabel = 'This month'
+        this.filterLabel = 'This month';
         break;
       case 'last3Months':
         this.filterLabel = 'Last 3 months';
@@ -142,20 +142,22 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
 
     const [start, end] = this.utils.getDatesfromPeriod(period);
     this.getData(start,end);
- 
+
   }
 
   getData(fromDate: Date, toDate: Date){
     this.fromDate = moment(fromDate).startOf('day').toDate();
     this.toDate = moment(toDate).endOf('day').toDate();
 
-     // load transactions but ensure shop data is loaded in state store
-     this.store.select(state => state.shop).subscribe(shop => {
-      if (shop) {
-        this.store.dispatch(inventoryActions.loadTransactions({ fromDate: this.fromDate, toDate: this.toDate }));
-        this.store.dispatch(orderActions.loadOrdersByDate({ fromDate: this.fromDate, toDate: this.toDate }))
-      }
-    })
+    this.store.select(selectOrdersByDateRange(this.fromDate, this.toDate)).subscribe(orders => {
+      this.orders = orders;
+      this.totalOrders = orders.length;
+      this.totalSalesAmount = orders.reduce((sum, current) => sum + current.totalSale, 0);
+      this.totalRevenue = this.totalSalesAmount - this.totalProductCost;
+      this.refreshChart();
+
+    });
+
   }
 
   initChart() {
@@ -163,7 +165,7 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
   }
 
 
-  createChart() {    
+  createChart() {
     this.chart = new Chart(this.viewChart.nativeElement, {
       type: 'doughnut',
       data: {
@@ -184,7 +186,7 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
                  return label;
               }
             }
-          },    
+          },
           legend: {
             position: 'right',
           },
@@ -192,7 +194,7 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
             display: false,
             text: 'Sales by Category'
           },
-          
+
         },
         animation:{
           onProgress: (animation) =>{
@@ -203,61 +205,54 @@ export class SalesActivityCardComponent implements OnInit, OnDestroy {
           }
         }
       },
-    
+
     });
   }
 
-  pushChartData(datasets: { description: string, value: number }[]){
-    
-    const createChartDataSet = (label: string, slices: string[], data: any[] ) =>{
-      return {
-        label: label,
+  pushChartData(datasets: { description: string; value: number }[]){
+
+    const createChartDataSet = (label: string, slices: string[], data: any[] ) => ({
+        label,
         backgroundColor: slices.map(slice => this.colorGenerator.getColor(slice)),
-        data: data
-      }
-    }
+        data
+      });
 
     this.chart.data.labels = [];
     this.chart.data.datasets = [];
     this.chart.update();
 
     const chartData = [];
-    
+
     datasets.forEach(group => {
       this.chart.data.labels.push(group.description);
       chartData.push(group.value);
-    })
+    });
 
     this.chart.data.datasets.push(
       createChartDataSet('Sales', this.chart.data.labels, chartData)
-    )
-  
+    );
+
     this.chart.update();
 
   }
 
   refreshChart(){
-    if  (this.chartKind == 'categories'){
+    if  (this.chartKind === 'categories'){
       this.pushChartData(
-        groupOrdersByProductCategory(this.orders).map(group => {
-          return { description: group.productCategory, value: group.totalSale }
-        })
+        groupOrdersByProductCategory(this.orders).map(group => ({ description: group.productCategory, value: group.totalSale }))
       );
-      
+
     }
-    else if (this.chartKind == 'payment'){
+    else if (this.chartKind === 'payment'){
       this.pushChartData(
-        groupOrdersByPaymentType(this.orders).map(group => { 
-          return { description: group.paymentType, value: group.totalSale } 
-        })
+        groupOrdersByPaymentType(this.orders).map(group => ({ description: group.paymentType, value: group.totalSale }))
       );
-      
+
     }
   }
 
- 
-  chartKindChange(event:any){
-    this.chartKind = event.detail.value;    
+  chartKindChange(event: any){
+    this.chartKind = event.detail.value;
     this.refreshChart();
   }
 

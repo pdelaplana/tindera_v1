@@ -29,7 +29,6 @@ import { loggerFactory } from './state';
 import { CurrencyPipe } from '@angular/common';
 import { InventoryEffects } from './state/inventory/inventory.effects';
 import { ProductEffects } from './state/product/product.effects';
-import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OrderEffects } from './state/orders/order.effects';
 import { NgxImageCompressService } from 'ngx-image-compress';
@@ -42,8 +41,8 @@ import { CartEffects } from './state/cart/cart.effects';
   entryComponents: [],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule, 
-    IonicModule.forRoot(), 
+    BrowserAnimationsModule,
+    IonicModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
@@ -76,24 +75,22 @@ import { CartEffects } from './state/cart/cart.effects';
       ProductEffects,
       OrderEffects,
       CartEffects
-    ]),
-    TagInputModule
+    ])
   ],
   providers: [
     CurrencyPipe,
-    { 
-      provide: RouteReuseStrategy, 
-      useClass: IonicRouteStrategy 
+    {
+      provide: RouteReuseStrategy,
+      useClass: IonicRouteStrategy
     },
-    NgxImageCompressService
-    /*
+    NgxImageCompressService,
     {
       provide: META_REDUCERS,
       deps: [NGXLogger],
       useFactory: loggerFactory,
       multi: true
     },
-    */
+
   ],
   bootstrap: [AppComponent],
 })

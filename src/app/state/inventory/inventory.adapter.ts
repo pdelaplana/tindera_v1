@@ -3,15 +3,15 @@ import { InventoryItem } from '@app/models/inventory-item';
 import { InventoryTransaction } from '@app/models/inventory-transaction';
 import { createEntityAdapter, EntityAdapter } from '@ngrx/entity';
 
-export const inventoryItemAdapter : EntityAdapter<InventoryItem> = createEntityAdapter<InventoryItem>({ 
+export const inventoryItemAdapter: EntityAdapter<InventoryItem> = createEntityAdapter<InventoryItem>({
   selectId: (item: InventoryItem) => item.id,
   //sortComparer: function (a, b){  return a.name.localeCompare(b.name); }
 });
 
-export const inventoryTransactionAdapter : EntityAdapter<InventoryTransaction> = createEntityAdapter<InventoryTransaction>({
+export const inventoryTransactionAdapter: EntityAdapter<InventoryTransaction> = createEntityAdapter<InventoryTransaction>({
   selectId: (transaction: InventoryTransaction) => transaction.id
 });
 
-export const inventoryCountAdapter : EntityAdapter<InventoryCount> = createEntityAdapter<InventoryCount>({
+export const inventoryCountAdapter: EntityAdapter<InventoryCount> = createEntityAdapter<InventoryCount>({
   selectId: (count:  InventoryCount) =>  count.id
 });
