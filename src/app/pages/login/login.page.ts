@@ -29,7 +29,7 @@ export class LoginPage implements OnInit, OnDestroy {
     private menuController: MenuController,
     private navController: NavController,
     private commonUIService: CommonUIService
-  ) { 
+  ) {
     this.menuController.enable(false);
     this.loginForm = this.formBuilder.group({
       username: new FormControl('', Validators.compose([
@@ -63,7 +63,6 @@ export class LoginPage implements OnInit, OnDestroy {
           } else {
             this.navController.navigateRoot('store/setup');
           }
-          
         })
       )
      .add(

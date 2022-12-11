@@ -35,14 +35,13 @@ export interface AppState {
   cart: CartState;
 }
 
-export function loggerFactory(logger: NGXLogger): MetaReducer<AppState> {
-  return (reducer: ActionReducer<AppState, Action>) => (state, action) => {
+export const loggerFactory = (logger: NGXLogger): MetaReducer<AppState> => (
+   (reducer: ActionReducer<AppState, Action>) => (state, action) => {
       logger.info('action', action);
       logger.debug('state', state);
       return reducer(state, action);
-    };
-}
-
+    }
+);
 
 
 export const reducers: ActionReducerMap<AppState> = {
